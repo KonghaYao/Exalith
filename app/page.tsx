@@ -71,9 +71,10 @@ export default function Home() {
       >
         <CopilotChat
           className="h-full flex flex-col"
-          instructions={
-            "You are assisting the user as best as you can. Answer in the best way possible given the data you have."
-          }
+          instructions={`你是一个工作助手，你需要根据用户提出的工作，执行一下步骤：
+1. 提出计划分步骤列表 Markdown 格式
+2. 执行每个步骤
+3. 完成任务并一句话评估成果`}
           labels={{
             title: "MCP Assistant",
             initial: "Need any help?",
