@@ -78,6 +78,8 @@ export function MCPConfigForm() {
   const [isLoading, setIsLoading] = useState(true);
   const [showAddServerForm, setShowAddServerForm] = useState(false);
   const [showExampleConfigs, setShowExampleConfigs] = useState(false);
+  const [editingServer, setEditingServer] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   // Calculate server statistics
   const totalServers = Object.keys(configs).length;
@@ -231,7 +233,15 @@ export function MCPConfigForm() {
             </div>
           </div>
           <button
-            onClick={() => setShowAddServerForm(true)}
+            onClick={() => {
+              setIsEditing(false);
+              setEditingServer(null);
+              setServerName("");
+              setCommand("");
+              setArgs("");
+              setUrl("");
+              setShowAddServerForm(true);
+            }}
             className="w-full sm:w-auto px-3 py-1.5 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 flex items-center gap-1 justify-center"
           >
             <svg
@@ -355,25 +365,58 @@ export function MCPConfigForm() {
                         {config.transport}
                       </div>
                     </div>
-                    <button
-                      onClick={() => removeConfig(name)}
-                      className="text-gray-400 hover:text-red-500"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingServer(name);
+                          setIsEditing(true);
+                          setShowAddServerForm(true);
+                          setServerName(name);
+                          setConnectionType(config.transport);
+                          if (config.transport === "stdio") {
+                            setCommand(config.command);
+                            setArgs(config.args.join(" "));
+                          } else {
+                            setUrl(config.url);
+                          }
+                        }}
+                        className="text-gray-400 hover:text-blue-500"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => removeConfig(name)}
+                        className="text-gray-400 hover:text-red-500"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                   <div className="mt-3 text-sm text-gray-600">
                     {config.transport === "stdio" ? (
@@ -420,7 +463,7 @@ export function MCPConfigForm() {
 
       {/* Add Server Modal */}
       {showAddServerForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 shadow-sm border flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold flex items-center">
@@ -435,10 +478,14 @@ export function MCPConfigForm() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M12 4v16m8-8H4"
+                    d={
+                      isEditing
+                        ? "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        : "M12 4v16m8-8H4"
+                    }
                   />
                 </svg>
-                Add New Server
+                {isEditing ? "Edit Server" : "Add New Server"}
               </h2>
               <button
                 onClick={() => setShowAddServerForm(false)}
@@ -595,7 +642,58 @@ export function MCPConfigForm() {
                   Cancel
                 </button>
                 <button
-                  onClick={addConfig}
+                  onClick={() => {
+                    if (isEditing) {
+                      if (editingServer && editingServer !== serverName) {
+                        const newConfigs = { ...configs };
+                        delete newConfigs[editingServer];
+                        const updatedConfig =
+                          connectionType === "stdio"
+                            ? {
+                                command,
+                                args: args
+                                  .split(" ")
+                                  .filter((arg) => arg.trim() !== ""),
+                                transport: "stdio" as const,
+                              }
+                            : {
+                                url,
+                                transport: "sse" as const,
+                              };
+                        setConfigs({
+                          ...newConfigs,
+                          [serverName]: updatedConfig,
+                        });
+                      } else {
+                        const updatedConfig =
+                          connectionType === "stdio"
+                            ? {
+                                command,
+                                args: args
+                                  .split(" ")
+                                  .filter((arg) => arg.trim() !== ""),
+                                transport: "stdio" as const,
+                              }
+                            : {
+                                url,
+                                transport: "sse" as const,
+                              };
+                        setConfigs({
+                          ...configs,
+                          [serverName]: updatedConfig,
+                        });
+                      }
+                    } else {
+                      addConfig();
+                    }
+                    setEditingServer(null);
+                    setIsEditing(false);
+                    setShowAddServerForm(false);
+                    setServerName("");
+                    setCommand("");
+                    setArgs("");
+                    setUrl("");
+                  }}
                   className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-sm font-medium flex items-center"
                 >
                   <svg
