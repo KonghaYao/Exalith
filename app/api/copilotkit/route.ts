@@ -11,7 +11,7 @@ const serviceAdapter = new OpenAIAdapter({
   /** @ts-ignore fix openai doesn't support developer role */
   openai: new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    baseURL: process.env.OPENAI_API_BASE_URL,
+    baseURL: process.env.OPENAI_BASE_URL,
     fetch(url, options) {
       /** @ts-ignore */
       const data = JSON.parse(options?.body);

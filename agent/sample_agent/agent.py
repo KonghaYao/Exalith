@@ -44,18 +44,6 @@ class AgentState(CopilotKitState):
     mcp_config: Optional[MCPConfig]
 
 
-# Default MCP configuration to use when no configuration is provided in the state
-# Uses relative paths that will work within the project structure
-DEFAULT_MCP_CONFIG: MCPConfig = {
-    "math": {
-        "command": "python",
-        # Use a relative path that will be resolved based on the current working directory
-        "args": [os.path.join(os.path.dirname(__file__), "..", "math_server.py")],
-        "transport": "stdio",
-    },
-}
-
-
 async def chat_node(
     state: AgentState, config: RunnableConfig
 ) -> Command[Literal["__end__"]]:
@@ -64,9 +52,9 @@ async def chat_node(
     It handles both chat responses and tool execution in one node.
     """
     # Get MCP configuration from state, or use the default config if not provided
-    mcp_config = state.get("mcp_config", DEFAULT_MCP_CONFIG)
+    mcp_config = state.get("mcp_config")
 
-    print(f"mcp_config: {mcp_config}, default: {DEFAULT_MCP_CONFIG}")
+    print(f"mcp_config: {mcp_config}")
 
     # Set up the MCP client and tools using the configuration from state
     async with MultiServerMCPClient(mcp_config) as mcp_client:
