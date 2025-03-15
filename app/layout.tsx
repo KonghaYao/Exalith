@@ -29,9 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen`}
       >
-        <CopilotKit runtimeUrl="/api/copilotkit" showDevConsole={false}>
-          {children}
-        </CopilotKit>
+        {children}
       </body>
     </html>
   );
