@@ -1,35 +1,59 @@
 import {
-    CopilotRuntime,
-    ExperimentalEmptyAdapter,
-    copilotRuntimeNextJSAppRouterEndpoint,
-    langGraphPlatformEndpoint
-} from "@copilotkit/runtime";;
+  CopilotRuntime,
+  OpenAIAdapter,
+  copilotRuntimeNextJSAppRouterEndpoint,
+  langGraphPlatformEndpoint,
+} from "@copilotkit/runtime";
 import { NextRequest } from "next/server";
+import OpenAI from "openai";
 
-// You can use any service adapter here for multi-agent support.
-const serviceAdapter = new ExperimentalEmptyAdapter();
-
+const serviceAdapter = new OpenAIAdapter({
+  /** @ts-ignore fix openai doesn't support developer role */
+  openai: new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: process.env.OPENAI_API_BASE_URL,
+    fetch(url, options) {
+      /** @ts-ignore */
+      const data = JSON.parse(options?.body);
+      data.messages.forEach((m: any) => {
+        if (m.role === "developer") {
+          m.role = "system";
+          return m;
+        }
+        return m;
+      });
+      /** @ts-ignore */
+      options.body = JSON.stringify(data);
+      /** @ts-ignore */
+      delete options?.headers["content-length"];
+      return fetch(url, options);
+    },
+  }),
+  model: process.env.OPENAI_MODEL || "qwen-plus",
+});
 const runtime = new CopilotRuntime({
-    remoteEndpoints: [
-        langGraphPlatformEndpoint({
-            deploymentUrl: `${process.env.AGENT_DEPLOYMENT_URL || 'http://localhost:8123'}`,
-            langsmithApiKey: process.env.LANGSMITH_API_KEY,
-            agents: [
-                {
-                    name: 'sample_agent', 
-                    description: 'A helpful LLM agent.',
-                }
-            ]
-        }),
-    ],
+  remoteEndpoints: [
+    langGraphPlatformEndpoint({
+      deploymentUrl: `${
+        process.env.AGENT_DEPLOYMENT_URL || "http://localhost:8123"
+      }`,
+      langsmithApiKey: process.env.LANGSMITH_API_KEY,
+      agents: [
+        {
+          name: "sample_agent",
+          description: "A helpful LLM agent.",
+        },
+      ],
+    }),
+  ],
 });
 
 export const POST = async (req: NextRequest) => {
-    const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
-        runtime,
-        serviceAdapter,
-        endpoint: "/api/copilotkit",
-    });
+  const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
+    runtime,
+    serviceAdapter,
+    endpoint: "/api/copilotkit",
+  });
 
-    return handleRequest(req);
+  return handleRequest(req);
 };

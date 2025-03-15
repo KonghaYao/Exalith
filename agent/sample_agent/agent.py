@@ -14,18 +14,22 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 from langgraph.prebuilt import create_react_agent
 import os
 
+
 # Define the connection type structures
 class StdioConnection(TypedDict):
     command: str
     args: List[str]
     transport: Literal["stdio"]
 
+
 class SSEConnection(TypedDict):
     url: str
     transport: Literal["sse"]
 
+
 # Type for MCP configuration
 MCPConfig = Dict[str, Union[StdioConnection, SSEConnection]]
+
 
 class AgentState(CopilotKitState):
     """
@@ -35,8 +39,10 @@ class AgentState(CopilotKitState):
     the CopilotKitState fields. We're also adding a custom field, `mcp_config`,
     which will be used to configure MCP services for the agent.
     """
+
     # Define mcp_config as an optional field without skipping validation
     mcp_config: Optional[MCPConfig]
+
 
 # Default MCP configuration to use when no configuration is provided in the state
 # Uses relative paths that will work within the project structure
@@ -49,7 +55,10 @@ DEFAULT_MCP_CONFIG: MCPConfig = {
     },
 }
 
-async def chat_node(state: AgentState, config: RunnableConfig) -> Command[Literal["__end__"]]:
+
+async def chat_node(
+    state: AgentState, config: RunnableConfig
+) -> Command[Literal["__end__"]]:
     """
     This is a simplified agent that uses the ReAct agent as a subgraph.
     It handles both chat responses and tool execution in one node.
@@ -58,32 +67,35 @@ async def chat_node(state: AgentState, config: RunnableConfig) -> Command[Litera
     mcp_config = state.get("mcp_config", DEFAULT_MCP_CONFIG)
 
     print(f"mcp_config: {mcp_config}, default: {DEFAULT_MCP_CONFIG}")
-    
+
     # Set up the MCP client and tools using the configuration from state
     async with MultiServerMCPClient(mcp_config) as mcp_client:
         # Get the tools
         mcp_tools = mcp_client.get_tools()
-        
+
         # Create the react agent
-        model = ChatOpenAI(model="gpt-4o")
+        model = ChatOpenAI(
+            model=os.getenv("OPENAI_MODEL"),
+            base_url=os.getenv("OPENAI_BASE_URL"),
+            api_key=os.getenv("OPENAI_API_KEY"),
+        )
         react_agent = create_react_agent(model, mcp_tools)
-        
+
         # Prepare messages for the react agent
-        agent_input = {
-            "messages": state["messages"]
-        }
-        
+        agent_input = {"messages": state["messages"]}
+
         # Run the react agent subgraph with our input
         agent_response = await react_agent.ainvoke(agent_input)
-        
+
         # Update the state with the new messages
         updated_messages = state["messages"] + agent_response.get("messages", [])
-        
+
         # End the graph with the updated messages
         return Command(
             goto=END,
             update={"messages": updated_messages},
         )
+
 
 # Define the workflow graph with only a chat node
 workflow = StateGraph(AgentState)
