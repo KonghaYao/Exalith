@@ -5,6 +5,7 @@ import express from "express";
 import crawlAgent from "./crawlAgent.js";
 import ExcelBot from "./excelOperations.js";
 import npmBot from "./npmAgent.js";
+import openSourceBot from "./opensource.js";
 const app = express();
 
 const transportStore = new Map<string, Map<string, SSEServerTransport>>();
@@ -14,6 +15,7 @@ const appMap = new Map<string, McpServer>([
   ["crawl_bot", crawlAgent],
   ["sheets_bot", ExcelBot],
   ["npm_bot", npmBot],
+  ["opensource_bot", openSourceBot],
 ]);
 
 app.get(`/:id/:name/sse`, async (req, res) => {

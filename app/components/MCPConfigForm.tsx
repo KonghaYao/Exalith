@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useCoAgent } from "@copilotkit/react-core";
 import { ExampleConfigs } from "./ExampleConfigs";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { Power, PowerOff } from "lucide-react";
 
 type ConnectionType = "stdio" | "sse";
 
@@ -11,11 +12,13 @@ interface StdioConfig {
   command: string;
   args: string[];
   transport: "stdio";
+  enable?: boolean;
 }
 
 interface SSEConfig {
   url: string;
   transport: "sse";
+  enable?: boolean;
 }
 
 type ServerConfig = StdioConfig | SSEConfig;
@@ -27,7 +30,19 @@ interface AgentState {
 
 // Local storage key for saving agent state
 const STORAGE_KEY = "mcp-agent-state";
+const clearAgentConfig = (config: Record<string, ServerConfig>) => {
+  // 筛选出启用的配置并移除 enable 字段
+  const filteredConfig: Record<string, ServerConfig> = {};
 
+  for (const [key, value] of Object.entries(config)) {
+    if (value.enable !== false) {
+      const { enable, ...rest } = value;
+      filteredConfig[key] = rest;
+    }
+  }
+
+  return filteredConfig;
+};
 const ExternalLink = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -56,17 +71,17 @@ export function MCPConfigForm() {
     {
       name: "sample_agent",
       initialState: {
-        mcp_config: savedConfigs,
+        mcp_config: clearAgentConfig(savedConfigs),
       },
     }
   );
 
   // Simple getter for configs
-  const configs = agentState?.mcp_config || {};
+  const configs = savedConfigs || {};
 
   // Simple setter wrapper for configs
   const setConfigs = (newConfigs: Record<string, ServerConfig>) => {
-    setAgentState({ ...agentState, mcp_config: newConfigs });
+    setAgentState({ ...agentState, mcp_config: clearAgentConfig(newConfigs) });
     setSavedConfigs(newConfigs);
   };
 
@@ -126,10 +141,12 @@ export function MCPConfigForm() {
             command,
             args: args.split(" ").filter((arg) => arg.trim() !== ""),
             transport: "stdio" as const,
+            enable: true,
           }
         : {
             url,
             transport: "sse" as const,
+            enable: true,
           };
 
     setConfigs({
@@ -380,7 +397,11 @@ export function MCPConfigForm() {
             {Object.entries(configs).map(([name, config]) => (
               <div
                 key={name}
-                className="border rounded-md overflow-hidden bg-white shadow-sm"
+                className={`border rounded-md overflow-hidden bg-white shadow-sm ${
+                  config.enable !== false
+                    ? "border-blue-500"
+                    : "border-gray-200"
+                }`}
               >
                 <div className="p-4">
                   <div className="flex justify-between items-start">
@@ -422,6 +443,27 @@ export function MCPConfigForm() {
                       </div>
                     </div>
                     <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          const newConfigs = { ...configs };
+                          newConfigs[name] = {
+                            ...config,
+                            enable: config.enable === false ? true : false,
+                          };
+                          setConfigs(newConfigs);
+                        }}
+                        className={`text-gray-400 hover:text-blue-500 ${
+                          config.enable === false
+                            ? "text-gray-300"
+                            : "text-blue-500"
+                        }`}
+                      >
+                        {config.enable === false ? (
+                          <PowerOff className="w-4 h-4" />
+                        ) : (
+                          <Power className="w-4 h-4" />
+                        )}
+                      </button>
                       <button
                         onClick={() => {
                           setEditingServer(name);
