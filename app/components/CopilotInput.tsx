@@ -41,7 +41,9 @@ export default function CopilotInput({
         disabled={inProgress}
         type="text"
         placeholder={`${
-          navigator.platform.toLowerCase().includes("mac") ? "⌘" : "Ctrl"
+          globalThis.navigator.platform.toLowerCase().includes("mac")
+            ? "⌘"
+            : "Ctrl"
         } + Enter 提交`}
         className={inputStyle}
         onKeyDown={(e) => {

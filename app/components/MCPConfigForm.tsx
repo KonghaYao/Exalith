@@ -151,6 +151,39 @@ export function MCPConfigForm() {
     setConfigs(newConfigs);
   };
 
+  const exportConfig = () => {
+    const date = new Date().toISOString().split("T")[0];
+    const filename = `mcp-config-${date}.json`;
+    const jsonStr = JSON.stringify(configs, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const importConfig = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const importedConfig = JSON.parse(content);
+        setConfigs(importedConfig);
+      } catch (error) {
+        alert("导入配置文件失败，请确保文件格式正确");
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = "";
+  };
+
   if (isLoading) {
     return <div className="p-4">Loading configuration...</div>;
   }
@@ -193,20 +226,7 @@ export function MCPConfigForm() {
                 className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
               >
                 <span className="mr-1">GitHub Repo</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
+                <ExternalLink />
               </a>
               <a
                 href="https://docs.copilotkit.ai/"
@@ -215,51 +235,87 @@ export function MCPConfigForm() {
                 className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
               >
                 <span className="mr-1">Documentation</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
+                <ExternalLink />
               </a>
             </div>
           </div>
-          <button
-            onClick={() => {
-              setIsEditing(false);
-              setEditingServer(null);
-              setServerName("");
-              setCommand("");
-              setArgs("");
-              setUrl("");
-              setShowAddServerForm(true);
-            }}
-            className="w-full sm:w-auto px-3 py-1.5 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 flex items-center gap-1 justify-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="flex gap-2">
+            <input
+              type="file"
+              accept=".json"
+              onChange={importConfig}
+              className="hidden"
+              id="import-config"
+            />
+            <button
+              onClick={() => document.getElementById("import-config")?.click()}
+              className="w-full sm:w-auto px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 flex items-center gap-1 justify-center"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Add Server
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                />
+              </svg>
+              导入配置
+            </button>
+            <button
+              onClick={exportConfig}
+              className="w-full sm:w-auto px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 flex items-center gap-1 justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              导出配置
+            </button>
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                setEditingServer(null);
+                setServerName("");
+                setCommand("");
+                setArgs("");
+                setUrl("");
+                setShowAddServerForm(true);
+              }}
+              className="w-full sm:w-auto px-3 py-1.5 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 flex items-center gap-1 justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Add Server
+            </button>
+          </div>
         </div>
       </div>
 
