@@ -38,12 +38,13 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
     pending: "bg-blue-100 text-blue-800",
   };
 
-  const statusColor = statusColors[status.toLowerCase()] || "bg-gray-100 text-gray-800";
+  const statusColor =
+    statusColors[status.toLowerCase()] || "bg-gray-100 text-gray-800";
 
   return (
     <div className="my-2 rounded-lg border border-gray-200 overflow-hidden shadow-sm">
       {/* Header - always visible */}
-      <div 
+      <div
         className="flex items-center justify-between p-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
         onClick={toggleExpand}
       >
@@ -53,17 +54,23 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
             {status}
           </div>
         </div>
-        <button 
+        <button
           className="text-gray-500 hover:text-gray-700 focus:outline-none transition-transform transform"
           aria-label={isExpanded ? "Collapse" : "Expand"}
         >
-          <svg 
-            className={`h-5 w-5 transition-transform ${isExpanded ? "rotate-180" : ""}`} 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 20 20" 
+          <svg
+            className={`h-5 w-5 transition-transform ${
+              isExpanded ? "rotate-180" : ""
+            }`}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
             fill="currentColor"
           >
-            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
           </svg>
         </button>
       </div>
@@ -73,7 +80,9 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
         <div className="p-3 border-t border-gray-200">
           {/* Arguments Section */}
           <div className="mb-3">
-            <div className="text-sm font-medium text-gray-500 mb-1">Arguments:</div>
+            <div className="text-sm font-medium text-gray-500 mb-1">
+              Arguments:
+            </div>
             <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-40">
               {formatJSON(args)}
             </pre>
@@ -82,7 +91,9 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
           {/* Result Section - shown only if there's a result */}
           {result && (
             <div>
-              <div className="text-sm font-medium text-gray-500 mb-1">Result:</div>
+              <div className="text-sm font-medium text-gray-500 mb-1">
+                Result:
+              </div>
               <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-40">
                 {formatJSON(result)}
               </pre>
@@ -92,4 +103,4 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
       )}
     </div>
   );
-}; 
+};
