@@ -7,6 +7,7 @@ import { MCPConfigForm } from "./components/MCPConfigForm";
 import { useState } from "react";
 import CopilotInput from "./components/CopilotInput";
 import { CopilotKit } from "@copilotkit/react-core";
+import { CopilotMermaid } from "./components/CopilotMermaid";
 
 export default function Home() {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -77,21 +78,23 @@ export default function Home() {
             } as CopilotKitCSSProperties
           }
         >
-          <CopilotChat
-            className="h-full flex flex-col"
-            key={chatKey}
-            Input={(props) => (
-              <CopilotInput
-                {...props}
-                onReset={() => setChatKey((k) => k + 1)}
-              />
-            )}
-            instructions={`你是一个工作助手，你需要根据用户提出的工作，使用工具完成帮助用户的任务，尽量列举所有的数据，使用整洁美观的 markdown 语法`}
-            labels={{
-              title: "MCP 助手",
-              initial: "需要什么帮助吗？",
-            }}
-          />
+          <CopilotMermaid>
+            <CopilotChat
+              className="h-full flex flex-col"
+              key={chatKey}
+              Input={(props) => (
+                <CopilotInput
+                  {...props}
+                  onReset={() => setChatKey((k) => k + 1)}
+                />
+              )}
+              instructions={`你是一个工作助手，你需要根据用户提出的工作，使用工具完成帮助用户的任务，尽量列举所有的数据，多使用表格、列表等，使用整洁美观的 markdown 语法`}
+              labels={{
+                title: "MCP 助手",
+                initial: "需要什么帮助吗？",
+              }}
+            />
+          </CopilotMermaid>
         </div>
       </div>
     </CopilotKit>

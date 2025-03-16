@@ -40,8 +40,16 @@ export default function CopilotInput({
       <input
         disabled={inProgress}
         type="text"
-        placeholder="Ask your question here..."
+        placeholder={`${
+          navigator.platform.toLowerCase().includes("mac") ? "⌘" : "Ctrl"
+        } + Enter 提交`}
         className={inputStyle}
+        onKeyDown={(e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+            handleSubmit(e.currentTarget.value);
+            e.currentTarget.value = "";
+          }
+        }}
       />
       <button
         disabled={inProgress}
