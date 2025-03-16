@@ -24,7 +24,7 @@ export default function Home() {
         <CopilotActionHandler />
 
         {/* Main content area */}
-        <div className="flex-1 p-4 md:p-8 lg:mr-[30vw]">
+        <div className="flex-1 p-4 md:p-8 lg:mr-[40vw]">
           <MCPConfigForm />
         </div>
 
@@ -69,7 +69,7 @@ export default function Home() {
 
         {/* Fixed sidebar - hidden on mobile, shown on larger screens */}
         <div
-          className={`fixed top-0 right-0 h-full w-full md:w-[80vw] lg:w-[30vw] border-l bg-white shadow-md transition-transform duration-300 ${
+          className={`fixed top-0 right-0 h-full w-full md:w-[80vw] lg:w-[40vw] border-l bg-white shadow-md transition-transform duration-300 ${
             isChatOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
           }`}
           style={

@@ -4,7 +4,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import express from "express";
 import crawlAgent from "./crawlAgent.js";
 import ExcelBot from "./excelOperations.js";
-
+import npmBot from "./npmAgent.js";
 const app = express();
 
 const transportStore = new Map<string, Map<string, SSEServerTransport>>();
@@ -13,6 +13,7 @@ const appMap = new Map<string, McpServer>([
 
   ["crawl_bot", crawlAgent],
   ["sheets_bot", ExcelBot],
+  ["npm_bot", npmBot],
 ]);
 
 app.get(`/:id/:name/sse`, async (req, res) => {
