@@ -17,10 +17,7 @@ export function InstructionsModal({
   onSave,
   defaultInstructions,
 }: InstructionsModalProps) {
-  const [instructions, setInstructions] = useLocalStorage(
-    "mcp-instructions",
-    defaultInstructions
-  );
+  const [instructions, setInstructions] = useState(defaultInstructions);
 
   useEffect(() => {
     if (isOpen) {

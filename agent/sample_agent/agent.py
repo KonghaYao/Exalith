@@ -5,12 +5,18 @@ It defines the workflow graph, state, tools, nodes and edges.
 
 from typing_extensions import Literal, TypedDict, Dict, List, Any, Union, Optional
 from langchain_openai import ChatOpenAI
+from langchain_core.utils.function_calling import (
+    convert_to_openai_function,
+    convert_to_openai_tool,
+)
+from langchain_core.tools import BaseTool, StructuredTool, ToolException
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command
 from copilotkit import CopilotKitState
 from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain_mcp_adapters.tools import convert_mcp_tool_to_langchain_tool
 from langgraph.prebuilt import create_react_agent
 import os
 
@@ -51,19 +57,41 @@ async def chat_node(
     This is a simplified agent that uses the ReAct agent as a subgraph.
     It handles both chat responses and tool execution in one node.
     """
+
     # Get MCP configuration from state, or use the default config if not provided
     mcp_config = state.get("mcp_config")
 
     # Set up the MCP client and tools using the configuration from state
     async with MultiServerMCPClient(mcp_config) as mcp_client:
+
         # Get the tools
         mcp_tools = mcp_client.get_tools()
+        actions = state.get("copilotkit", {}).get("actions", [])
+
+        async def call_tool(
+            **arguments: dict[str, Any],
+        ) -> tuple[str | list[str], None]:
+            return ["ok", None]
+
+        mcp_tools.extend(
+            [
+                StructuredTool(
+                    name=tool["name"],
+                    description=tool["description"] or "",
+                    args_schema=tool["parameters"],
+                    coroutine=call_tool,
+                    response_format="content",
+                )
+                for tool in actions
+            ]
+        )
         # Create the react agent
         model = ChatOpenAI(
             model=os.getenv("OPENAI_MODEL"),
             base_url=os.getenv("OPENAI_BASE_URL"),
             api_key=os.getenv("OPENAI_API_KEY"),
         )
+        # Combine tools
         react_agent = create_react_agent(model, mcp_tools)
 
         # Prepare messages for the react agent

@@ -30,10 +30,10 @@ export const CopilotFEPlugin = () => {
             key={plugin.code}
             className={`p-4 rounded-lg transition-all cursor-pointer bg-white border shadow-sm`}
             onClick={() => {
-              setSelectedPlugins((prev) =>
+              setSelectedPlugins(
                 isSelected
-                  ? prev.filter((name) => name !== plugin.code)
-                  : [...prev, plugin.code]
+                  ? selectedPlugins.filter((name) => name !== plugin.code)
+                  : [...selectedPlugins, plugin.code]
               );
             }}
           >
