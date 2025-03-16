@@ -11,11 +11,7 @@ const drawDiagram = async function (
   element.innerHTML = svg;
 };
 
-interface CopilotMermaidProps {
-  children?: React.ReactNode;
-}
-
-export function CopilotMermaid() {
+export function CopilotMermaid(props: { enable?: boolean }) {
   useCopilotAction({
     name: "showMermaidDiagram",
     description: "Displays a Mermaid diagram",
@@ -27,6 +23,7 @@ export function CopilotMermaid() {
         required: true,
       },
     ],
+    available: props.enable ? "enabled" : "disabled",
     render: ({ status, args }) => {
       const { mermaid_code } = args;
 
@@ -56,6 +53,4 @@ export function CopilotMermaid() {
       );
     },
   });
-
-  return <></>;
 }

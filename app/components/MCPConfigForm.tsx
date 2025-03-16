@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useCoAgent } from "@copilotkit/react-core";
-import { ExampleConfigs } from "./ExampleConfigs";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Header } from "./ServerForm/Header";
 import { ServerStatistics } from "./ServerForm/ServerStatistics";
@@ -69,7 +68,6 @@ export function MCPConfigForm() {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showAddServerForm, setShowAddServerForm] = useState(false);
-  const [showExampleConfigs, setShowExampleConfigs] = useState(false);
   const [editingServer, setEditingServer] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -86,22 +84,6 @@ export function MCPConfigForm() {
       setIsLoading(false);
     }
   }, [agentState]);
-
-  const handleExampleConfig = (exampleConfig: Record<string, ServerConfig>) => {
-    if (Object.keys(configs).length > 0) {
-      const shouldReplace = window.confirm(
-        "Do you want to replace your current configuration with this example? Click 'OK' to replace, or 'Cancel' to merge."
-      );
-      if (shouldReplace) {
-        setConfigs(exampleConfig);
-      } else {
-        setConfigs({ ...configs, ...exampleConfig });
-      }
-    } else {
-      setConfigs(exampleConfig);
-    }
-    setShowExampleConfigs(false);
-  };
 
   const addConfig = () => {
     if (!serverName) return;
@@ -217,38 +199,11 @@ export function MCPConfigForm() {
         totalServers={totalServers}
         stdioServers={stdioServers}
         sseServers={sseServers}
+        enabledServers={
+          Object.values(configs).filter((config) => config.enable !== false)
+            .length
+        }
       />
-
-      <div className="mb-4">
-        <button
-          onClick={() => setShowExampleConfigs(!showExampleConfigs)}
-          className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900"
-        >
-          <span>Example Configurations</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={`w-4 h-4 ml-1 transition-transform ${
-              showExampleConfigs ? "rotate-180" : ""
-            }`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
-
-        {showExampleConfigs && (
-          <div className="mt-2">
-            <ExampleConfigs onSelectConfig={handleExampleConfig} />
-          </div>
-        )}
-      </div>
 
       <ServerList
         configs={configs}

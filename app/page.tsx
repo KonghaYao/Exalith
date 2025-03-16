@@ -2,17 +2,15 @@
 
 import { CopilotChat } from "@copilotkit/react-ui";
 import { CopilotActionHandler } from "./components/CopilotActionHandler";
-import { CopilotKitCSSProperties } from "@copilotkit/react-ui";
 import { MCPConfigForm } from "./components/MCPConfigForm";
 import { useState } from "react";
 import CopilotInput from "./components/CopilotInput";
 import { CopilotKit } from "@copilotkit/react-core";
-import { CopilotMermaid } from "./components/CopilotMermaid";
+import { CopilotFEPlugin } from "./components/FETools";
 import { InstructionsModal } from "./components/InstructionsModal";
 import { DefaultInstructions } from "./DefaultInstructions";
 
 export default function Home() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatKey, setChatKey] = useState(0);
   const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
   const [instructions, setInstructions] = useState(DefaultInstructions);
@@ -23,7 +21,6 @@ export default function Home() {
       showDevConsole={false}
       key={chatKey}
     >
-      <CopilotMermaid></CopilotMermaid>
       <div className="min-h-screen bg-gray-50 flex relative">
         {/* Client component that sets up the Copilot action handler */}
         <CopilotActionHandler />
@@ -31,10 +28,11 @@ export default function Home() {
         {/* Main content area */}
         <div className="flex-1 p-4 md:p-8">
           <MCPConfigForm />
+          <CopilotFEPlugin></CopilotFEPlugin>
         </div>
 
         {/* Fixed sidebar - hidden on mobile, shown on larger screens */}
-        <div className="relative min-w-[40vw] flex-none">
+        <div className="relative w-[40vw] flex-none">
           <InstructionsModal
             isOpen={isInstructionsModalOpen}
             onClose={() => setIsInstructionsModalOpen(false)}
@@ -68,7 +66,7 @@ export default function Home() {
             </svg>
           </button>
           <CopilotChat
-            className="h-full flex flex-col "
+            className="h-screen flex flex-col "
             key={chatKey}
             Input={(props) => (
               <CopilotInput
