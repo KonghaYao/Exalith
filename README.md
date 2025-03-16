@@ -34,3 +34,33 @@ The codebase is split into two main parts:
 3. `/packages/server` **folder** – A MCP server that can be used to run the agent.
     1. `pnpm dev` – Starts the server.
     2. `/mcp-config.example.json` - An example MCP config file can import from frontend.
+
+```mermaid
+graph TB
+    subgraph Frontend[Frontend Application]
+        UI[UI Layer]
+        State[State Management]
+        CopilotKit[CopilotKit]
+    end
+
+    subgraph Agent[LangGraph Agent]
+        LG[LangGraph]
+        Tools[Tools]
+    end
+
+    subgraph Server[MCP Server]
+        API[API Endpoints]
+        Config[MCP Config]
+    end
+
+    UI --> CopilotKit
+    CopilotKit --> State
+    State --> Agent
+    LG --> Tools
+    Tools --> Server
+    API --> Config
+
+    style Frontend fill:#f9f,stroke:#333,stroke-width:2px
+    style Agent fill:#bbf,stroke:#333,stroke-width:2px
+    style Server fill:#bfb,stroke:#333,stroke-width:2px
+```
