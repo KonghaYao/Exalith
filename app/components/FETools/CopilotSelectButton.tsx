@@ -3,20 +3,26 @@ import { useCopilotAction } from "@copilotkit/react-core";
 // 单选 button
 export const CopilotSelectButton = (props: { enable?: boolean }) => {
   useCopilotAction({
-    name: "showSelectButton",
-    description: "Displays a List of Message for user to select",
+    name: "提供列表选择功能",
+    description:
+      "列表返回给用户（最多 10 条），用户从中选择一项，然后你提供更进一步的信息",
     parameters: [
       {
         name: "options",
         type: "string[]",
-        description: "用于展示Button",
+        description: "列表名称",
         required: true,
+      },
+      {
+        name: "stack_mode",
+        type: "boolean",
+        description: "返回数据为列表模式，否则为按钮模式",
       },
     ],
     available: props.enable ? "enabled" : "disabled",
     renderAndWaitForResponse: ({ status, args, respond }) => {
       return (
-        <>
+        <div className={`flex ${args.stack_mode ? "flex-col" : "flex-wrap"}`}>
           {args.options?.map((option: string, index: number) => {
             return (
               <button
@@ -36,7 +42,7 @@ export const CopilotSelectButton = (props: { enable?: boolean }) => {
               </button>
             );
           })}
-        </>
+        </div>
       );
     },
   });

@@ -1,7 +1,6 @@
 import { CopilotMermaid } from "./CopilotMermaid";
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 import { CopilotSelectButton } from "./CopilotSelectButton";
-
 export const plugins = [
   {
     name: "mermaid",

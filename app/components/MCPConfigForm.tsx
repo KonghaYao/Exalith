@@ -48,7 +48,7 @@ export function MCPConfigForm() {
   >(STORAGE_KEY, {});
   const { state: agentState, setState: setAgentState } = useCoAgent<AgentState>(
     {
-      name: "sample_agent",
+      name: "llm_agent",
       initialState: {
         mcp_config: clearAgentConfig(savedConfigs),
       },

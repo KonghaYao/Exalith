@@ -13,8 +13,8 @@ const drawDiagram = async function (
 
 export function CopilotMermaid(props: { enable?: boolean }) {
   useCopilotAction({
-    name: "showMermaidDiagram",
-    description: "Displays a Mermaid diagram",
+    name: "绘制 Mermaid 图",
+    description: "绘制 Mermaid 图",
     parameters: [
       {
         name: "mermaid_code",

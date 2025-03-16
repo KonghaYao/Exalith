@@ -40,7 +40,7 @@ const runtime = new CopilotRuntime({
       langsmithApiKey: process.env.LANGSMITH_API_KEY,
       agents: [
         {
-          name: "sample_agent",
+          name: "llm_agent",
           description: "A helpful LLM agent.",
         },
       ],

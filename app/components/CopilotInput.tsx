@@ -41,7 +41,7 @@ export default function CopilotInput({
         disabled={inProgress}
         type="text"
         placeholder={`${
-          globalThis.navigator.platform.toLowerCase().includes("mac")
+          globalThis.navigator?.platform?.toLowerCase?.()?.includes?.("mac")
             ? "⌘"
             : "Ctrl"
         } + Enter 提交`}

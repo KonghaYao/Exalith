@@ -54,13 +54,10 @@ async def chat_node(
     # Get MCP configuration from state, or use the default config if not provided
     mcp_config = state.get("mcp_config")
 
-    print(f"mcp_config: {mcp_config}")
-
     # Set up the MCP client and tools using the configuration from state
     async with MultiServerMCPClient(mcp_config) as mcp_client:
         # Get the tools
         mcp_tools = mcp_client.get_tools()
-
         # Create the react agent
         model = ChatOpenAI(
             model=os.getenv("OPENAI_MODEL"),
