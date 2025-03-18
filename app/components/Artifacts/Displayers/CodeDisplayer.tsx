@@ -1,3 +1,4 @@
+"use client"; // only necessary if you are using Next.js with the App Router.
 import { useEffect, useRef } from 'react';
 import { Resource } from '../ResourceContext';
 
@@ -13,7 +14,7 @@ export function CodeDisplayer({ resource }: CodeDisplayerProps) {
                 <div>
                     {resource.name}
                 </div>
-                <code >
+                <code className='text-wrap' >
                     {resource.content}
                 </code>
             </pre>

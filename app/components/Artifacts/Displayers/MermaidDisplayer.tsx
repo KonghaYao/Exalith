@@ -1,3 +1,4 @@
+"use client"; // only necessary if you are using Next.js with the App Router.
 import { useEffect, useRef } from 'react';
 import mermaid from 'mermaid';
 import { Resource } from '../ResourceContext';

@@ -1,4 +1,5 @@
 import { CopilotMermaid } from "./CopilotMermaid";
+import { CopilotChart } from "./CopilotChart";
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 import { CopilotSelectButton } from "./CopilotSelectButton";
 export const plugins = [
@@ -13,6 +14,12 @@ export const plugins = [
     code: "select_buttons",
     description: "选择列表",
     component: CopilotSelectButton,
+  },
+  {
+    name: "科学绘图",
+    code: "echarts",
+    description: "绘制柱状图等",
+    component: CopilotChart,
   },
 ];
 export const CopilotFEPlugin = () => {
@@ -42,9 +49,8 @@ export const CopilotFEPlugin = () => {
                 {plugin.code}
               </h3>
               <div
-                className={`w-4 h-4 flex items-center justify-center rounded-full ${
-                  isSelected ? "bg-green-500" : "bg-gray-200"
-                }`}
+                className={`w-4 h-4 flex items-center justify-center rounded-full ${isSelected ? "bg-green-500" : "bg-gray-200"
+                  }`}
               >
                 {isSelected && (
                   <svg
