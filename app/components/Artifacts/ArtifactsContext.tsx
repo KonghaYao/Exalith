@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Resource, useResource } from './ResourceContext';
+import React, { createContext, useContext, useState, ReactNode } from "react";
+import { Resource, useResource } from "./ResourceContext";
 
 export interface DisplayComponent {
   id: string;
@@ -15,16 +15,22 @@ interface ArtifactsContextType {
   getDisplayComponent: (resourceType: string) => DisplayComponent | undefined;
 }
 
-const ArtifactsContext = createContext<ArtifactsContextType | undefined>(undefined);
+const ArtifactsContext = createContext<ArtifactsContextType | undefined>(
+  undefined
+);
 
 export function ArtifactsProvider({ children }: { children: ReactNode }) {
-  const [displayComponents, setDisplayComponents] = useState<DisplayComponent[]>([]);
+  const [displayComponents, setDisplayComponents] = useState<
+    DisplayComponent[]
+  >([]);
 
   const registerDisplayComponent = (component: DisplayComponent) => {
     setDisplayComponents((prev) => {
       // Check if component with same id already exists
       if (prev.some((c) => c.id === component.id)) {
-        console.warn(`Display component with id ${component.id} already exists`);
+        console.warn(
+          `Display component with id ${component.id} already exists`
+        );
         return prev;
       }
       return [...prev, component];
@@ -32,7 +38,9 @@ export function ArtifactsProvider({ children }: { children: ReactNode }) {
   };
 
   const unregisterDisplayComponent = (id: string) => {
-    setDisplayComponents((prev) => prev.filter((component) => component.id !== id));
+    setDisplayComponents((prev) =>
+      prev.filter((component) => component.id !== id)
+    );
   };
 
   const getDisplayComponent = (resourceType: string) => {
@@ -58,7 +66,7 @@ export function ArtifactsProvider({ children }: { children: ReactNode }) {
 export function useArtifacts() {
   const context = useContext(ArtifactsContext);
   if (context === undefined) {
-    throw new Error('useArtifacts must be used within an ArtifactsProvider');
+    throw new Error("useArtifacts must be used within an ArtifactsProvider");
   }
   return context;
 }
@@ -68,7 +76,10 @@ interface ArtifactDisplayProps {
   fallback?: React.ReactNode;
 }
 
-export function ArtifactDisplay({ resourceName, fallback }: ArtifactDisplayProps) {
+export function ArtifactDisplay({
+  resourceName,
+  fallback,
+}: ArtifactDisplayProps) {
   const { getResource } = useResource();
   const { getDisplayComponent } = useArtifacts();
 
@@ -79,7 +90,11 @@ export function ArtifactDisplay({ resourceName, fallback }: ArtifactDisplayProps
 
   const DisplayComponent = getDisplayComponent(resource.type);
   if (!DisplayComponent) {
-    return fallback || <div>No display component found for type: {resource.type}</div>;
+    return (
+      fallback || (
+        <div>No display component found for type: {resource.type}</div>
+      )
+    );
   }
 
   return <DisplayComponent.component resource={resource} />;

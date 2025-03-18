@@ -2,7 +2,14 @@ import { CopilotMermaid } from "./CopilotMermaid";
 import { CopilotChart } from "./CopilotChart";
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 import { CopilotSelectButton } from "./CopilotSelectButton";
+import { CopilotMarkdown } from "./CopilotMarkdown";
 export const plugins = [
+  {
+    name: "Markdown",
+    code: "Markdown",
+    description: "Markdown显示工具",
+    component: CopilotMarkdown,
+  },
   {
     name: "mermaid",
     code: "mermaid",
@@ -49,8 +56,9 @@ export const CopilotFEPlugin = () => {
                 {plugin.code}
               </h3>
               <div
-                className={`w-4 h-4 flex items-center justify-center rounded-full ${isSelected ? "bg-green-500" : "bg-gray-200"
-                  }`}
+                className={`w-4 h-4 flex items-center justify-center rounded-full ${
+                  isSelected ? "bg-green-500" : "bg-gray-200"
+                }`}
               >
                 {isSelected && (
                   <svg

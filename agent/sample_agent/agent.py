@@ -178,11 +178,11 @@ async def plan_node(
         planning_prompt = [
             {
                 "role": "system",
-                "content": "你是一个计划助手，负责分析用户输入并创建执行计划。请将任务分解为具体步骤, 以 Markdown 形式返回。",
+                "content": "你是一个计划助手，负责分析用户输入并创建执行计划。请将任务分解为具体步骤, 以 Markdown 形式返回到。",
             },
             {
                 "role": "user",
-                "content": f"请为以下用户输入创建执行计划：\n{message.text()}",
+                "content": f"请为以下用户输入创建执行计划 Markdown 文件：\n{message.text()}",
             },
         ]
 
@@ -192,7 +192,7 @@ async def plan_node(
 
         # Update state with plan
         return Command(
-            goto="chat_node",
+            goto=END,
             update={
                 "has_plan": True,
                 "plan": plan,

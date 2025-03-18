@@ -1,13 +1,12 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
 export enum ResourceStatus {
   PENDING = "pending",
   READY = "ready",
   ERROR = "error",
   LOADING = "loading",
-  DELETED = "deleted"
+  DELETED = "deleted",
 }
-
 
 export interface Resource {
   id: string;
@@ -23,7 +22,7 @@ interface ResourceContextType {
   showSourceCode: boolean;
   setShowSourceCode: (show: boolean) => void;
   selectedResource: string | null;
-  previewResource: (name: string) => void
+  previewResource: (name: string) => void;
   setSelectedResource: (name: string | null) => void;
   addResource: (resource: Resource) => void;
   getResource: (name: string) => Resource | undefined;
@@ -31,7 +30,9 @@ interface ResourceContextType {
   updateResource: (name: string, resource: Partial<Resource>) => void;
 }
 
-const ResourceContext = createContext<ResourceContextType | undefined>(undefined);
+const ResourceContext = createContext<ResourceContextType | undefined>(
+  undefined
+);
 
 export function ResourceProvider({ children }: { children: ReactNode }) {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -69,9 +70,9 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
   const [showSourceCode, setShowSourceCode] = useState(true);
   const previewResource = (id: string) => {
-    setSelectedResource(id)
-    setShowSourceCode(false)
-  }
+    setSelectedResource(id);
+    setShowSourceCode(false);
+  };
   return (
     <ResourceContext.Provider
       value={{
@@ -80,7 +81,8 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
         setSelectedResource,
         previewResource,
         addResource,
-        showSourceCode, setShowSourceCode,
+        showSourceCode,
+        setShowSourceCode,
         getResource,
         removeResource,
         updateResource,
@@ -94,7 +96,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 export function useResource() {
   const context = useContext(ResourceContext);
   if (context === undefined) {
-    throw new Error('useResource must be used within a ResourceProvider');
+    throw new Error("useResource must be used within a ResourceProvider");
   }
   return context;
-} 
+}

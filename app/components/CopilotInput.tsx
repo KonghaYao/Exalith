@@ -1,9 +1,8 @@
 import { InputProps } from "@copilotkit/react-ui";
-import { ArrowUpFromDot, DeleteIcon, Eraser, SendIcon } from "lucide-react";
+import { ArrowUpFromDot, Eraser } from "lucide-react";
 export default function CopilotInput({
   inProgress,
   onSend,
-  isVisible,
   onReset,
 }: InputProps & { onReset?: () => void }) {
   const handleSubmit = (value: string) => {
@@ -18,17 +17,21 @@ export default function CopilotInput({
     "w-8 h-8 flex-none rounded-full border text-gray-600 hover:text-gray-800 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer";
 
   return (
-    <section className="px-8 pb-4" style={{
-      "fontFamily": "'LXGW WenKai Light'"
-    }}>
+    <section
+      className="px-8 pb-4"
+      style={{
+        fontFamily: "'LXGW WenKai Light'",
+      }}
+    >
       <div className={wrapperStyle}>
         <input
           disabled={inProgress}
           type="text"
-          placeholder={`${globalThis.navigator?.platform?.toLowerCase?.()?.includes?.("mac")
-            ? "⌘"
-            : "Ctrl"
-            } + Enter 向 Agent 发送信息`}
+          placeholder={`${
+            globalThis.navigator?.platform?.toLowerCase?.()?.includes?.("mac")
+              ? "⌘"
+              : "Ctrl"
+          } + Enter 向 Agent 发送信息`}
           className={inputStyle}
           onKeyDown={(e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
@@ -49,7 +52,7 @@ export default function CopilotInput({
           <div className="flex-1"></div>
           <button
             disabled={inProgress}
-            className={buttonStyle + ' bg-gray-50'}
+            className={buttonStyle + " bg-gray-50"}
             onClick={(e) => {
               const input = e.currentTarget
                 .previousElementSibling as HTMLInputElement;
