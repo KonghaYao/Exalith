@@ -1,14 +1,15 @@
 import { InputProps } from "@copilotkit/react-ui";
-import { ArrowUpFromDot, Eraser } from "lucide-react";
+import { ArrowUpFromDot, DeleteIcon, Eraser, SendIcon } from "lucide-react";
+import { useRef } from "react";
 export default function CopilotInput({
   inProgress,
   onSend,
   onReset,
 }: InputProps & { onReset?: () => void }) {
   const handleSubmit = (value: string) => {
-    if (value.trim()) onSend(value);
+    if (value?.trim()) onSend(value);
   };
-
+  const input = useRef<HTMLInputElement>(null)
   const wrapperStyle =
     "flex flex-col items-center gap-2 p-4 rounded-4xl border border-gray-200 bg-white shadow-xs";
   const inputStyle =
@@ -25,6 +26,7 @@ export default function CopilotInput({
     >
       <div className={wrapperStyle}>
         <input
+          ref={input}
           disabled={inProgress}
           type="text"
           placeholder={`${
@@ -54,10 +56,9 @@ export default function CopilotInput({
             disabled={inProgress}
             className={buttonStyle + " bg-gray-50"}
             onClick={(e) => {
-              const input = e.currentTarget
-                .previousElementSibling as HTMLInputElement;
-              handleSubmit(input.value);
-              input.value = "";
+
+              handleSubmit(input.current!.value);
+              input.current!.value = "";
             }}
             aria-label="Send message"
           >
