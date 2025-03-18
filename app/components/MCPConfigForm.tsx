@@ -52,7 +52,7 @@ export function MCPConfigForm() {
       initialState: {
         mcp_config: clearAgentConfig(savedConfigs),
       },
-    }
+    },
   );
 
   const configs = savedConfigs || {};
@@ -73,10 +73,10 @@ export function MCPConfigForm() {
 
   const totalServers = Object.keys(configs).length;
   const stdioServers = Object.values(configs).filter(
-    (config) => config.transport === "stdio"
+    (config) => config.transport === "stdio",
   ).length;
   const sseServers = Object.values(configs).filter(
-    (config) => config.transport === "sse"
+    (config) => config.transport === "sse",
   ).length;
 
   useEffect(() => {

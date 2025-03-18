@@ -10,7 +10,7 @@ const server = new McpServer(
     capabilities: {
       tools: {},
     },
-  }
+  },
 );
 server.tool(
   "search_open_source_code",
@@ -23,8 +23,8 @@ server.tool(
     // 创建 EventSource 实例
     const events = new EventSource(
       `https://sourcegraph.com/.api/search/stream?q=context:global+${encodeURIComponent(
-        args.query
-      )}&v=V3&t=keyword&sm=0&display=1500&cm=t&max-line-len=5120`
+        args.query,
+      )}&v=V3&t=keyword&sm=0&display=1500&cm=t&max-line-len=5120`,
     );
 
     // 监听 matches 事件
@@ -70,13 +70,13 @@ ${match.chunkMatches
       chunk.content
     }\n\`\`\``;
   })
-  .join("\n")}`
+  .join("\n")}`,
             )
             .join("\n---\n"),
         },
       ],
     };
-  }
+  },
 );
 export default server;
 

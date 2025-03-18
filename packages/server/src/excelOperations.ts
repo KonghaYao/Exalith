@@ -17,7 +17,7 @@ const server = new McpServer(
     capabilities: {
       tools: {},
     },
-  }
+  },
 );
 
 // 获取Excel文件中的表名称
@@ -38,7 +38,7 @@ server.tool(
         },
       ],
     };
-  }
+  },
 );
 
 // 获取Excel文件中的前五行数据
@@ -69,7 +69,7 @@ server.tool(
         },
       ],
     };
-  }
+  },
 );
 
 export default server;

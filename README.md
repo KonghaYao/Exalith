@@ -32,8 +32,8 @@ The codebase is split into two main parts:
 1. `/agent` **folder** – A LangGraph agent that connects to MCP servers and calls their tools.
 2. `/app` **folder** – A frontend application using CopilotKit for UI and state synchronization.
 3. `/packages/server` **folder** – A MCP server that can be used to run the agent.
-    1. `pnpm dev` – Starts the server.
-    2. `/mcp-config.example.json` - An example MCP config file can import from frontend.
+   1. `pnpm dev` – Starts the server.
+   2. `/mcp-config.example.json` - An example MCP config file can import from frontend.
 
 ```mermaid
 graph TB

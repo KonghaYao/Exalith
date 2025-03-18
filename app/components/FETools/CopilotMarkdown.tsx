@@ -72,10 +72,10 @@ export function CopilotMarkdown(props: { enable?: boolean }) {
               {status === "complete"
                 ? "已写入" + name!
                 : status === "executing"
-                ? "预览中..."
-                : status === "inProgress"
-                ? "加载中"
-                : "准备中"}
+                  ? "预览中..."
+                  : status === "inProgress"
+                    ? "加载中"
+                    : "准备中"}
             </span>
           </div>
         </div>

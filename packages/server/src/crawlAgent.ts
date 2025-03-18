@@ -10,7 +10,7 @@ const server = new McpServer(
     capabilities: {
       tools: {},
     },
-  }
+  },
 );
 server.tool(
   "search_website",
@@ -44,13 +44,13 @@ server.tool(
           text: data.data.webPages.value
             .map(
               (item: any, index: number) =>
-                `${index}. ${item.name}\n${item.url}\n${item.snippet}`
+                `${index}. ${item.name}\n${item.url}\n${item.snippet}`,
             )
             .join("\n\n"),
         },
       ],
     };
-  }
+  },
 );
 
 server.tool(
@@ -64,7 +64,7 @@ server.tool(
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
     const data = await res.json();
     return {
@@ -76,13 +76,13 @@ server.tool(
               (item: any, index: number) =>
                 `${index + 1}. [${item.content.title}](https://juejin.cn/post/${
                   item.content.content_id
-                })\n作者ID: ${item.content.author_id}`
+                })\n作者ID: ${item.content.author_id}`,
             )
             .join("\n"),
         },
       ],
     };
-  }
+  },
 );
 
 server.tool("get_recommended_articles", "获取编程推荐文章", async (args) => {
@@ -98,7 +98,7 @@ server.tool("get_recommended_articles", "获取编程推荐文章", async (args)
       body: JSON.stringify({
         id_type: 2,
       }),
-    }
+    },
   );
   const data = await res.json();
   return {
@@ -116,7 +116,7 @@ ${item.item_info.article_info.brief_content}
 
 点赞数: ${item.item_info.article_info.digg_count}
                 
-标签：${item.item_info.tags.map((i: any) => i.tag_name).join(",")}`
+标签：${item.item_info.tags.map((i: any) => i.tag_name).join(",")}`,
           )
           .join("\n\n"),
       },

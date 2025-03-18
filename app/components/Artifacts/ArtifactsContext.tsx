@@ -16,7 +16,7 @@ interface ArtifactsContextType {
 }
 
 const ArtifactsContext = createContext<ArtifactsContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function ArtifactsProvider({ children }: { children: ReactNode }) {
@@ -29,7 +29,7 @@ export function ArtifactsProvider({ children }: { children: ReactNode }) {
       // Check if component with same id already exists
       if (prev.some((c) => c.id === component.id)) {
         console.warn(
-          `Display component with id ${component.id} already exists`
+          `Display component with id ${component.id} already exists`,
         );
         return prev;
       }
@@ -39,13 +39,13 @@ export function ArtifactsProvider({ children }: { children: ReactNode }) {
 
   const unregisterDisplayComponent = (id: string) => {
     setDisplayComponents((prev) =>
-      prev.filter((component) => component.id !== id)
+      prev.filter((component) => component.id !== id),
     );
   };
 
   const getDisplayComponent = (resourceType: string) => {
     return displayComponents.find((component) =>
-      component.supportedTypes.includes(resourceType)
+      component.supportedTypes.includes(resourceType),
     );
   };
 

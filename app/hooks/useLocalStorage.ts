@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
-export type SaveStatus = 'idle' | 'saving' | 'success' | 'error';
+export type SaveStatus = "idle" | "saving" | "success" | "error";
 
 export function useLocalStorage<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (value: T) => void, SaveStatus] {
   // Function to get the initial value from localStorage
   const getInitialValue = (): T => {
-    if (typeof window === 'undefined') return initialValue;
-    
+    if (typeof window === "undefined") return initialValue;
+
     try {
       const item = localStorage.getItem(key);
       // Check if the item exists in localStorage
@@ -20,15 +20,18 @@ export function useLocalStorage<T>(
       localStorage.setItem(key, JSON.stringify(initialValue));
       return initialValue;
     } catch (error) {
-      console.error(`Error reading from localStorage with key "${key}":`, error);
+      console.error(
+        `Error reading from localStorage with key "${key}":`,
+        error,
+      );
       return initialValue;
     }
   };
 
   // State to store our value and save status
   const [storedValue, setStoredValue] = useState<T>(getInitialValue);
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
-  
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+
   // Ref to track if this is the first render
   const isFirstRender = useRef(true);
 
@@ -41,24 +44,27 @@ export function useLocalStorage<T>(
     }
 
     try {
-      setSaveStatus('saving');
+      setSaveStatus("saving");
       localStorage.setItem(key, JSON.stringify(storedValue));
-      setSaveStatus('success');
-      
+      setSaveStatus("success");
+
       // Reset status after delay
-      const timer = setTimeout(() => setSaveStatus('idle'), 2000);
+      const timer = setTimeout(() => setSaveStatus("idle"), 2000);
       return () => clearTimeout(timer);
     } catch (error) {
-      console.error(`Error saving data to localStorage with key "${key}":`, error);
-      setSaveStatus('error');
+      console.error(
+        `Error saving data to localStorage with key "${key}":`,
+        error,
+      );
+      setSaveStatus("error");
     }
   }, [key, storedValue]);
 
   // Return a wrapped version of useState's setter function
   const setValue = (value: T) => {
-    setSaveStatus('saving');
+    setSaveStatus("saving");
     setStoredValue(value);
   };
 
   return [storedValue, setValue, saveStatus];
-} 
+}

@@ -41,16 +41,16 @@ graph TB
         SearchService[搜索服务]
         OperationService[运维服务]
     end
-    
+
     %% Frontend 连接关系
     UIComponent --> CopilotKitSDK
     CopilotKitSDK --> ClientTools
     CopilotKitSDK --> MCPConfig
-    
+
     %% Agent 连接关系
     ClientTools --> AgentToolkit
     AgentToolkit --> LangGraphEngine
-    
+
     %% 外部服务连接关系
     LangGraphEngine --> LLMService
     LangGraphEngine --> Server

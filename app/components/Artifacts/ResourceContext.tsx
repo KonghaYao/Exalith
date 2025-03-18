@@ -31,7 +31,7 @@ interface ResourceContextType {
 }
 
 const ResourceContext = createContext<ResourceContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function ResourceProvider({ children }: { children: ReactNode }) {
@@ -62,8 +62,8 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   const updateResource = (id: string, updatedResource: Partial<Resource>) => {
     setResources((prev) =>
       prev.map((resource) =>
-        resource.id === id ? { ...resource, ...updatedResource } : resource
-      )
+        resource.id === id ? { ...resource, ...updatedResource } : resource,
+      ),
     );
   };
   const [selectedResource, setSelectedResource] = useState<string | null>(null);

@@ -10,7 +10,7 @@ const server = new McpServer(
     capabilities: {
       tools: {},
     },
-  }
+  },
 );
 server.tool(
   "search_npm",
@@ -21,7 +21,7 @@ server.tool(
   async (args) => {
     const res = await fetch(
       `https://registry.npmmirror.com/-/v1/search?text=${encodeURIComponent(
-        args.query
+        args.query,
       )}&size=12&from=0`,
       {
         method: "GET",
@@ -33,7 +33,7 @@ server.tool(
           "user-agent":
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
         },
-      }
+      },
     );
     const data = await res.json();
     return {
@@ -43,13 +43,13 @@ server.tool(
           text: data.objects
             .map(
               (item: any, index: number) =>
-                `${index}. [${item.package.name}](https://www.npmjs.com/package/${item.package.name}) 版本: ${item.package.version}\n${item.package.description}`
+                `${index}. [${item.package.name}](https://www.npmjs.com/package/${item.package.name}) 版本: ${item.package.version}\n${item.package.description}`,
             )
             .join("\n\n"),
         },
       ],
     };
-  }
+  },
 );
 server.tool(
   "get_npm_package_info",
@@ -70,7 +70,7 @@ server.tool(
           "user-agent":
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
         },
-      }
+      },
     );
     const data = await res.json();
     return {
@@ -81,7 +81,7 @@ server.tool(
         },
       ],
     };
-  }
+  },
 );
 
 export default server;

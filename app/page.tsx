@@ -18,12 +18,11 @@ export default function Home() {
   const [chatKey, setChatKey] = useState(0);
   const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
   const [instructions, setInstructions] = useState(DefaultInstructions);
-  const [tab, setTab] = useState("artifacts")
+  const [tab, setTab] = useState("artifacts");
 
   return (
     <ArtifactsProvider>
       <ResourceProvider>
-
         <CopilotKit
           runtimeUrl="/api/copilotkit"
           showDevConsole={false}
@@ -65,31 +64,34 @@ export default function Home() {
             <CopilotActionHandler />
             {/* Main content area */}
             <section className="flex-1 py-6 pr-6">
-
               <div className="h-full overflow-y-auto  flex flex-col border rounded-4xl">
                 <div className="flex border-b">
                   <button
-                    className={`cursor-pointer px-4 py-2 inline-flex items-center gap-2 ${tab === 'artifacts' ? 'border-b-2 border-blue-300' : ''}`}
-                    onClick={() => setTab('artifacts')}
+                    className={`cursor-pointer px-4 py-2 inline-flex items-center gap-2 ${tab === "artifacts" ? "border-b-2 border-blue-300" : ""}`}
+                    onClick={() => setTab("artifacts")}
                   >
                     <FileText className="h-4 w-4" />
                     资源
                   </button>
                   <button
-                    className={`cursor-pointer px-4 py-2 inline-flex items-center gap-2 ${tab === 'config' ? 'border-b-2 border-blue-300' : ''}`}
-                    onClick={() => setTab('config')}
+                    className={`cursor-pointer px-4 py-2 inline-flex items-center gap-2 ${tab === "config" ? "border-b-2 border-blue-300" : ""}`}
+                    onClick={() => setTab("config")}
                   >
                     <Settings className="h-4 w-4" />
                     配置
                   </button>
                 </div>
 
-                <div className={`${tab === 'config' ? 'flex-1 overflow-y-auto p-8' : 'hidden'}`}>
+                <div
+                  className={`${tab === "config" ? "flex-1 overflow-y-auto p-8" : "hidden"}`}
+                >
                   <MCPConfigForm />
                   <CopilotFEPlugin />
                 </div>
 
-                <div className={`${tab === 'artifacts' ? 'flex-1 overflow-y-auto' : 'hidden'}`}>
+                <div
+                  className={`${tab === "artifacts" ? "flex-1 overflow-y-auto" : "hidden"}`}
+                >
                   <ArtifactsWrapper />
                 </div>
               </div>

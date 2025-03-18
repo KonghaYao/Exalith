@@ -15,12 +15,16 @@ export default function RootLayout({
   return (
     <html lang="zh-cn">
       <head>
-        <link precedence="default" rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Light/result.css' />
+        <link
+          precedence="default"
+          rel="stylesheet"
+          href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Light/result.css"
+        />
       </head>
       <body
         className={`antialiased w-screen h-screen`}
         style={{
-          "fontFamily": "'LXGW WenKai Light'"
+          fontFamily: "'LXGW WenKai Light'",
         }}
       >
         {children}

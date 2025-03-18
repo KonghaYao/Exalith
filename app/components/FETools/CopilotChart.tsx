@@ -3,7 +3,7 @@ import { useCopilotAction } from "@copilotkit/react-core";
 import { useArtifacts } from "../Artifacts/ArtifactsContext";
 import { ResourceStatus, useResource } from "../Artifacts/ResourceContext";
 import { useEffect, useRef } from "react";
-import { useMount } from 'ahooks'
+import { useMount } from "ahooks";
 import { EchartsDisplayer } from "../Artifacts/Displayers/EchartsDisplayer";
 export function CopilotChart(props: { enable?: boolean }) {
   const { registerDisplayComponent } = useArtifacts();
@@ -19,7 +19,7 @@ export function CopilotChart(props: { enable?: boolean }) {
     });
   }, [registerDisplayComponent]);
 
-  const resource = useResource()
+  const resource = useResource();
   useCopilotAction({
     name: "绘制 ECharts 图",
     description: "这个工具用于展示 Echarts 图",
@@ -36,7 +36,6 @@ export function CopilotChart(props: { enable?: boolean }) {
         description: "用于展示的 ECharts Options，格式为JSON 字符串",
         required: true,
       },
-
     ],
     available: props.enable ? "enabled" : "disabled",
     render: ({ status, args }) => {
@@ -48,26 +47,34 @@ export function CopilotChart(props: { enable?: boolean }) {
         path: `echarts/${name}`,
         content: options || "",
         type: "echarts",
-        status: status === "complete" ? ResourceStatus.READY : ResourceStatus.LOADING
+        status:
+          status === "complete" ? ResourceStatus.READY : ResourceStatus.LOADING,
       });
       useMount(() => {
-        resource.setSelectedResource(idRef.current!)
-      })
+        resource.setSelectedResource(idRef.current!);
+      });
       useEffect(() => {
-        if (status === 'executing') {
-          resource.previewResource(idRef.current!)
+        if (status === "executing") {
+          resource.previewResource(idRef.current!);
         }
-      }, [status])
+      }, [status]);
       return (
-        <div className="border rounded-lg shadow-sm p-4 bg-white" onClick={() => {
-          resource.setSelectedResource(idRef.current!)
-        }}>
+        <div
+          className="border rounded-lg shadow-sm p-4 bg-white"
+          onClick={() => {
+            resource.setSelectedResource(idRef.current!);
+          }}
+        >
           <div className="text-sm text-gray-500 mb-2">
+            <span>已添加到资源列表</span>
             <span>
-              已添加到资源列表
-            </span>
-            <span>
-              {status === "complete" ? "已写入" + name! : status === "executing" ? "预览中..." : status === "inProgress" ? "加载中" : "准备中"}
+              {status === "complete"
+                ? "已写入" + name!
+                : status === "executing"
+                  ? "预览中..."
+                  : status === "inProgress"
+                    ? "加载中"
+                    : "准备中"}
             </span>
           </div>
         </div>
@@ -75,4 +82,3 @@ export function CopilotChart(props: { enable?: boolean }) {
     },
   });
 }
-

@@ -40,7 +40,7 @@ export function ArtifactDisplay({
               "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
               !showSourceCode
                 ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-700 hover:text-gray-900"
+                : "text-gray-700 hover:text-gray-900",
             )}
           >
             <FileText className="h-4 w-4" />
@@ -52,7 +52,7 @@ export function ArtifactDisplay({
               "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
               showSourceCode
                 ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-700 hover:text-gray-900"
+                : "text-gray-700 hover:text-gray-900",
             )}
           >
             <Code2 className="h-4 w-4" />

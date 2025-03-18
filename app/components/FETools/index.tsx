@@ -32,7 +32,7 @@ export const plugins = [
 export const CopilotFEPlugin = () => {
   const [selectedPlugins, setSelectedPlugins] = useLocalStorage<string[]>(
     "mcp-selected-plugins",
-    []
+    [],
   );
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
@@ -47,7 +47,7 @@ export const CopilotFEPlugin = () => {
               setSelectedPlugins(
                 isSelected
                   ? selectedPlugins.filter((name) => name !== plugin.code)
-                  : [...selectedPlugins, plugin.code]
+                  : [...selectedPlugins, plugin.code],
               );
             }}
           >
