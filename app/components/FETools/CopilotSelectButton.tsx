@@ -5,7 +5,7 @@ export const CopilotSelectButton = (props: { enable?: boolean }) => {
   useCopilotAction({
     name: "提供列表选择功能",
     description:
-      "列表返回给用户（最多 10 条），用户从中选择一项，然后你提供更进一步的信息",
+      "按钮组返回给用户（最多 10 条），用户从中选择一项，然后你提供更进一步的信息",
     parameters: [
       {
         name: "options",
@@ -13,16 +13,11 @@ export const CopilotSelectButton = (props: { enable?: boolean }) => {
         description: "列表名称",
         required: true,
       },
-      {
-        name: "stack_mode",
-        type: "boolean",
-        description: "返回数据为列表模式，否则为按钮模式",
-      },
     ],
     available: props.enable ? "enabled" : "disabled",
     renderAndWaitForResponse: ({ status, args, respond }) => {
       return (
-        <div className={`flex ${args.stack_mode ? "flex-col" : "flex-wrap"}`}>
+        <div className={`flex flex-wrap`}>
           {args.options?.map((option: string, index: number) => {
             return (
               <button

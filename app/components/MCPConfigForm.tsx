@@ -41,11 +41,11 @@ const clearAgentConfig = (config: Record<string, ServerConfig>) => {
   }
   return filteredConfig;
 };
-
+import example from '../../mcp-config.example.json'
 export function MCPConfigForm() {
   const [savedConfigs, setSavedConfigs] = useLocalStorage<
     Record<string, ServerConfig>
-  >(STORAGE_KEY, {});
+  >(STORAGE_KEY, example);
   const { state: agentState, setState: setAgentState } = useCoAgent<AgentState>(
     {
       name: "llm_agent",
