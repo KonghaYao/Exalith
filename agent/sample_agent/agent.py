@@ -101,18 +101,19 @@ async def chat_node(
         react_agent = create_react_agent(model, mcp_tools)
 
         # Prepare messages for the react agent
-        agent_input = {"messages": state["messages"]}
+        agent_input = {
+            "messages": [
+                msg for msg in state["messages"] if not isinstance(msg, ToolMessage)
+            ],
+        }
 
         # Run the react agent subgraph with our input
         agent_response = await react_agent.ainvoke(agent_input)
 
-        # Update the state with the new messages
-        updated_messages = state["messages"] + agent_response.get("messages", [])
-
         # End the graph with the updated messages
         return Command(
             goto=END,
-            update={"messages": updated_messages},
+            update={"messages": state["messages"] + agent_response.get("messages", [])},
         )
 
 
@@ -155,7 +156,8 @@ async def plan_node(
             model=os.getenv("OPENAI_MODEL"),
             base_url=os.getenv("OPENAI_BASE_URL"),
             api_key=os.getenv("OPENAI_API_KEY"),
-        ).bind_tools(mcp_tools)
+        )
+        model = create_react_agent(model, mcp_tools)
 
         # Create planning prompt
         messages = state["messages"]
@@ -178,25 +180,25 @@ async def plan_node(
         planning_prompt = [
             {
                 "role": "system",
-                "content": "你是一个计划助手，负责分析用户输入并创建执行计划。请将任务分解为具体步骤, 以 Markdown 形式返回到。",
+                "content": "你是一个计划助手，负责分析用户输入并编写计划书，请将任务分解为大纲步骤，最多三级, 以 Markdown 形式返回。可以查看工具的作用，然后根据工具返回结果，但是你不能执行工具。",
             },
             {
                 "role": "user",
-                "content": f"请为以下用户输入创建执行计划 Markdown 文件：\n{message.text()}",
+                "content": f"以下为用户输入, 请你开始编写计划书：\n{message.text()}",
             },
         ]
 
         # Get plan from model
-        response = await model.ainvoke(planning_prompt)
-        plan = response.content
+        response = await model.ainvoke({"messages": planning_prompt})
+        plan = response.get("messages", [])
 
         # Update state with plan
         return Command(
             goto=END,
             update={
                 "has_plan": True,
-                "plan": plan,
-                "messages": messages + [AIMessage(content=response.content)],
+                "plan": plan if isinstance(plan, list) else [plan],
+                "messages": messages + plan,
             },
         )
 
