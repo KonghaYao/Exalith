@@ -41,7 +41,7 @@ export function ServerList({
           No servers configured. Click &quot;Add Server&quot; to get started.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {Object.entries(configs).map(([name, config]) => (
             <div
               key={name}

@@ -4,11 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -48,6 +43,7 @@
   --copilot-kit-primary-color: white;
   --copilot-kit-contrast-color: black;
   --copilot-kit-response-button-background-color: #f7f7f5;
+  background-color: var(--copilot-kit-background-color);
 }
 .copilotKitMessage {
   font-size: 1.2rem !important;
@@ -136,9 +132,6 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
   table {
     @apply w-full border-collapse bg-white mb-4;

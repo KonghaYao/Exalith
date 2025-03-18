@@ -45,7 +45,7 @@ import example from '../../mcp-config.example.json'
 export function MCPConfigForm() {
   const [savedConfigs, setSavedConfigs] = useLocalStorage<
     Record<string, ServerConfig>
-  >(STORAGE_KEY, example);
+  >(STORAGE_KEY, example as any);
   const { state: agentState, setState: setAgentState } = useCoAgent<AgentState>(
     {
       name: "llm_agent",
@@ -90,16 +90,16 @@ export function MCPConfigForm() {
     const newConfig =
       connectionType === "stdio"
         ? {
-            command,
-            args: args.split(" ").filter((arg) => arg.trim() !== ""),
-            transport: "stdio" as const,
-            enable: true,
-          }
+          command,
+          args: args.split(" ").filter((arg) => arg.trim() !== ""),
+          transport: "stdio" as const,
+          enable: true,
+        }
         : {
-            url,
-            transport: "sse" as const,
-            enable: true,
-          };
+          url,
+          transport: "sse" as const,
+          enable: true,
+        };
 
     setConfigs({
       ...configs,
@@ -234,16 +234,16 @@ export function MCPConfigForm() {
                 const updatedConfig =
                   connectionType === "stdio"
                     ? {
-                        command,
-                        args: args
-                          .split(" ")
-                          .filter((arg) => arg.trim() !== ""),
-                        transport: "stdio" as const,
-                      }
+                      command,
+                      args: args
+                        .split(" ")
+                        .filter((arg) => arg.trim() !== ""),
+                      transport: "stdio" as const,
+                    }
                     : {
-                        url,
-                        transport: "sse" as const,
-                      };
+                      url,
+                      transport: "sse" as const,
+                    };
                 setConfigs({
                   ...newConfigs,
                   [serverName]: updatedConfig,
@@ -252,16 +252,16 @@ export function MCPConfigForm() {
                 const updatedConfig =
                   connectionType === "stdio"
                     ? {
-                        command,
-                        args: args
-                          .split(" ")
-                          .filter((arg) => arg.trim() !== ""),
-                        transport: "stdio" as const,
-                      }
+                      command,
+                      args: args
+                        .split(" ")
+                        .filter((arg) => arg.trim() !== ""),
+                      transport: "stdio" as const,
+                    }
                     : {
-                        url,
-                        transport: "sse" as const,
-                      };
+                      url,
+                      transport: "sse" as const,
+                    };
                 setConfigs({
                   ...configs,
                   [serverName]: updatedConfig,

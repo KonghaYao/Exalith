@@ -1,4 +1,5 @@
 "use client";
+import { PlusIcon, ServerIcon } from "lucide-react";
 
 interface HeaderProps {
   onImportConfig: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -29,30 +30,17 @@ export function Header({
   onAddServer,
 }: HeaderProps) {
   return (
-    <div className="mb-6">
+    <div className="mb-6 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-1">
         <div className="flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 mr-2 text-gray-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
-            />
-          </svg>
-          <h1 className="text-3xl sm:text-5xl font-semibold">
+          <ServerIcon></ServerIcon>
+          <h1 className="ml-4 text-3xl sm:text-5xl font-semibold">
             Open MCP Client
           </h1>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+      <div className="flex flex-col justify-between items-start sm:items-center mt-4 gap-4">
+        <div className="flex flex-row sm:items-center gap-3">
           <p className="text-sm text-gray-600">
             Manage and configure your MCP servers
           </p>
@@ -129,20 +117,7 @@ export function Header({
             onClick={onAddServer}
             className="w-full sm:w-auto px-3 py-1.5 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 flex items-center gap-1 justify-center"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
+            <PlusIcon></PlusIcon>
             Add Server
           </button>
         </div>
