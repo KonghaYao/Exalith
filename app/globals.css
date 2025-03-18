@@ -51,7 +51,7 @@
 .copilotKitUserMessage {
   font-weight: 500 !important;
 }
-.copilotKitResponseButton{
+.copilotKitResponseButton {
   border-radius: 34px;
 }
 
@@ -151,8 +151,16 @@
   ul {
     @apply list-disc list-inside;
   }
+  ol {
+    @apply list-decimal list-inside;
+  }
 }
 .copilotKitMessage {
   max-width: 100% !important;
-  font-family: 'LXGW WenKai Light';
+  font-family: "LXGW WenKai Light";
+}
+
+/* 隐藏滚动条 */
+::-webkit-scrollbar {
+  display: none;
 }
