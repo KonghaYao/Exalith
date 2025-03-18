@@ -53,7 +53,6 @@ class AgentState(CopilotKitState):
     mcp_config: Optional[MCPConfig]
     # Define planning related fields
     has_plan: bool = False
-    plan: Optional[List[str]] = None
 
 
 async def chat_node(
@@ -101,10 +100,11 @@ async def chat_node(
         react_agent = create_react_agent(model, mcp_tools)
 
         # Prepare messages for the react agent
+        for i in state["messages"]:
+            if isinstance(i, ToolMessage):
+                i.content = i.content[:200] + "..."
         agent_input = {
-            "messages": [
-                msg for msg in state["messages"] if not isinstance(msg, ToolMessage)
-            ],
+            "messages": state["messages"],
         }
 
         # Run the react agent subgraph with our input
@@ -197,7 +197,6 @@ async def plan_node(
             goto=END,
             update={
                 "has_plan": True,
-                "plan": plan if isinstance(plan, list) else [plan],
                 "messages": messages + plan,
             },
         )
@@ -207,7 +206,7 @@ async def plan_node(
 workflow = StateGraph(AgentState)
 workflow.add_node("plan_node", plan_node)
 workflow.add_node("chat_node", chat_node)
-workflow.set_entry_point("plan_node")
+workflow.set_entry_point("chat_node")
 
 # Compile the workflow graph
 graph = workflow.compile(MemorySaver())
