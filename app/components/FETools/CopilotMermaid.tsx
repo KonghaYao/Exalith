@@ -75,7 +75,5 @@ export function CopilotMermaid(props: { enable?: boolean }) {
       );
     },
   });
-
-  return null;
 }
 

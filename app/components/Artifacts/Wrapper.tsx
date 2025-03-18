@@ -15,9 +15,9 @@ export function ArtifactsWrapper() {
                 <div className="space-y-2">
                     {resources.map((resource) => (
                         <button
-                            key={resource.name}
-                            onClick={() => setSelectedResource(resource.name)}
-                            className={`w-full text-left px-3 py-2 rounded-md transition-colors ${selectedResource === resource.name
+                            key={resource.id}
+                            onClick={() => setSelectedResource(resource.id)}
+                            className={`w-full text-left px-3 py-2 rounded-md transition-colors ${selectedResource === resource.id
                                 ? 'bg-blue-100 text-blue-700'
                                 : 'hover:bg-gray-100'
                                 }`}
