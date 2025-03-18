@@ -3,8 +3,8 @@ import { useCopilotAction } from "@copilotkit/react-core";
 import { useArtifacts } from "../Artifacts/ArtifactsContext";
 import { ResourceStatus, useResource } from "../Artifacts/ResourceContext";
 import { MermaidDisplayer } from "../Artifacts/Displayers/MermaidDisplayer";
-import { useEffect } from "react";
-
+import { useEffect, useRef } from "react";
+import { useMount } from 'ahooks'
 export function CopilotMermaid(props: { enable?: boolean }) {
   const { registerDisplayComponent } = useArtifacts();
   const { addResource } = useResource();
@@ -41,27 +41,34 @@ export function CopilotMermaid(props: { enable?: boolean }) {
     available: props.enable ? "enabled" : "disabled",
     render: ({ status, args }) => {
       const { mermaid_code, name } = args;
-      console.log(status)
-      if (status === 'complete') {
-        addResource({
-          name: name!,
-          path: `mermaid/${name}`,
-          content: mermaid_code || "",
-          type: "mermaid",
-          status: status === "complete" ? ResourceStatus.READY : ResourceStatus.LOADING
-        });
-        resource.previewResource(name!)
-      }
+      // 使用 useRef 创建一个不变的 ID
+      const idRef = useRef(`id-${Math.random().toString(36).substr(2, 9)}`);
+      addResource({
+        id: idRef.current,
+        name: name!,
+        path: `mermaid/${name}`,
+        content: mermaid_code || "",
+        type: "mermaid",
+        status: status === "complete" ? ResourceStatus.READY : ResourceStatus.LOADING
+      });
+      useMount(() => {
+        resource.setSelectedResource(idRef.current!)
+      })
+      useEffect(() => {
+        if (status === 'executing') {
+          resource.previewResource(idRef.current!)
+        }
+      }, [status])
       return (
         <div className="border rounded-lg shadow-sm p-4 bg-white" onClick={() => {
-          resource.setSelectedResource(name!)
+          resource.setSelectedResource(idRef.current!)
         }}>
           <div className="text-sm text-gray-500 mb-2">
             <span>
               已添加到资源列表
             </span>
             <span>
-              {status === "complete" ? "已写入" + name! : status === "executing" ? "执行中..." : status === "inProgress" ? "加载中" : "准备中"}
+              {status === "complete" ? "已写入" + name! : status === "executing" ? "预览中..." : status === "inProgress" ? "加载中" : "准备中"}
             </span>
           </div>
         </div>

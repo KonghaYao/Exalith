@@ -10,6 +10,7 @@ export enum ResourceStatus {
 
 
 export interface Resource {
+  id: string;
   name: string;
   path: string;
   content: string;
@@ -37,7 +38,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
   const addResource = (resource: Resource) => {
     setResources((prev) => {
-      const existingIndex = prev.findIndex((r) => r.name === resource.name);
+      const existingIndex = prev.findIndex((r) => r.id === resource.id);
       if (existingIndex >= 0) {
         // Update existing resource
         const newResources = [...prev];
@@ -49,27 +50,27 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const getResource = (name: string) => {
-    return resources.find((resource) => resource.name === name);
+  const getResource = (id: string) => {
+    return resources.find((resource) => resource.id === id);
   };
 
-  const removeResource = (name: string) => {
-    setResources((prev) => prev.filter((resource) => resource.name !== name));
+  const removeResource = (id: string) => {
+    setResources((prev) => prev.filter((resource) => resource.id !== id));
   };
 
-  const updateResource = (name: string, updatedResource: Partial<Resource>) => {
+  const updateResource = (id: string, updatedResource: Partial<Resource>) => {
     setResources((prev) =>
       prev.map((resource) =>
-        resource.name === name ? { ...resource, ...updatedResource } : resource
+        resource.id === id ? { ...resource, ...updatedResource } : resource
       )
     );
   };
   const [selectedResource, setSelectedResource] = useState<string | null>(null);
 
   const [showSourceCode, setShowSourceCode] = useState(true);
-  const previewResource = (name: string) => {
-    setSelectedResource(name)
-    setShowSourceCode(true)
+  const previewResource = (id: string) => {
+    setSelectedResource(id)
+    setShowSourceCode(false)
   }
   return (
     <ResourceContext.Provider
