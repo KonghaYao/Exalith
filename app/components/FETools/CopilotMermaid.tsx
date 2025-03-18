@@ -1,56 +1,74 @@
 "use client"; // only necessary if you are using Next.js with the App Router.
 import { useCopilotAction } from "@copilotkit/react-core";
-import mermaid from "mermaid";
-mermaid.initialize({ startOnLoad: false });
-
-const drawDiagram = async function (
-  element: HTMLElement,
-  graphDefinition: string
-) {
-  const { svg } = await mermaid.render("graphDiv", graphDefinition);
-  element.innerHTML = svg;
-};
+import { useArtifacts } from "../Artifacts/ArtifactsContext";
+import { ResourceStatus, useResource } from "../Artifacts/ResourceContext";
+import { MermaidDisplayer } from "../Artifacts/Displayers/MermaidDisplayer";
+import { useEffect } from "react";
 
 export function CopilotMermaid(props: { enable?: boolean }) {
+  const { registerDisplayComponent } = useArtifacts();
+  const { addResource } = useResource();
+
+  useEffect(() => {
+    // Register the Mermaid display component
+    registerDisplayComponent({
+      id: "mermaid-displayer",
+      name: "Mermaid Diagram",
+      component: MermaidDisplayer,
+      supportedTypes: ["mermaid"],
+    });
+  }, [registerDisplayComponent]);
+
+  const resource = useResource()
   useCopilotAction({
     name: "绘制 Mermaid 图",
     description: "这个工具用于展示 Mermaid 图",
     parameters: [
+      {
+        name: "name",
+        type: "string",
+        description: "图表名称",
+        required: true,
+      },
       {
         name: "mermaid_code",
         type: "string",
         description: "用于展示的 mermaid 代码",
         required: true,
       },
+
     ],
     available: props.enable ? "enabled" : "disabled",
     render: ({ status, args }) => {
-      const { mermaid_code } = args;
-
-      if (status === "inProgress") {
-        return (
-          <div className="flex items-center justify-center p-4 border rounded-lg shadow-sm bg-white">
-            <div className="h-6 w-6 bg-blue-600 rounded-full animate-pulse"></div>
-            <span className="ml-3 text-gray-600">加载中</span>
-          </div>
-        );
+      const { mermaid_code, name } = args;
+      console.log(status)
+      if (status === 'complete') {
+        addResource({
+          name: name!,
+          path: `mermaid/${name}`,
+          content: mermaid_code || "",
+          type: "mermaid",
+          status: status === "complete" ? ResourceStatus.READY : ResourceStatus.LOADING
+        });
+        resource.previewResource(name!)
       }
-
       return (
-        <div className="border rounded-lg shadow-sm p-4 bg-white">
-          <div
-            ref={(element) => {
-              if (element && mermaid_code) {
-                drawDiagram(element, mermaid_code).catch((e) => {
-                  console.error("Failed to render Mermaid diagram:", e);
-                  element.innerHTML =
-                    '<div style="color: red;">图表渲染失败</div>';
-                });
-              }
-            }}
-          />
+        <div className="border rounded-lg shadow-sm p-4 bg-white" onClick={() => {
+          resource.setSelectedResource(name!)
+        }}>
+          <div className="text-sm text-gray-500 mb-2">
+            <span>
+              已添加到资源列表
+            </span>
+            <span>
+              {status === "complete" ? "已写入" + name! : status === "executing" ? "执行中..." : status === "inProgress" ? "加载中" : "准备中"}
+            </span>
+          </div>
         </div>
       );
     },
   });
+
+  return null;
 }
+
