@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "@copilotkit/react-ui/styles.css";
-import { Head } from "next/document";
 
 export const metadata: Metadata = {
   title: "Open MCP Client",

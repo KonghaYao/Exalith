@@ -43,6 +43,20 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.871 0.006 286.286);
+  --copilot-kit-background-color: #f7f7f5;
+  --copilot-kit-secondary-color: transparent;
+  --copilot-kit-primary-color: white;
+  --copilot-kit-contrast-color: black;
+  --copilot-kit-response-button-background-color: #f7f7f5;
+}
+.copilotKitMessage {
+  font-size: 1.2rem !important;
+}
+.copilotKitUserMessage {
+  font-weight: 500 !important;
+}
+.copilotKitResponseButton{
+  border-radius: 34px;
 }
 
 .dark {
