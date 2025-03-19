@@ -45,13 +45,20 @@
   --copilot-kit-response-button-background-color: #f7f7f5;
   background-color: var(--copilot-kit-background-color);
 }
+
+.copilotKitMarkdown {
+  line-height: 1.4;
+}
+
 .copilotKitMessage {
   font-size: 1.2rem !important;
 }
+
 .copilotKitUserMessage {
   font-weight: 500 !important;
 }
-.copilotKitResponseButton {
+
+.copilotKitResponseButton  {
   border-radius: 34px;
 }
 
@@ -133,21 +140,27 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   table {
     @apply w-full border-collapse bg-white mb-4;
   }
+
   thead {
     @apply bg-muted;
   }
+
   th {
     @apply border border-border px-4 py-2 text-left font-medium;
   }
+
   td {
     @apply border border-border px-4 py-2;
   }
+
   tr:nth-child(even) {
     @apply bg-muted/50;
   }
+
   ul {
     @apply list-disc list-inside;
   }
@@ -155,6 +168,7 @@
     @apply list-decimal list-inside;
   }
 }
+
 .copilotKitMessage {
   max-width: 100% !important;
   font-family: "LXGW WenKai Light";
