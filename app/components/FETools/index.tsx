@@ -32,10 +32,10 @@ export const plugins = [
 export const CopilotFEPlugin = () => {
   const [selectedPlugins, setSelectedPlugins] = useLocalStorage<string[]>(
     "mcp-selected-plugins",
-    [],
+    plugins.map(i => i.code),
   );
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+    <div className="grid  grid-cols-2 gap-4 p-4">
       {plugins.map((plugin) => {
         const isSelected = selectedPlugins.includes(plugin.code);
         plugin.component({ enable: isSelected });
@@ -56,9 +56,8 @@ export const CopilotFEPlugin = () => {
                 {plugin.code}
               </h3>
               <div
-                className={`w-4 h-4 flex items-center justify-center rounded-full ${
-                  isSelected ? "bg-green-500" : "bg-gray-200"
-                }`}
+                className={`w-4 h-4 flex items-center justify-center rounded-full ${isSelected ? "bg-green-500" : "bg-gray-200"
+                  }`}
               >
                 {isSelected && (
                   <svg

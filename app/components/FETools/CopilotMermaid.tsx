@@ -53,6 +53,7 @@ export function CopilotMermaid(props: { enable?: boolean }) {
       });
       useMount(() => {
         resource.setSelectedResource(idRef.current!);
+        resource.setShowSourceCode(true)
       });
       useEffect(() => {
         if (status === "executing") {

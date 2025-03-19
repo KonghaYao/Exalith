@@ -11,7 +11,7 @@ export function ArtifactsWrapper() {
       {/* Display Area */}
       <div className="flex-1 p-6 overflow-y-auto bg-neutral-100">
         {selectedResource ? (
-          <ArtifactDisplay resourceName={selectedResource} />
+          <ArtifactDisplay resourceName={selectedResource} key={selectedResource} />
         ) : (
           <div className="h-full flex items-center justify-center text-gray-500 ">
             选择资源进行展示

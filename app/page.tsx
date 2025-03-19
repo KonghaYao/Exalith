@@ -21,8 +21,8 @@ export default function Home() {
   const [tab, setTab] = useState("artifacts");
 
   return (
-    <ArtifactsProvider>
-      <ResourceProvider>
+    <ArtifactsProvider key={chatKey}>
+      <ResourceProvider key={chatKey}>
         <CopilotKit
           runtimeUrl="/api/copilotkit"
           showDevConsole={false}
@@ -63,7 +63,7 @@ export default function Home() {
             </section>
             <CopilotActionHandler />
             {/* Main content area */}
-            <section className="flex-1 py-6 pr-6">
+            <section className="flex-1 py-6 pr-6 h-screen">
               <div className="h-full overflow-y-auto  flex flex-col border rounded-4xl">
                 <div className="flex border-b">
                   <button

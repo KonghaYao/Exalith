@@ -52,6 +52,7 @@ export function CopilotChart(props: { enable?: boolean }) {
       });
       useMount(() => {
         resource.setSelectedResource(idRef.current!);
+        resource.setShowSourceCode(true)
       });
       useEffect(() => {
         if (status === "executing") {
