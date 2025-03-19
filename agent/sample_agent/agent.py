@@ -206,7 +206,7 @@ async def plan_node(
 workflow = StateGraph(AgentState)
 workflow.add_node("plan_node", plan_node)
 workflow.add_node("chat_node", chat_node)
-workflow.set_entry_point("chat_node")
+workflow.set_entry_point("plan_node")
 
 # Compile the workflow graph
 graph = workflow.compile(MemorySaver())

@@ -95,7 +95,7 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
                 Result:
               </div>
               <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-40">
-                {formatJSON(result)}
+                {result}
               </pre>
             </div>
           )}

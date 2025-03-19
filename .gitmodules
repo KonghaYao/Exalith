@@ -1,0 +1,3 @@
+[submodule "packages/powerExcelMCP"]
+	path = packages/powerExcelMCP
+	url = https://github.com/fish0710/powerExcelMCP.git
