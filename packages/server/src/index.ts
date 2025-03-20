@@ -3,17 +3,15 @@ import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import express from "express";
 import crawlAgent from "./crawlAgent.js";
-import ExcelBot from "./excelOperations.js";
+import FileSystem from "./filesystem.js";
 import npmBot from "./npmAgent.js";
 import openSourceBot from "./opensource.js";
 const app = express();
 
 const transportStore = new Map<string, Map<string, SSEServerTransport>>();
 const appMap = new Map<string, McpServer>([
-  // 在这里注册你的 server
-
   ["crawl_bot", crawlAgent],
-  ["sheets_bot", ExcelBot],
+  ["filesystem_bot", FileSystem],
   ["npm_bot", npmBot],
   ["opensource_bot", openSourceBot],
 ]);

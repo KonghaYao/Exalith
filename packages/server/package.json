@@ -14,15 +14,17 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
     "@modelcontextprotocol/sdk": "^1.6.1",
+    "diff": "^7.0.0",
     "dotenv": "^16.4.7",
     "eventsource": "^3.0.5",
     "express": "^4.21.2",
+    "minimatch": "^10.0.1",
     "openai": "^4.86.1",
-    "xlsx": "^0.18.5",
     "zod": "^3.24.2",
     "zod-to-json-schema": "^3.24.3"
   },
   "devDependencies": {
+    "@types/diff": "^7.0.1",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.9",
     "typescript": "^5.8.2"
