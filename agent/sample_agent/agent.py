@@ -100,9 +100,9 @@ async def chat_node(
         react_agent = create_react_agent(model, mcp_tools)
 
         # Prepare messages for the react agent
-        for i in state["messages"]:
-            if isinstance(i, ToolMessage):
-                i.content = i.content[:200] + "..."
+        # for i in state["messages"]:
+        #     if isinstance(i, ToolMessage):
+        #         i.content = i.content[:200] + "..."
         agent_input = {
             "messages": state["messages"],
         }
@@ -184,7 +184,7 @@ async def plan_node(
             },
             {
                 "role": "user",
-                "content": f"以下为用户输入, 请你开始编写计划书：\n{message.text()}",
+                "content": f"以下为用户输入, 请你开始编写计划书：\n{last_message.text()}",
             },
         ]
 
