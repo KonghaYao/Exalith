@@ -100,7 +100,7 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       '@modelcontextprotocol/sdk':
-        specifier: ^1.6.1
+        specifier: ^1.7.0
         version: 1.7.0
       diff:
         specifier: ^7.0.0

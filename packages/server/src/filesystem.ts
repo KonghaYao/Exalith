@@ -47,6 +47,7 @@ async function validatePath(
   try {
     await fs.access(userWorkSpace);
   } catch {
+    console.log("创建目录", userWorkSpace);
     await fs.mkdir(userWorkSpace);
   }
 
@@ -135,6 +136,7 @@ const TEXT_FILE_EXTENSIONS = [
   ".gradle",
   ".pom",
   ".lock",
+  ".csv",
 ];
 
 // 文件大小限制（100KB）
