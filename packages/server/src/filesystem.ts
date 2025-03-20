@@ -30,14 +30,10 @@ function expandHome(filepath: string): string {
   return filepath;
 }
 
-const allowedDirectories = ["../powerExcelMCP/excel_files"].map((dir) =>
-  normalizePath(path.resolve(expandHome(dir))),
-);
-const getUserAllowedDirectories = (session_id: string) => {
+const allowedDirectory = path.resolve("../powerExcelMCP/excel_files");
+const getUserAllowedDirectory = (session_id: string) => {
   if (!session_id) throw new Error("session_id is required");
-  return allowedDirectories.map((i) => {
-    return path.join(i, session_id);
-  });
+  return path.join(allowedDirectory, session_id);
 };
 
 async function validatePath(
@@ -45,27 +41,32 @@ async function validatePath(
   session_id: string,
 ): Promise<string> {
   const expandedPath = expandHome(requestedPath);
+  const userWorkSpace = getUserAllowedDirectory(session_id);
+
+  // 确保用户目录存在
+  try {
+    await fs.access(userWorkSpace);
+  } catch {
+    await fs.mkdir(userWorkSpace);
+  }
+
+  // 如果相对路径解析失败，回退到绝对路径处理
   const absolute = path.isAbsolute(expandedPath)
     ? path.resolve(expandedPath)
-    : path.resolve(process.cwd(), expandedPath);
+    : path.resolve(userWorkSpace, expandedPath);
 
   const normalizedRequested = normalizePath(absolute);
-  const userWorkSpace = getUserAllowedDirectories(session_id);
-  const isAllowed = userWorkSpace.some((dir) =>
-    normalizedRequested.startsWith(dir),
-  );
+  const isAllowed = normalizedRequested.startsWith(userWorkSpace);
   if (!isAllowed) {
     throw new Error(
-      `访问被拒绝 - 路径不在允许的目录中: ${absolute} 不在 ${userWorkSpace.join(", ")} 中`,
+      `访问被拒绝 - 路径不在允许的目录中: ${absolute} 不在 ${userWorkSpace} 中`,
     );
   }
 
   try {
     const realPath = await fs.realpath(absolute);
     const normalizedReal = normalizePath(realPath);
-    const isRealPathAllowed = userWorkSpace.some((dir) =>
-      normalizedReal.startsWith(dir),
-    );
+    const isRealPathAllowed = normalizedReal.startsWith(userWorkSpace);
     if (!isRealPathAllowed) {
       throw new Error("访问被拒绝 - 符号链接目标在允许的目录之外");
     }
@@ -75,9 +76,7 @@ async function validatePath(
     try {
       const realParentPath = await fs.realpath(parentDir);
       const normalizedParent = normalizePath(realParentPath);
-      const isParentAllowed = userWorkSpace.some((dir) =>
-        normalizedParent.startsWith(dir),
-      );
+      const isParentAllowed = normalizedParent.startsWith(userWorkSpace);
       if (!isParentAllowed) {
         throw new Error("访问被拒绝 - 父目录在允许的目录之外");
       }
@@ -389,9 +388,56 @@ server.tool(
       content: [
         {
           type: "text",
-          text: `允许访问的目录:\n${getUserAllowedDirectories(extra.sessionId!).join("\n")}`,
+          text: `允许访问的目录:\n${getUserAllowedDirectory(extra.sessionId!)}`,
         },
       ],
+    };
+  },
+);
+
+server.tool(
+  "create_file",
+  "创建新文件",
+  {
+    path: z.string(),
+    content: z.string(),
+  },
+  async (args, extra) => {
+    const validPath = await validatePath(args.path, extra.sessionId!);
+
+    // 检查文件是否已存在
+    try {
+      await fs.access(validPath);
+      throw new Error(`文件已存在: ${args.path}`);
+    } catch (error) {
+      if ((error as { code?: string }).code !== "ENOENT") {
+        throw error;
+      }
+    }
+
+    // 检查文件扩展名
+    const ext = path.extname(validPath).toLowerCase();
+    if (!TEXT_FILE_EXTENSIONS.includes(ext)) {
+      throw new Error(`不支持的文件类型：${ext}，仅支持文本文件`);
+    }
+
+    // 检查文件内容大小
+    const contentSize = Buffer.byteLength(args.content, "utf-8");
+    if (contentSize > MAX_FILE_SIZE) {
+      throw new Error(
+        `文件内容超过限制：${contentSize} 字节 > ${MAX_FILE_SIZE} 字节（100KB）`,
+      );
+    }
+
+    // 确保父目录存在
+    const parentDir = path.dirname(validPath);
+    await fs.mkdir(parentDir, { recursive: true });
+
+    // 创建文件
+    await fs.writeFile(validPath, args.content, "utf-8");
+
+    return {
+      content: [{ type: "text", text: `成功创建文件 ${args.path}` }],
     };
   },
 );
