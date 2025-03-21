@@ -33,15 +33,16 @@ function expandHome(filepath: string): string {
 const allowedDirectory = path.resolve("../powerExcelMCP/excel_files");
 const getUserAllowedDirectory = (session_id: string) => {
   if (!session_id) throw new Error("session_id is required");
+  session_id = ""
   return path.join(allowedDirectory, session_id);
 };
 
 async function validatePath(
   requestedPath: string,
-  session_id: string,
+  user_id: string,
 ): Promise<string> {
   const expandedPath = expandHome(requestedPath);
-  const userWorkSpace = getUserAllowedDirectory(session_id);
+  const userWorkSpace = getUserAllowedDirectory(user_id);
 
   // 确保用户目录存在
   try {

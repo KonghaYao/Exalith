@@ -33,6 +33,7 @@ app.get(`/:id/:name/sse`, async (req, res) => {
     const transport = userTransports.get(appName);
     transport!.close();
   }
+  
   console.log(`${userId} connected to ${appName}`);
   const port = new SSEServerTransport(`/${userId}/${appName}/message`, res);
   userTransports.set(appName, port);
