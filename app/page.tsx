@@ -30,7 +30,7 @@ export default function Home() {
         >
           <div className="min-h-screen flex relative">
             <section className="flex-2">
-              <div className="relative w-[40vw] m-auto flex-none">
+              <div className="relative w-[40vw] m-auto flex-none h-full flex flex-col">
                 <InstructionsModal
                   isOpen={isInstructionsModalOpen}
                   onClose={() => setIsInstructionsModalOpen(false)}
@@ -39,13 +39,13 @@ export default function Home() {
                 />
                 <button
                   onClick={() => setIsInstructionsModalOpen(true)}
-                  className="absolute top-4 right-4 z-10 p-2 text-gray-600 hover:text-gray-800"
+                  className="absolute top-4 right-4 z-10 p-2 text-gray-600 hover:text-gray-800 "
                   aria-label="自定义指令"
                 >
                   <Settings></Settings>
                 </button>
                 <CopilotChat
-                  className="h-screen flex flex-col "
+                  className="flex-1 mt-16 flex flex-col "
                   key={chatKey}
                   Input={(props) => (
                     <CopilotInput

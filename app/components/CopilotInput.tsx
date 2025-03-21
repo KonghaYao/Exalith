@@ -9,17 +9,16 @@ export default function CopilotInput({
   const handleSubmit = (value: string) => {
     if (value?.trim()) onSend(value);
   };
-  const input = useRef<HTMLInputElement>(null)
+  const input = useRef<HTMLInputElement>(null);
   const wrapperStyle =
-    "flex flex-col items-center gap-2 p-4 rounded-4xl border border-gray-200 bg-white shadow-xs";
+    "flex flex-col items-center gap-2 p-4 rounded-t-4xl border border-gray-200 bg-white shadow-xs";
   const inputStyle =
-    "w-full flex-1 px-2 pb-2.5 pt-1 rounded-lg focus:outline-none transition-all duration-200 disabled:bg-gray-50 placeholder-gray-400";
+    "w-full flex-1 px-2 pb-2.5 pt-1 focus:outline-none transition-all duration-200 disabled:bg-gray-50 placeholder-gray-400";
   const buttonStyle =
     "w-8 h-8 flex-none rounded-full border text-gray-600 hover:text-gray-800 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer";
 
   return (
     <section
-      className="px-8 pb-4"
       style={{
         fontFamily: "'LXGW WenKai Light'",
       }}
@@ -56,7 +55,6 @@ export default function CopilotInput({
             disabled={inProgress}
             className={buttonStyle + " bg-gray-50"}
             onClick={(e) => {
-
               handleSubmit(input.current!.value);
               input.current!.value = "";
             }}
