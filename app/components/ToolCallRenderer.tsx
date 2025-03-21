@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 
 type ToolCallRendererProps = {
   name: string;
@@ -22,37 +22,48 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
   };
 
   // Format JSON objects for display
-  const formatJSON = (obj: any) => {
+  const formatJSON = useCallback((obj: any) => {
     try {
       return JSON.stringify(obj, null, 2);
     } catch {
       return String(obj);
     }
-  };
+  }, []);
+
+  const memoizedArgs = useMemo(() => formatJSON(args), [args, formatJSON]);
+  const memoizedResult = useMemo(
+    () => result && formatJSON(result),
+    [result, formatJSON],
+  );
 
   // Status color mapping
   const statusColors: Record<string, string> = {
-    running: "bg-yellow-100 text-yellow-800",
-    success: "bg-green-100 text-green-800",
-    error: "bg-red-100 text-red-800",
-    pending: "bg-blue-100 text-blue-800",
+    executing: "bg-yellow-100 text-yellow-800 border border-yellow-300",
+    complete: "bg-green-100 text-green-800 border border-green-300",
+    error: "bg-red-100 text-red-800 border border-red-300",
+    inProgress: "bg-blue-100 text-blue-800 border border-blue-300",
+    unknown: "bg-gray-100 text-gray-800 border border-gray-300",
   };
 
-  const statusColor =
-    statusColors[status.toLowerCase()] || "bg-gray-100 text-gray-800";
+  const statusColor = useMemo(
+    () => statusColors[status.toLowerCase()] || statusColors.unknown,
+    [status],
+  );
 
   return (
-    <div className="my-2 rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+    <div className="my-2 rounded-4xl border border-gray-200 overflow-hidden shadow-sm">
       {/* Header - always visible */}
       <div
         className="flex items-center justify-between p-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
         onClick={toggleExpand}
       >
         <div className="flex items-center space-x-2">
-          <div className="font-medium text-gray-700">{name}</div>
-          <div className={`text-xs px-2 py-1 rounded-full ${statusColor}`}>
+          <div
+            className={`text-xs px-2 py-1 rounded-full ${statusColor} transition-colors duration-200 ease-in-out`}
+          >
             {status}
           </div>
+          <div className="font-medium text-gray-700">{name}</div>
         </div>
         <button
           className="text-gray-500 hover:text-gray-700 focus:outline-none transition-transform transform"
@@ -83,8 +94,8 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
             <div className="text-sm font-medium text-gray-500 mb-1">
               Arguments:
             </div>
-            <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-40">
-              {formatJSON(args)}
+            <pre className="text-xs bg-gray-50 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all max-w-full max-h-40">
+              {memoizedArgs}
             </pre>
           </div>
 
@@ -94,8 +105,8 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
               <div className="text-sm font-medium text-gray-500 mb-1">
                 Result:
               </div>
-              <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-40">
-                {result}
+              <pre className="text-xs bg-gray-50 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all max-w-full max-h-40">
+                {memoizedResult}
               </pre>
             </div>
           )}
