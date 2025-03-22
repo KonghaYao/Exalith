@@ -1,22 +1,21 @@
 "use client";
 
-import { File, Folder, Trash2, X } from "lucide-react";
-import { join } from "path";
+import { File, Folder, X } from "lucide-react";
 import { useFileSystem } from "./FileSystemContext";
 
 export function SelectedFileGroup() {
-  const { selectedFiles, currentPath, files, unselectFile } = useFileSystem();
+  const { selectedFiles, unselectFile } = useFileSystem();
 
   if (selectedFiles.length === 0) return null;
 
   return (
-    <div className="mb-4 flex flex-wrap gap-1 w-full">
+    <div className="flex flex-wrap gap-1 w-full">
       {selectedFiles.map((file) => {
         const isDirectory = file.isDirectory;
         return (
           <div
             key={file.path}
-            className="flex items-center gap-2 border border-gray-200 px-2 rounded-md group"
+            className="flex items-center gap-2 border border-gray-200 px-2 rounded-md group bg-gray-100 cursor-default"
           >
             <button
               onClick={() => unselectFile(file.path)}

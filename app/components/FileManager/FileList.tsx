@@ -2,20 +2,20 @@
 import { useState, useEffect } from "react";
 import { join } from "path";
 import {
-  File,
-  Folder,
   ArrowUp,
   Upload,
-  Trash2,
   FolderPlus,
+  RotateCw,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import { SelectedFileGroup } from "./SelectedFileGroup";
-import { Modal, message, Spin, Popconfirm, Space } from "antd";
-import { Download } from "lucide-react";
+import { Modal, message, Spin, Space, Button } from "antd";
 import { useFileSystem } from "./FileSystemContext";
-import { Checkbox } from "antd";
+import { ListView } from "./FileViews/ListView";
+import { GridView } from "./FileViews/GridView";
 
-interface FileInfo {
+export interface FileInfo {
   name: string;
   size: number;
   created: string;
@@ -63,18 +63,6 @@ export default function FileList() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatSize = (size: number) => {
-    if (size < 1024) return `${size} B`;
-    if (size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
-    if (size < 1024 * 1024 * 1024)
-      return `${(size / (1024 * 1024)).toFixed(2)} MB`;
-    return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
-  };
-
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleString();
   };
 
   const handleFileClick = async (file: FileInfo) => {
@@ -180,82 +168,7 @@ export default function FileList() {
     setCurrentPath(parentPath);
   };
 
-  const renderFileItem = (file: FileInfo) => {
-    const filePath = join(currentPath, file.name);
-    const isSelected = filesystem.selectedFiles.some(
-      (file) => file.path === filePath,
-    );
-
-    return (
-      <div
-        key={file.name}
-        className={`flex items-center justify-between p-3 hover:bg-gray-50 ${file.isDirectory ? "cursor-pointer" : ""}`}
-        onClick={(e) => {
-          if (file.isDirectory) {
-            setCurrentPath(join(currentPath, file.name));
-          }
-        }}
-      >
-        <div className="flex items-center flex-1 min-w-0">
-          <Checkbox
-            checked={isSelected}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (isSelected) {
-                filesystem.unselectFile(filePath);
-              } else {
-                filesystem.selectFile(filePath, file.isDirectory);
-              }
-            }}
-            className="mr-2"
-          />
-          {file.isDirectory ? (
-            <Folder className="w-5 h-5 mx-3 text-blue-500 flex-shrink-0" />
-          ) : (
-            <File className="w-5 h-5 mx-3 text-gray-400 flex-shrink-0" />
-          )}
-          <span className="truncate text-sm font-medium text-gray-700">
-            {file.name}
-          </span>
-          {!file.isDirectory && (
-            <span className="ml-3 text-xs text-gray-400">
-              {formatSize(file.size)}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center space-x-2 ml-4">
-          {!file.isDirectory && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleFileClick(file);
-              }}
-              className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors duration-200"
-            >
-              <Download className="w-4 h-4" />
-            </button>
-          )}
-          <Popconfirm
-            title="确认删除"
-            description={`确定要删除 ${file.name} 吗？`}
-            onConfirm={(e) => {
-              e?.stopPropagation();
-              handleDelete(file);
-            }}
-            okText="确定"
-            cancelText="取消"
-          >
-            <button
-              onClick={(e) => e.stopPropagation()}
-              className="p-1.5 text-gray-400 hover:text-red-600 transition-colors duration-200"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </Popconfirm>
-        </div>
-      </div>
-    );
-  };
+  const [viewType, setViewType] = useState<"list" | "grid">("list");
 
   useEffect(() => {
     if (error) {
@@ -265,7 +178,7 @@ export default function FileList() {
 
   return (
     <div className="p-4 h-full flex flex-col gap-4">
-      <div className="mb-4 flex items-center justify-between bg-white p-4 rounded-lg shadow-sm">
+      <div className="mb-4 flex items-center justify-between p-4 border-b border-gray-300">
         <div className="flex items-center space-x-4">
           <button
             onClick={navigateUp}
@@ -279,6 +192,12 @@ export default function FileList() {
           </span>
         </div>
         <Space>
+          <button
+            onClick={() => loadFiles()}
+            className="flex items-center p-2 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 cursor-pointer transition-colors duration-200"
+          >
+            <RotateCw className="w-4 h-4" />
+          </button>
           <button
             onClick={() => setShowNewFolderDialog(true)}
             className="flex items-center p-2 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 cursor-pointer transition-colors duration-200"
@@ -321,6 +240,22 @@ export default function FileList() {
         />
       </Modal>
 
+      <div className="flex justify-end mb-4">
+        <SelectedFileGroup />
+        <Space>
+          <Button
+            type={viewType === "list" ? "primary" : "default"}
+            icon={<List className="w-4 h-4" />}
+            onClick={() => setViewType("list")}
+          />
+          <Button
+            type={viewType === "grid" ? "primary" : "default"}
+            icon={<LayoutGrid className="w-4 h-4" />}
+            onClick={() => setViewType("grid")}
+          />
+        </Space>
+      </div>
+
       {loading ? (
         <div className="text-center py-12">
           <Spin size="large" tip="加载中..." />
@@ -330,14 +265,33 @@ export default function FileList() {
           <div className="text-6xl mb-4">📁</div>
           <p>当前文件夹为空</p>
         </div>
+      ) : viewType === "list" ? (
+        <ListView
+          files={files}
+          currentPath={currentPath}
+          selectedFiles={filesystem.selectedFiles}
+          onFileClick={handleFileClick}
+          onDirectoryClick={(path) => setCurrentPath(path)}
+          onDelete={handleDelete}
+          onSelect={(filePath, isDirectory) =>
+            filesystem.selectFile(filePath, isDirectory)
+          }
+          onUnselect={(filePath) => filesystem.unselectFile(filePath)}
+        />
       ) : (
-        <div className="bg-white rounded-lg shadow-lg divide-y divide-gray-100 flex-1 overflow-y-auto custom-scrollbar">
-          {files.map(renderFileItem)}
-        </div>
+        <GridView
+          files={files}
+          currentPath={currentPath}
+          selectedFiles={filesystem.selectedFiles}
+          onFileClick={handleFileClick}
+          onDirectoryClick={(path) => setCurrentPath(path)}
+          onDelete={handleDelete}
+          onSelect={(filePath, isDirectory) =>
+            filesystem.selectFile(filePath, isDirectory)
+          }
+          onUnselect={(filePath) => filesystem.unselectFile(filePath)}
+        />
       )}
-      <div className="bg-white border-t border-gray-200 rounded-lg overflow-hidden p-4">
-        <SelectedFileGroup />
-      </div>
     </div>
   );
 }
