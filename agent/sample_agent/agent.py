@@ -12,14 +12,24 @@ from langchain_core.utils.function_calling import (
 from langchain_core.tools import BaseTool, StructuredTool, ToolException
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, END
-from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.types import Command
 from copilotkit import CopilotKitState
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_mcp_adapters.tools import convert_mcp_tool_to_langchain_tool
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import ToolMessage, AIMessage, HumanMessage
+from langgraph.store.memory import InMemoryStore
+from langmem import create_manage_memory_tool, create_search_memory_tool
 import os
+import pathlib
+
+store = InMemoryStore(
+    index={
+        "dims": 1536,
+        "embed": "openai:text-embedding-3-small",
+    }
+)
 
 
 # Define the connection type structures
@@ -97,7 +107,15 @@ async def chat_node(
             api_key=os.getenv("OPENAI_API_KEY"),
         )
         # Combine tools
-        react_agent = create_react_agent(model, mcp_tools)
+        react_agent = create_react_agent(
+            model,
+            [
+                create_manage_memory_tool(namespace=("memories",)),
+                create_search_memory_tool(namespace=("memories",)),
+            ]
+            + mcp_tools,  # Memory tools use LangGraph's BaseStore for persistence (4)
+            store=store,
+        )
 
         # Prepare messages for the react agent
         # for i in state["messages"]:
@@ -209,4 +227,7 @@ workflow.add_node("chat_node", chat_node)
 workflow.set_entry_point("chat_node")
 
 # Compile the workflow graph
-graph = workflow.compile(MemorySaver())
+# 配置 SQLite 数据库路径
+db_path = pathlib.Path("./agent_data.db")
+# 使用 SQLiteSaver 替代 MemorySaver
+graph = workflow.compile(SqliteSaver(db_path))

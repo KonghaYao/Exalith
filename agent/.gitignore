@@ -4,3 +4,4 @@ __pycache__/
 .env
 .vercel
 .langgraph_api
+*.egg.info
