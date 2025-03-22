@@ -17,6 +17,7 @@ import { FileText, Settings, Folder } from "lucide-react";
 import { FileSystemProvider } from "./components/FileManager/FileSystemContext";
 import { SelectedFileGroup } from "./components/FileManager/SelectedFileGroup";
 import UserMessage from "./components/UserMessage";
+import ResponseButton from "./components/ResponseButton";
 
 export default function Home() {
   const [chatKey, setChatKey] = useState(0);
@@ -35,7 +36,7 @@ export default function Home() {
           >
             <div className="min-h-screen flex relative">
               <section className="flex-2">
-                <div className="relative w-[40vw] m-auto flex-none h-full">
+                <div className="relative w-full max-w-3xl m-auto flex-none h-full">
                   <InstructionsModal
                     isOpen={isInstructionsModalOpen}
                     onClose={() => setIsInstructionsModalOpen(false)}
@@ -61,10 +62,12 @@ export default function Home() {
                         <SelectedFileGroup></SelectedFileGroup>
                       </CopilotInput>
                     )}
+                    ResponseButton={ResponseButton}
                     instructions={instructions}
                     labels={{
                       title: "MCP 助手",
-                      initial: "需要什么帮助吗？",
+                      stopGenerating: "停止生成",
+                      regenerateResponse: "重新生成",
                     }}
                   />
                 </div>
