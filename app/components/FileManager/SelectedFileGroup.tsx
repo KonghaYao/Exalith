@@ -15,7 +15,7 @@ export function SelectedFileGroup() {
         return (
           <div
             key={file.path}
-            className="flex items-center gap-2 border border-gray-200 px-2 rounded-md group bg-gray-100 cursor-default"
+            className="flex items-center gap-2 border border-gray-300 px-2 rounded-md group bg-white cursor-default"
           >
             <button
               onClick={() => unselectFile(file.path)}

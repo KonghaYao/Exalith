@@ -1,8 +1,8 @@
 "use client";
 
 import { FileInfo } from "../FileList";
-import { File, Folder, Download, Trash2 } from "lucide-react";
-import { Checkbox, Popconfirm } from "antd";
+import { File, Folder, Download, Trash2, Menu } from "lucide-react";
+import { Checkbox, Dropdown, MenuProps, Popconfirm } from "antd";
 import { join } from "path";
 
 interface GridViewProps {
@@ -29,6 +29,22 @@ export function GridView({
   const renderFileItem = (file: FileInfo) => {
     const filePath = join(currentPath, file.name);
     const isSelected = selectedFiles.some((f) => f.path === filePath);
+    const items: MenuProps["items"] = [
+      {
+        key: "delete",
+        label: "下载",
+        onClick: () => {
+          onFileClick(file);
+        },
+      },
+      {
+        key: "delete",
+        label: "删除",
+        onClick() {
+          onDelete(file);
+        },
+      },
+    ];
 
     return (
       <div
@@ -46,7 +62,7 @@ export function GridView({
           }
         }}
       >
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-2 left-2 w-full flex flex-row justify-between">
           <Checkbox
             checked={isSelected}
             onClick={(e) => {
@@ -58,6 +74,11 @@ export function GridView({
               }
             }}
           />
+          {!file.isDirectory && (
+            <Dropdown menu={{ items }}>
+              <Menu className="text-gray-700 w-4 h-4 mr-4 cursor-pointer"></Menu>
+            </Dropdown>
+          )}
         </div>
         <div className="flex flex-col items-center gap-2 pt-4">
           {file.isDirectory ? (
@@ -74,42 +95,12 @@ export function GridView({
             </span>
           )}
         </div>
-        <div className="absolute top-2 right-2 flex gap-1">
-          {!file.isDirectory && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onFileClick(file);
-              }}
-              className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors duration-200 bg-white rounded-full hover:bg-blue-50"
-            >
-              <Download className="w-4 h-4" />
-            </button>
-          )}
-          <Popconfirm
-            title="确认删除"
-            description={`确定要删除 ${file.name} 吗？`}
-            onConfirm={(e) => {
-              e?.stopPropagation();
-              onDelete(file);
-            }}
-            okText="确定"
-            cancelText="取消"
-          >
-            <button
-              onClick={(e) => e.stopPropagation()}
-              className="p-1.5 text-gray-400 hover:text-red-600 transition-colors duration-200 bg-white rounded-full hover:bg-red-50"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </Popconfirm>
-        </div>
       </div>
     );
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 p-4 overflow-y-auto custom-scrollbar">
+    <div className="grid grid-cols-4 gap-4 p-4 overflow-y-auto custom-scrollbar">
       {files.map(renderFileItem)}
     </div>
   );
