@@ -10,7 +10,7 @@ import {
   List,
 } from "lucide-react";
 import { SelectedFileGroup } from "./SelectedFileGroup";
-import { Modal, message, Spin, Space, Button } from "antd";
+import { Modal, message, Spin, Space, Button, Alert } from "antd";
 import { useFileSystem } from "./FileSystemContext";
 import { ListView } from "./FileViews/ListView";
 import { GridView } from "./FileViews/GridView";
@@ -168,7 +168,7 @@ export default function FileList() {
     setCurrentPath(parentPath);
   };
 
-  const [viewType, setViewType] = useState<"list" | "grid">("list");
+  const [viewType, setViewType] = useState<"list" | "grid">("grid");
 
   useEffect(() => {
     if (error) {
@@ -177,13 +177,13 @@ export default function FileList() {
   }, [error]);
 
   return (
-    <div className="p-4 h-full flex flex-col gap-4">
-      <div className="mb-4 flex items-center justify-between p-4 border-b border-gray-300">
+    <div className="h-full flex flex-col bg-white">
+      <div className=" flex items-center justify-between border-b p-4">
         <div className="flex items-center space-x-4">
           <button
             onClick={navigateUp}
             disabled={!currentPath}
-            className="flex items-center p-2 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 disabled:opacity-50 transition-colors duration-200"
+            className="flex items-center p-2 text-sm bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 disabled:opacity-50 transition-colors duration-200"
           >
             <ArrowUp className="w-4 h-4" />
           </button>
@@ -193,29 +193,28 @@ export default function FileList() {
         </div>
         <Space>
           <button
+            className="flex items-center p-2 text-sm bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 cursor-pointer transition-colors duration-200"
             onClick={() => loadFiles()}
-            className="flex items-center p-2 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 cursor-pointer transition-colors duration-200"
           >
             <RotateCw className="w-4 h-4" />
           </button>
           <button
+            className="flex items-center p-2 text-sm bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 cursor-pointer transition-colors duration-200"
             onClick={() => setShowNewFolderDialog(true)}
-            className="flex items-center p-2 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 cursor-pointer transition-colors duration-200"
           >
             <FolderPlus className="w-4 h-4" />
           </button>
-          <input
-            type="file"
-            onChange={handleUpload}
-            className="hidden"
-            id="file-upload"
-          />
-          <label
-            htmlFor="file-upload"
-            className="flex items-center p-2 text-sm bg-green-50 text-green-600 rounded-md hover:bg-green-100 cursor-pointer transition-colors duration-200"
-          >
-            <Upload className="w-4 h-4" />
-          </label>
+          <span className="flex items-center p-2 text-sm bg-green-100 text-green-600 rounded-md hover:bg-green-200 cursor-pointer transition-colors duration-200">
+            <input
+              type="file"
+              onChange={handleUpload}
+              className="hidden"
+              id="file-upload"
+            />
+            <label htmlFor="file-upload">
+              <Upload className="w-4 h-4" />
+            </label>
+          </span>
         </Space>
       </div>
 
@@ -240,7 +239,7 @@ export default function FileList() {
         />
       </Modal>
 
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end border-x p-4 bg-white border-b">
         <SelectedFileGroup />
         <Space>
           <Button
@@ -292,6 +291,11 @@ export default function FileList() {
           onUnselect={(filePath) => filesystem.unselectFile(filePath)}
         />
       )}
+      <Alert
+        message="点击选中文件，可以加入上下文"
+        type="warning"
+        className="text-center"
+      ></Alert>
     </div>
   );
 }

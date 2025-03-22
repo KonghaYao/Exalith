@@ -15,9 +15,9 @@ export default function CopilotInput({
     if (value?.trim()) {
       const filePrefix =
         system.selectedFiles.length > 0
-          ? `下面是用户选中的文件：\n${system.selectedFiles
+          ? `${system.selectedFiles
               .map((i, index) => {
-                return `${index + 1}. ${i.path} `;
+                return `<file path="${i.path}">${i.name}</file>`;
               })
               .join("\n")}\n`
           : "";

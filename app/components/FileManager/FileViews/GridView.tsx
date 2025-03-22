@@ -86,11 +86,11 @@ export function GridView({
           ) : (
             <File className="w-12 h-12 text-gray-400" />
           )}
-          <span className="text-sm font-medium text-gray-700 text-center break-all line-clamp-2">
+          <span className="text-black text-center break-all line-clamp-2">
             {file.name}
           </span>
           {!file.isDirectory && (
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-700">
               {formatSize(file.size)}
             </span>
           )}
@@ -100,8 +100,10 @@ export function GridView({
   };
 
   return (
-    <div className="grid grid-cols-4 gap-4 p-4 overflow-y-auto custom-scrollbar">
-      {files.map(renderFileItem)}
+    <div className="custom-scrollbar flex-1">
+      <div className="grid grid-cols-4 gap-4 overflow-y-auto p-4">
+        {files.map(renderFileItem)}
+      </div>
     </div>
   );
 }

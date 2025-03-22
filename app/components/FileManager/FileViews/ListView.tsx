@@ -64,7 +64,7 @@ export function ListView({
           ) : (
             <File className="w-5 h-5 mx-3 text-gray-400 flex-shrink-0" />
           )}
-          <span className="truncate text-sm font-medium text-black">
+          <span className="truncate text-md font-medium text-black">
             {file.name}
           </span>
         </div>
@@ -108,7 +108,7 @@ export function ListView({
   };
 
   return (
-    <div className="bg-white border rounded-lg divide-y divide-gray-100 flex-1 overflow-y-auto custom-scrollbar">
+    <div className="bg-white divide-y divide-gray-200 flex-1 overflow-y-auto custom-scrollbar ">
       {files.map(renderFileItem)}
     </div>
   );

@@ -9,7 +9,7 @@ export function SelectedFileGroup() {
   if (selectedFiles.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-1 w-full">
+    <div className="flex flex-wrap gap-2 w-full">
       {selectedFiles.map((file) => {
         const isDirectory = file.isDirectory;
         return (
