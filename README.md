@@ -1,5 +1,3 @@
-<https://github.com/user-attachments/assets/f72e1f7d-3c84-4429-a465-23dff3d3bd63>
-
 # Getting Started
 
 ## Set Up Environment Variables
@@ -15,11 +13,13 @@ LANGSMITH_API_KEY=
 OPENAI_MODEL=
 OPENAI_API_KEY=
 OPENAI_BASE_URL=
+OSS_BASE_PATH=./packages/powerExcelMCP/excel_files
 ```
 
 ## Development
 
 ```bash
+git submodule update --init --recursive
 pnpm run dev
 ```
 
@@ -36,31 +36,43 @@ The codebase is split into two main parts:
    2. `/mcp-config.example.json` - An example MCP config file can import from frontend.
 
 ```mermaid
-graph TB
-    subgraph Frontend[Frontend Application]
-        UI[UI Layer]
-        State[State Management]
-        CopilotKit[CopilotKit]
+flowchart TB
+    subgraph Frontend["前端应用层"]
+        UI[对话组件]
+        SDK[CopilotKit SDK]
+        Tools[资源浏览器]
+    end
+    subgraph Agent["Agent 层"]
+        Engine[LangGraph 引擎]
+        Toolkit[工具集]
+    end
+    subgraph KnowledgeBase["知识库"]
+        Memory[记忆体]
+        ExtKnowledge[知识库扩展]
+    end
+    subgraph Server["MCP 服务"]
+        Endpoint[SSE 接口]
+        ToolMgr[Tools]
+    end
+    subgraph Workspace["工作空间"]
+        FS[文件系统]
+        DB[数据库]
+        Config[配置管理]
+    end
+    subgraph External["外部服务层"]
+        Storage[存储服务]
+        Search[搜索服务]
+        LLM[大模型服务]
+        Ops[运维服务]
     end
 
-    subgraph Agent[LangGraph Agent]
-        LG[LangGraph]
-        Tools[Tools]
-    end
+    Humnan["用户"] --> UI & Tools
+    Tools --> Workspace
+    Engine --> Memory & ExtKnowledge & LLM & Server
+    Endpoint --> ToolMgr
+    ToolMgr --> External & Workspace
+    UI --> SDK
+    Toolkit --> Engine
+    SDK --> Toolkit
 
-    subgraph Server[MCP Server]
-        API[API Endpoints]
-        Config[MCP Config]
-    end
-
-    UI --> CopilotKit
-    CopilotKit --> State
-    State --> Agent
-    LG --> Tools
-    Tools --> Server
-    API --> Config
-
-    style Frontend fill:#f9f,stroke:#333,stroke-width:2px
-    style Agent fill:#bbf,stroke:#333,stroke-width:2px
-    style Server fill:#bfb,stroke:#333,stroke-width:2px
 ```
