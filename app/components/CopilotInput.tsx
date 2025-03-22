@@ -1,45 +1,71 @@
 import { InputProps } from "@copilotkit/react-ui";
-import { ArrowUpFromDot, DeleteIcon, Eraser, SendIcon } from "lucide-react";
-import { useRef } from "react";
+import { ArrowUpFromDot, Eraser } from "lucide-react";
+import { Mentions } from "antd";
+import { JSX, useRef, useState } from "react";
+import "./CopilotInput.css";
+import { useFileSystem } from "./FileManager/FileSystemContext";
 export default function CopilotInput({
   inProgress,
   onSend,
   onReset,
-}: InputProps & { onReset?: () => void }) {
+  children,
+}: InputProps & { children: JSX.Element; onReset?: () => void }) {
+  const system = useFileSystem();
   const handleSubmit = (value: string) => {
-    if (value?.trim()) onSend(value);
+    if (value?.trim()) {
+      const filePrefix =
+        system.selectedFiles.length > 0
+          ? `下面是用户选中的文件：\n${system.selectedFiles
+              .map((i, index) => {
+                return `${index + 1}. ${i.path} `;
+              })
+              .join("\n")}\n`
+          : "";
+      system.clearSelection();
+      onSend(filePrefix + value);
+    }
   };
-  const input = useRef<HTMLInputElement>(null);
+  const input = useRef<any>(null);
+  const [value, setValue] = useState("");
   const wrapperStyle =
     "flex flex-col items-center gap-2 p-4 rounded-t-4xl border border-gray-200 bg-white shadow-xs";
-  const inputStyle =
-    "w-full flex-1 px-2 pb-2.5 pt-1 focus:outline-none transition-all duration-200 disabled:bg-gray-50 placeholder-gray-400";
   const buttonStyle =
     "w-8 h-8 flex-none rounded-full border text-gray-600 hover:text-gray-800 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer";
 
   return (
     <section
+      className="copilot-input"
       style={{
         fontFamily: "'LXGW WenKai Light'",
       }}
     >
       <div className={wrapperStyle}>
-        <input
+        {children}
+        <Mentions
           ref={input}
+          autoSize
+          variant="borderless"
+          style={{ width: "100%" }}
           disabled={inProgress}
-          type="text"
           placeholder={`${
             globalThis.navigator?.platform?.toLowerCase?.()?.includes?.("mac")
               ? "⌘"
               : "Ctrl"
           } + Enter 向 Agent 发送信息`}
-          className={inputStyle}
+          value={value}
+          onChange={setValue}
           onKeyDown={(e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-              handleSubmit(e.currentTarget.value);
-              e.currentTarget.value = "";
+              handleSubmit(value);
+              setValue("");
             }
           }}
+          options={[
+            {
+              value: "llm-agent",
+              label: "大模型助手",
+            },
+          ]}
         />
         <div className="w-full flex">
           <button
@@ -55,8 +81,8 @@ export default function CopilotInput({
             disabled={inProgress}
             className={buttonStyle + " bg-gray-50"}
             onClick={(e) => {
-              handleSubmit(input.current!.value);
-              input.current!.value = "";
+              handleSubmit(value);
+              setValue("");
             }}
             aria-label="Send message"
           >

@@ -1,7 +1,5 @@
 "use client";
-
 import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
 import { join } from "path";
 import {
   File,
@@ -11,8 +9,11 @@ import {
   Trash2,
   FolderPlus,
 } from "lucide-react";
+import { SelectedFileGroup } from "./SelectedFileGroup";
 import { Modal, message, Spin, Popconfirm, Space } from "antd";
 import { Download } from "lucide-react";
+import { useFileSystem } from "./FileSystemContext";
+import { Checkbox } from "antd";
 
 interface FileInfo {
   name: string;
@@ -27,8 +28,7 @@ interface DirectoryInfo extends FileInfo {
 }
 
 export default function FileList() {
-  const router = useRouter();
-  const pathname = usePathname();
+  const filesystem = useFileSystem();
   const [currentPath, setCurrentPath] = useState("");
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [loading, setLoading] = useState(false);
@@ -180,61 +180,82 @@ export default function FileList() {
     setCurrentPath(parentPath);
   };
 
-  const renderFileItem = (file: FileInfo) => (
-    <div
-      key={file.name}
-      className={`flex items-center justify-between p-3 hover:bg-gray-50 ${file.isDirectory ? "cursor-pointer" : ""}`}
-      onClick={() =>
-        file.isDirectory && setCurrentPath(join(currentPath, file.name))
-      }
-    >
-      <div className="flex items-center flex-1 min-w-0">
-        {file.isDirectory ? (
-          <Folder className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0" />
-        ) : (
-          <File className="w-5 h-5 mr-3 text-gray-400 flex-shrink-0" />
-        )}
-        <span className="truncate text-sm font-medium text-gray-700">
-          {file.name}
-        </span>
-        {!file.isDirectory && (
-          <span className="ml-3 text-xs text-gray-400">
-            {formatSize(file.size)}
-          </span>
-        )}
-      </div>
-      <div className="flex items-center space-x-2 ml-4">
-        {!file.isDirectory && (
-          <button
+  const renderFileItem = (file: FileInfo) => {
+    const filePath = join(currentPath, file.name);
+    const isSelected = filesystem.selectedFiles.some(
+      (file) => file.path === filePath,
+    );
+
+    return (
+      <div
+        key={file.name}
+        className={`flex items-center justify-between p-3 hover:bg-gray-50 ${file.isDirectory ? "cursor-pointer" : ""}`}
+        onClick={(e) => {
+          if (file.isDirectory) {
+            setCurrentPath(join(currentPath, file.name));
+          }
+        }}
+      >
+        <div className="flex items-center flex-1 min-w-0">
+          <Checkbox
+            checked={isSelected}
             onClick={(e) => {
               e.stopPropagation();
-              handleFileClick(file);
+              if (isSelected) {
+                filesystem.unselectFile(filePath);
+              } else {
+                filesystem.selectFile(filePath, file.isDirectory);
+              }
             }}
-            className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors duration-200"
+            className="mr-2"
+          />
+          {file.isDirectory ? (
+            <Folder className="w-5 h-5 mx-3 text-blue-500 flex-shrink-0" />
+          ) : (
+            <File className="w-5 h-5 mx-3 text-gray-400 flex-shrink-0" />
+          )}
+          <span className="truncate text-sm font-medium text-gray-700">
+            {file.name}
+          </span>
+          {!file.isDirectory && (
+            <span className="ml-3 text-xs text-gray-400">
+              {formatSize(file.size)}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center space-x-2 ml-4">
+          {!file.isDirectory && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleFileClick(file);
+              }}
+              className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors duration-200"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+          )}
+          <Popconfirm
+            title="确认删除"
+            description={`确定要删除 ${file.name} 吗？`}
+            onConfirm={(e) => {
+              e?.stopPropagation();
+              handleDelete(file);
+            }}
+            okText="确定"
+            cancelText="取消"
           >
-            <Download className="w-4 h-4" />
-          </button>
-        )}
-        <Popconfirm
-          title="确认删除"
-          description={`确定要删除 ${file.name} 吗？`}
-          onConfirm={(e) => {
-            e?.stopPropagation();
-            handleDelete(file);
-          }}
-          okText="确定"
-          cancelText="取消"
-        >
-          <button
-            onClick={(e) => e.stopPropagation()}
-            className="p-1.5 text-gray-400 hover:text-red-600 transition-colors duration-200"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </Popconfirm>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              className="p-1.5 text-gray-400 hover:text-red-600 transition-colors duration-200"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </Popconfirm>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   useEffect(() => {
     if (error) {
@@ -243,7 +264,7 @@ export default function FileList() {
   }, [error]);
 
   return (
-    <div className="p-4 h-full flex flex-col">
+    <div className="p-4 h-full flex flex-col gap-4">
       <div className="mb-4 flex items-center justify-between bg-white p-4 rounded-lg shadow-sm">
         <div className="flex items-center space-x-4">
           <button
@@ -314,6 +335,9 @@ export default function FileList() {
           {files.map(renderFileItem)}
         </div>
       )}
+      <div className="bg-white border-t border-gray-200 rounded-lg overflow-hidden p-4">
+        <SelectedFileGroup />
+      </div>
     </div>
   );
 }
