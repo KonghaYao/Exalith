@@ -12,13 +12,14 @@ import { DefaultInstructions } from "./DefaultInstructions";
 import { ArtifactsProvider } from "./components/Artifacts/ArtifactsContext";
 import { ArtifactsWrapper } from "./components/Artifacts/Wrapper";
 import { ResourceProvider } from "./components/Artifacts/ResourceContext";
-import { FileText, Settings } from "lucide-react";
+import FileList from "./components/FileManager/FileList";
+import { FileText, Settings, Folder } from "lucide-react";
 
 export default function Home() {
   const [chatKey, setChatKey] = useState(0);
   const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
   const [instructions, setInstructions] = useState(DefaultInstructions);
-  const [tab, setTab] = useState("artifacts");
+  const [tab, setTab] = useState("files");
 
   return (
     <ArtifactsProvider key={chatKey}>
@@ -80,6 +81,13 @@ export default function Home() {
                     <Settings className="h-4 w-4" />
                     配置
                   </button>
+                  <button
+                    className={`cursor-pointer px-4 py-2 inline-flex items-center gap-2 ${tab === "files" ? "border-b-2 border-blue-300" : ""}`}
+                    onClick={() => setTab("files")}
+                  >
+                    <Folder className="h-4 w-4" />
+                    文件
+                  </button>
                 </div>
 
                 <div
@@ -93,6 +101,12 @@ export default function Home() {
                   className={`${tab === "artifacts" ? "flex-1 overflow-y-auto" : "hidden"}`}
                 >
                   <ArtifactsWrapper />
+                </div>
+
+                <div
+                  className={`${tab === "files" ? "flex-1 overflow-y-auto" : "hidden"}`}
+                >
+                  <FileList />
                 </div>
               </div>
             </section>
