@@ -8,6 +8,8 @@ import {
   RotateCw,
   LayoutGrid,
   List,
+  MoveLeft,
+  ChevronLeft,
 } from "lucide-react";
 import { SelectedFileGroup } from "./SelectedFileGroup";
 import { Modal, message, Spin, Space, Button, Alert } from "antd";
@@ -185,7 +187,7 @@ export default function FileList() {
             disabled={!currentPath}
             className="flex items-center p-2 text-sm bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 disabled:opacity-50 transition-colors duration-200"
           >
-            <ArrowUp className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <span className="text-gray-600 text-sm">
             当前路径: /{currentPath || ""}
@@ -239,7 +241,7 @@ export default function FileList() {
         />
       </Modal>
 
-      <div className="flex justify-end border-x p-4 bg-white border-b">
+      <div className="flex justify-end p-4 bg-white border-b">
         <SelectedFileGroup />
         <Space>
           <Button
@@ -256,11 +258,11 @@ export default function FileList() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12">
+        <div className="text-center py-12 flex-1">
           <Spin size="large" tip="加载中..." />
         </div>
       ) : files.length === 0 ? (
-        <div className="text-center py-12 text-gray-400">
+        <div className="text-center py-12 text-gray-400 flex-1">
           <div className="text-6xl mb-4">📁</div>
           <p>当前文件夹为空</p>
         </div>

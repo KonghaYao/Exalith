@@ -71,9 +71,9 @@ export default function Home() {
               </section>
               <CopilotActionHandler />
               {/* Main content area */}
-              <section className="flex-1 py-6 pr-6 h-screen">
-                <div className="h-full overflow-y-auto  flex flex-col border rounded-4xl">
-                  <div className="flex border-b bg-white">
+              <section className="flex-1 py-6 h-screen">
+                <div className="h-full overflow-y-auto  flex flex-col border-y border-l border-gray-300 rounded-l-4xl bg-white py-6">
+                  <div className="flex border-b">
                     <button
                       className={`cursor-pointer px-4 py-2 inline-flex items-center gap-2 ${tab === "artifacts" ? "border-b-2 border-blue-300" : ""}`}
                       onClick={() => setTab("artifacts")}

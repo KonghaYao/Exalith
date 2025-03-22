@@ -28,7 +28,7 @@ export default function CopilotInput({
   const input = useRef<any>(null);
   const [value, setValue] = useState("");
   const wrapperStyle =
-    "flex flex-col items-center gap-2 p-4 rounded-t-4xl border border-gray-200 bg-white shadow-xs";
+    "flex flex-col items-center gap-2 p-4 rounded-t-4xl border border-gray-200 bg-white shadow-xl";
   const buttonStyle =
     "w-8 h-8 flex-none rounded-full border text-gray-600 hover:text-gray-800 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer";
 
@@ -79,7 +79,9 @@ export default function CopilotInput({
           <div className="flex-1"></div>
           <button
             disabled={inProgress}
-            className={buttonStyle + " bg-gray-50"}
+            className={
+              "w-8 h-8 flex-none rounded-full border hover:bg-green-600 disabled:bg-green-200 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer bg-green-500 text-white"
+            }
             onClick={(e) => {
               handleSubmit(value);
               setValue("");
