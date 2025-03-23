@@ -6,6 +6,7 @@ import crawlAgent from "./crawlAgent.js";
 import FileSystem from "./filesystem.js";
 import npmBot from "./npmAgent.js";
 import openSourceBot from "./opensource.js";
+import pollinationBot from "./pollination.js";
 const app = express();
 
 const transportStore = new Map<string, Map<string, SSEServerTransport>>();
@@ -14,6 +15,7 @@ const appMap = new Map<string, McpServer>([
   ["filesystem_bot", FileSystem],
   ["npm_bot", npmBot],
   ["opensource_bot", openSourceBot],
+  ["image_gen_bot", pollinationBot],
 ]);
 
 app.get(`/:id/:name/sse`, async (req, res) => {
@@ -33,7 +35,7 @@ app.get(`/:id/:name/sse`, async (req, res) => {
     const transport = userTransports.get(appName);
     transport!.close();
   }
-  
+
   console.log(`${userId} connected to ${appName}`);
   const port = new SSEServerTransport(`/${userId}/${appName}/message`, res);
   userTransports.set(appName, port);
