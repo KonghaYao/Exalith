@@ -187,46 +187,54 @@ export default function FileList() {
   }, [error]);
 
   return (
-    <div className="h-full flex flex-col bg-white">
-      <div className=" flex items-center justify-between border-b p-4">
+    <div className="h-full flex flex-col  bg-gray-100">
+      <header className="flex items-center justify-between border-b p-4 ">
         <div className="flex items-center space-x-4">
-          <button
+          <Button
             onClick={navigateUp}
             disabled={!currentPath}
-            className="flex items-center p-2 text-sm bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 disabled:opacity-50 transition-colors duration-200"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <span className="text-gray-600 text-sm">
-            当前路径: /{currentPath || ""}
-          </span>
+            type="primary"
+            icon={<ChevronLeft className="w-4 h-4" />}
+          ></Button>
         </div>
-        <Space>
-          <button
-            className="flex items-center p-2 text-sm bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 cursor-pointer transition-colors duration-200"
+        <Space className="flex-none">
+          <input
+            type="file"
+            onChange={handleUpload}
+            className="hidden"
+            id="file-upload"
+          />
+          <Button
+            type="default"
+            icon={
+              <label htmlFor="file-upload" className="cursor-pointer">
+                <Upload className="w-4 h-4" />
+              </label>
+            }
+          ></Button>
+          <Button
+            type="default"
+            icon={<RotateCw className="w-4 h-4" />}
             onClick={() => loadFiles()}
-          >
-            <RotateCw className="w-4 h-4" />
-          </button>
-          <button
-            className="flex items-center p-2 text-sm bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 cursor-pointer transition-colors duration-200"
+          ></Button>
+          <Button
+            type="default"
+            icon={<FolderPlus className="w-4 h-4" />}
             onClick={() => setShowNewFolderDialog(true)}
-          >
-            <FolderPlus className="w-4 h-4" />
-          </button>
-          <span className="flex items-center p-2 text-sm bg-green-100 text-green-600 rounded-md hover:bg-green-200 cursor-pointer transition-colors duration-200">
-            <input
-              type="file"
-              onChange={handleUpload}
-              className="hidden"
-              id="file-upload"
-            />
-            <label htmlFor="file-upload">
-              <Upload className="w-4 h-4" />
-            </label>
-          </span>
+          ></Button>
+
+          <Button
+            type={viewType === "list" ? "primary" : "default"}
+            icon={<List className="w-4 h-4" />}
+            onClick={() => setViewType("list")}
+          />
+          <Button
+            type={viewType === "grid" ? "primary" : "default"}
+            icon={<LayoutGrid className="w-4 h-4" />}
+            onClick={() => setViewType("grid")}
+          />
         </Space>
-      </div>
+      </header>
 
       <Modal
         title="新建文件夹"
@@ -249,28 +257,12 @@ export default function FileList() {
         />
       </Modal>
 
-      <div className="flex justify-end p-4 bg-white border-b">
-        <SelectedFileGroup />
-        <Space>
-          <Button
-            type={viewType === "list" ? "primary" : "default"}
-            icon={<List className="w-4 h-4" />}
-            onClick={() => setViewType("list")}
-          />
-          <Button
-            type={viewType === "grid" ? "primary" : "default"}
-            icon={<LayoutGrid className="w-4 h-4" />}
-            onClick={() => setViewType("grid")}
-          />
-        </Space>
-      </div>
-
       {loading ? (
-        <div className="text-center py-12 flex-1">
+        <div className="text-center py-12 flex-1 bg-white">
           <Spin size="large" tip="加载中..." />
         </div>
       ) : files.length === 0 ? (
-        <div className="text-center py-12 text-gray-400 flex-1">
+        <div className="text-center py-12 text-gray-400 flex-1 bg-white">
           <div className="text-6xl mb-4">📁</div>
           <p>当前文件夹为空</p>
         </div>
@@ -301,6 +293,15 @@ export default function FileList() {
           onUnselect={(filePath) => filesystem.unselectFile(filePath)}
         />
       )}
+
+      <footer className="px-4 py-2 flex flex-col gap-2">
+        <span className="text-gray-600 text-sm">
+          当前路径: /{currentPath || ""}
+        </span>
+        <nav className="flex justify-end">
+          <SelectedFileGroup />
+        </nav>
+      </footer>
       <Alert
         message="点击选中文件，可以加入上下文"
         type="warning"

@@ -56,7 +56,7 @@ export function GridView({
     return (
       <div
         key={file.name}
-        className={`relative p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-500 transition-colors ${file.isDirectory ? "cursor-pointer" : ""}`}
+        className={`relative p-4 bg-white rounded-lg border border-gray-300 hover:border-gray-400 transition-colors ${file.isDirectory ? "cursor-pointer" : ""}`}
         onClick={(e) => {
           if (file.isDirectory) {
             onDirectoryClick(join(currentPath, file.name));
@@ -112,7 +112,7 @@ export function GridView({
   };
 
   return (
-    <div className="custom-scrollbar flex-1">
+    <div className="custom-scrollbar flex-1 bg-white">
       <div className="grid grid-cols-4 gap-4 overflow-y-auto p-4">
         {files.map(renderFileItem)}
       </div>

@@ -1,22 +1,7 @@
 {
-  "crawl_bot": {
-    "url": "http://localhost:6798/admin/crawl_bot/sse",
+  "excel-helper": {
+    "url": "http://localhost:8000/sse",
     "transport": "sse",
     "enable": true
-  },
-  "sheets_bot": {
-    "url": "http://localhost:6798/admin/sheets_bot/sse",
-    "transport": "sse",
-    "enable": false
-  },
-  "npm_bot": {
-    "url": "http://localhost:6798/admin/npm_bot/sse",
-    "transport": "sse",
-    "enable": true
-  },
-  "opensource_bot": {
-    "url": "http://localhost:6798/admin/opensource_bot/sse",
-    "transport": "sse",
-    "enable": false
   }
 }

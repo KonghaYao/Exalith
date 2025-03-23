@@ -78,11 +78,13 @@ export const ImagePreview = ({ data }: PreviewProps) => {
 
   return (
     <div className="w-full h-full flex items-center justify-center p-4">
-      <img
-        src={url}
-        alt="preview"
-        className="max-w-full max-h-full object-contain"
-      />
+      {url && (
+        <img
+          src={url}
+          alt="preview"
+          className="max-w-full max-h-full object-contain"
+        />
+      )}
     </div>
   );
 };

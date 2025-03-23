@@ -81,14 +81,14 @@ export const CopilotPreview = (props: { enable?: boolean }) => {
 
       useEffect(() => {
         if (!respond || typeof respond !== "function") return;
-        console.log(previewState);
         if (previewState.error) {
           respond({ status: "error", message: previewState.error });
         } else if (!previewState.previewData && !previewState.loading) {
           respond({ status: "empty", message: "暂无预览内容" });
-        } else {
+        } else if (previewState.previewData) {
+          console.log("done");
           respond({
-            status: "success",
+            status: "done",
             message: "已经帮用户预览完成，用户已看到预览内容",
             data: {
               filePath: args.filePath,
@@ -98,11 +98,11 @@ export const CopilotPreview = (props: { enable?: boolean }) => {
           });
           tab.setTab("preview");
         }
-      }, [previewState, respond]);
+      }, [previewState, previewState.previewData]);
 
       return (
         <button
-          className="flex items-center gap-2 w-full h-full py-1 px-2 rounded-2xl bg-gradient-to-t from-gray-300 to-white border border-gray-300 cursor-pointer"
+          className="flex items-center gap-2 w-full h-full py-1 px-2 rounded-2xl bg-gradient-to-l from-gray-200 to-white border border-gray-300 cursor-pointer"
           disabled={!previewState.previewData}
           onClick={() => tab.setTab("preview")}
         >
@@ -157,7 +157,7 @@ export const PreviewComponent = () => {
     !previewFile.previewState.filePath
   ) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-full text-gray-400">
+      <div className="bg-gray-100 flex flex-col items-center justify-center w-full h-full text-gray-500">
         <svg
           className="w-12 h-12 mb-4"
           fill="none"
@@ -185,7 +185,7 @@ export const PreviewComponent = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="p-4 border-b border-gray-200 bg-gray-50">
+      <div className="p-4 border-b border-gray-200 bg-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <span className="font-medium">
@@ -196,7 +196,9 @@ export const PreviewComponent = () => {
             </span>
           </div>
           <div className="text-sm text-gray-500">
-            {previewFile.previewState.previewType || "未知类型"}
+            {previewFile.previewState.previewType ||
+              getFileType(previewFile.previewState.filePath) ||
+              "未知类型"}
           </div>
         </div>
       </div>
