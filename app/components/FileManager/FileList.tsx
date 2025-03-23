@@ -16,6 +16,8 @@ import { Modal, message, Spin, Space, Button, Alert } from "antd";
 import { useFileSystem } from "./FileSystemContext";
 import { ListView } from "./FileViews/ListView";
 import { GridView } from "./FileViews/GridView";
+import { useFilePreview } from "../FilePreview/FilePreviewContext";
+import { useTab } from "../TabContext";
 
 export interface FileInfo {
   name: string;
@@ -37,6 +39,7 @@ export default function FileList() {
   const [error, setError] = useState("");
   const [showNewFolderDialog, setShowNewFolderDialog] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
+  const previewFile = useFilePreview();
 
   useEffect(() => {
     loadFiles();
@@ -66,13 +69,16 @@ export default function FileList() {
       setLoading(false);
     }
   };
-
-  const handleFileClick = async (file: FileInfo) => {
+  const tab = useTab();
+  const handleFileClick = async (file: FileInfo, preview = false) => {
     if (!file.isDirectory) {
       try {
-        const response = await fetch(
-          `/api/oss/${encodeURIComponent(join(currentPath, file.name))}`,
-        );
+        if (preview) {
+          tab.setTab("preview");
+          return previewFile.preview(join(currentPath, file.name));
+        }
+        const path = `/api/oss/${encodeURIComponent(join(currentPath, file.name))}`;
+        const response = await fetch(path);
         if (!response.ok) throw new Error("Download failed");
 
         const blob = await response.blob();
@@ -85,8 +91,10 @@ export default function FileList() {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       } catch (err) {
-        console.error("Download failed:", err);
-        setError("Failed to download file");
+        console.error(preview ? "Preview failed:" : "Download failed:", err);
+        setError(
+          preview ? "Failed to preview file" : "Failed to download file",
+        );
       }
     }
   };

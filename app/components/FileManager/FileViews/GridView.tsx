@@ -9,7 +9,7 @@ interface GridViewProps {
   files: FileInfo[];
   currentPath: string;
   selectedFiles: { path: string }[];
-  onFileClick: (file: FileInfo) => void;
+  onFileClick: (file: FileInfo, preview?: boolean) => void;
   onDirectoryClick: (path: string) => void;
   onDelete: (file: FileInfo) => void;
   onSelect: (filePath: string, isDirectory: boolean) => void;
@@ -31,7 +31,14 @@ export function GridView({
     const isSelected = selectedFiles.some((f) => f.path === filePath);
     const items: MenuProps["items"] = [
       {
-        key: "delete",
+        key: "preview",
+        label: "预览",
+        onClick: () => {
+          onFileClick(file, true);
+        },
+      },
+      {
+        key: "download",
         label: "下载",
         onClick: () => {
           onFileClick(file);
@@ -59,6 +66,11 @@ export function GridView({
             } else {
               onSelect(filePath, file.isDirectory);
             }
+          }
+        }}
+        onDoubleClick={(e) => {
+          if (!file.isDirectory) {
+            onFileClick(file, true);
           }
         }}
       >

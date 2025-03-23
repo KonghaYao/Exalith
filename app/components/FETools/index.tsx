@@ -1,21 +1,7 @@
-import { CopilotMermaid } from "./CopilotMermaid";
-import { CopilotChart } from "./CopilotChart";
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 import { CopilotSelectButton } from "./CopilotSelectButton";
-import { CopilotMarkdown } from "./CopilotMarkdown";
+import { CopilotPreview } from "../FilePreview/CopilotPreview";
 export const plugins = [
-  {
-    name: "Markdown",
-    code: "Markdown",
-    description: "Markdown显示工具",
-    component: CopilotMarkdown,
-  },
-  {
-    name: "mermaid",
-    code: "mermaid",
-    description: "绘图工具",
-    component: CopilotMermaid,
-  },
   {
     name: "select_buttons",
     code: "select_buttons",
@@ -23,16 +9,16 @@ export const plugins = [
     component: CopilotSelectButton,
   },
   {
-    name: "科学绘图",
-    code: "echarts",
-    description: "绘制柱状图等",
-    component: CopilotChart,
+    name: "preview_file",
+    code: "preview_file",
+    description: "预览远程文件",
+    component: CopilotPreview,
   },
 ];
 export const CopilotFEPlugin = () => {
   const [selectedPlugins, setSelectedPlugins] = useLocalStorage<string[]>(
     "mcp-selected-plugins",
-    plugins.map(i => i.code),
+    plugins.map((i) => i.code),
   );
   return (
     <div className="grid  grid-cols-2 gap-4 p-4">
@@ -56,8 +42,9 @@ export const CopilotFEPlugin = () => {
                 {plugin.code}
               </h3>
               <div
-                className={`w-4 h-4 flex items-center justify-center rounded-full ${isSelected ? "bg-green-500" : "bg-gray-200"
-                  }`}
+                className={`w-4 h-4 flex items-center justify-center rounded-full ${
+                  isSelected ? "bg-green-500" : "bg-gray-200"
+                }`}
               >
                 {isSelected && (
                   <svg

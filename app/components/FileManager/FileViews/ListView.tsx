@@ -9,7 +9,7 @@ interface ListViewProps {
   files: FileInfo[];
   currentPath: string;
   selectedFiles: { path: string }[];
-  onFileClick: (file: FileInfo) => void;
+  onFileClick: (file: FileInfo, preview?: boolean) => void;
   onDirectoryClick: (path: string) => void;
   onDelete: (file: FileInfo) => void;
   onSelect: (filePath: string, isDirectory: boolean) => void;
@@ -45,6 +45,11 @@ export function ListView({
             }
           }
         }}
+        onDoubleClick={(e) => {
+          if (!file.isDirectory) {
+            onFileClick(file, true);
+          }
+        }}
       >
         <div className="flex items-center flex-1 min-w-0">
           <Checkbox
@@ -78,7 +83,7 @@ export function ListView({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onFileClick(file);
+                onFileClick(file, false);
               }}
               className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
             >
