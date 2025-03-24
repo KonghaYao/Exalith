@@ -113,8 +113,9 @@ async def chat_node(
                 create_manage_memory_tool(namespace=("memories",)),
                 create_search_memory_tool(namespace=("memories",)),
             ]
-            + mcp_tools,  # Memory tools use LangGraph's BaseStore for persistence (4)
+            + mcp_tools,
             store=store,
+            state_modifier="中文回复, 你不能回复链接给用户，预览文件请使用 show_file_to_user 工具",
         )
 
         # Prepare messages for the react agent

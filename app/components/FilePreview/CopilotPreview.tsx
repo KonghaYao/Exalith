@@ -45,9 +45,9 @@ const getFileType = (filePath: string) => {
 export const CopilotPreview = (props: { enable?: boolean }) => {
   const tab = useTab();
   useCopilotAction({
-    name: "提供文件预览功能",
+    name: "show_file_to_user",
     description:
-      "可以预览各种文件给用户展示，比如图片、视频、音频、文本等，只是展示，并没有进一步的功能",
+      "可以给用户预览各种文件，比如图片、视频、音频、文本等。可以用于展示生成的结果文件",
     parameters: [
       {
         name: "filePath",

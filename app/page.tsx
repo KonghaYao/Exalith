@@ -13,8 +13,8 @@ function Home() {
   const [chatKey, setChatKey] = useState(0);
 
   return (
-    <FileSystemProvider>
-      <FilePreviewProvider>
+    <FileSystemProvider key={chatKey}>
+      <FilePreviewProvider key={chatKey}>
         <CopilotKit
           runtimeUrl="/api/copilotkit"
           showDevConsole={false}
