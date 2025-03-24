@@ -28,6 +28,23 @@ export async function GET(
       return new Response(JSON.stringify(files));
     } else {
       const fileContent = await fs.readFile(filePath);
+      const searchParams = request.nextUrl.searchParams;
+      const isPreview = searchParams.get("preview") === "true";
+
+      // 5MB in bytes
+      const MAX_PREVIEW_SIZE = 5 * 1024 * 1024;
+
+      if (isPreview && stats.size > MAX_PREVIEW_SIZE) {
+        return new Response(
+          JSON.stringify({
+            error: "文件超过 5 MB, 不进行预览",
+            size: stats.size,
+            maxPreviewSize: MAX_PREVIEW_SIZE,
+          }),
+          { status: 200 },
+        );
+      }
+
       return new Response(fileContent);
     }
   } catch (error) {

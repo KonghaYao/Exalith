@@ -46,7 +46,8 @@ export const CopilotPreview = (props: { enable?: boolean }) => {
   const tab = useTab();
   useCopilotAction({
     name: "提供文件预览功能",
-    description: "可以预览各种文件给用户展示，比如图片、视频、音频、文本等",
+    description:
+      "可以预览各种文件给用户展示，比如图片、视频、音频、文本等，只是展示，并没有进一步的功能",
     parameters: [
       {
         name: "filePath",
@@ -202,7 +203,7 @@ export const PreviewComponent = () => {
           </div>
         </div>
       </div>
-      <div className="p-4 flex-1">
+      <div className="p-4 flex-1 max-w-xl">
         {(() => {
           const type =
             previewFile.previewState.previewType ||

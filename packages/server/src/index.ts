@@ -7,7 +7,6 @@ import FileSystem from "./filesystem.js";
 import npmBot from "./npmAgent.js";
 import openSourceBot from "./opensource.js";
 import pollinationBot from "./pollination.js";
-import databaseBot from "./database.js";
 const app = express();
 
 const transportStore = new Map<string, Map<string, SSEServerTransport>>();

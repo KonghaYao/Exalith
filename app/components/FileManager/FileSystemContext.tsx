@@ -35,7 +35,7 @@ interface FileSystemContextType {
   clearSelection: () => void;
   loadFiles: () => Promise<void>;
   navigateUp: () => void;
-  getFile: (filePath: string) => Promise<Blob>;
+  getFile: (filePath: string, preview: boolean) => Promise<Blob>;
 }
 
 const FileSystemContext = createContext<FileSystemContextType | null>(null);
@@ -102,11 +102,14 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
     setCurrentPath(parentPath);
   }, [currentPath]);
 
-  const getFile = useCallback(async (filePath: string) => {
+  const getFile = useCallback(async (filePath: string, preview: boolean) => {
     try {
       setLoading(true);
       setError("");
-      const response = await fetch(`/api/oss/${encodeURIComponent(filePath)}`);
+      const response = await fetch(
+        `/api/oss/${encodeURIComponent(filePath)}` +
+          (preview ? "?preview=true" : ""),
+      );
 
       if (!response.ok) {
         throw new Error("Failed to get file");

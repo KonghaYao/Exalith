@@ -33,7 +33,7 @@ function expandHome(filepath: string): string {
 const allowedDirectory = path.resolve("../powerExcelMCP/excel_files");
 const getUserAllowedDirectory = (session_id: string) => {
   if (!session_id) throw new Error("session_id is required");
-  session_id = ""
+  session_id = "";
   return path.join(allowedDirectory, session_id);
 };
 

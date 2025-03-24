@@ -58,7 +58,7 @@ export const FilePreviewProvider = ({
 
     try {
       setPreviewState((prev) => ({ ...prev, loading: true, error: null }));
-      const blob = await filesystem.getFile(filePath!);
+      const blob = await filesystem.getFile(filePath!, true);
       setPreviewState((prev) => ({
         ...prev,
         loading: false,
