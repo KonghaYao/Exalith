@@ -147,6 +147,30 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tuna"
 
 [[package]]
+name = "aiosqlite"
+version = "0.21.0"
+description = "asyncio bridge to the standard sqlite3 module"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "aiosqlite-0.21.0-py3-none-any.whl", hash = "sha256:2549cf4057f95f53dcba16f2b64e8e2791d7e1adedb13197dd8ed77bb226d7d0"},
+    {file = "aiosqlite-0.21.0.tar.gz", hash = "sha256:131bb8056daa3bc875608c631c678cda73922a2d4ba8aec373b19f18c17e7aa3"},
+]
+
+[package.dependencies]
+typing_extensions = ">=4.0"
+
+[package.extras]
+dev = ["attribution (==1.7.1)", "black (==24.3.0)", "build (>=1.2)", "coverage[toml] (==7.6.10)", "flake8 (==7.0.0)", "flake8-bugbear (==24.12.12)", "flit (==3.10.1)", "mypy (==1.14.1)", "ufmt (==2.5.1)", "usort (==1.0.8.post1)"]
+docs = ["sphinx (==8.1.3)", "sphinx-mdinclude (==0.6.1)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tuna"
+
+[[package]]
 name = "annotated-types"
 version = "0.7.0"
 description = "Reusable constraint types to use with typing.Annotated"
@@ -618,23 +642,6 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tuna"
 
 [[package]]
-name = "defusedxml"
-version = "0.7.1"
-description = "XML bomb protection for Python stdlib modules"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-groups = ["main"]
-files = [
-    {file = "defusedxml-0.7.1-py2.py3-none-any.whl", hash = "sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61"},
-    {file = "defusedxml-0.7.1.tar.gz", hash = "sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69"},
-]
-
-[package.source]
-type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
-
-[[package]]
 name = "distro"
 version = "1.9.0"
 description = "Distro - an OS platform information API"
@@ -645,6 +652,29 @@ files = [
     {file = "distro-1.9.0-py3-none-any.whl", hash = "sha256:7bffd925d65168f85027d8da9af6bddab658135b840670a223589bc0c8ef02b2"},
     {file = "distro-1.9.0.tar.gz", hash = "sha256:2fa77c6fd8940f116ee1d6b94a2f90b13b5ea8d019b98bc8bafdcabcdd9bdbed"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tuna"
+
+[[package]]
+name = "dydantic"
+version = "0.0.8"
+description = "Dynamically generate pydantic models from JSON schema."
+optional = false
+python-versions = ">=3.9,<4.0"
+groups = ["main"]
+files = [
+    {file = "dydantic-0.0.8-py3-none-any.whl", hash = "sha256:cd0a991f523bd8632699872f1c0c4278415dd04783e36adec5428defa0afb721"},
+    {file = "dydantic-0.0.8.tar.gz", hash = "sha256:14a31d4cdfce314ce3e69e8f8c7c46cbc26ce3ce4485de0832260386c612942f"},
+]
+
+[package.dependencies]
+pydantic = ">=2,<3"
+
+[package.extras]
+email = ["email-validator (>=2.1,<3.0)"]
 
 [package.source]
 type = "legacy"
@@ -1269,20 +1299,19 @@ reference = "tuna"
 
 [[package]]
 name = "langchain-anthropic"
-version = "0.2.4"
+version = "0.3.10"
 description = "An integration package connecting AnthropicMessages and LangChain"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = "<4.0,>=3.9"
 groups = ["main"]
 files = [
-    {file = "langchain_anthropic-0.2.4-py3-none-any.whl", hash = "sha256:bcb6c2d0df4a67aff52816621079d6e743b260911caccf313a72b33b7edece6f"},
-    {file = "langchain_anthropic-0.2.4.tar.gz", hash = "sha256:0382d4c7b5236839b703f7b72b3e06de4bb5be99104b193f719adbe34c49562b"},
+    {file = "langchain_anthropic-0.3.10-py3-none-any.whl", hash = "sha256:f4aa8ec03b1f5bcfbb73d2db516bddf009bc457e524f1ee8d651c1fe7338603f"},
+    {file = "langchain_anthropic-0.3.10.tar.gz", hash = "sha256:b4364434393476bf076c8326a51261a55d4e4cfefda01b8adf53533e8ebd8ec5"},
 ]
 
 [package.dependencies]
-anthropic = ">=0.30.0,<1"
-defusedxml = ">=0.7.1,<0.8.0"
-langchain-core = ">=0.3.15,<0.4.0"
+anthropic = ">=0.49.0,<1"
+langchain-core = ">=0.3.45,<1.0.0"
 pydantic = ">=2.7.4,<3.0.0"
 
 [package.source]
@@ -1323,14 +1352,14 @@ reference = "tuna"
 
 [[package]]
 name = "langchain-core"
-version = "0.3.45"
+version = "0.3.47"
 description = "Building applications with LLMs through composability"
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["main"]
 files = [
-    {file = "langchain_core-0.3.45-py3-none-any.whl", hash = "sha256:fe560d644c102c3f5dcfb44eb5295e26d22deab259fdd084f6b1b55a0350b77c"},
-    {file = "langchain_core-0.3.45.tar.gz", hash = "sha256:a39b8446495d1ea97311aa726478c0a13ef1d77cb7644350bad6d9d3c0141a0c"},
+    {file = "langchain_core-0.3.47-py3-none-any.whl", hash = "sha256:ef7c78202e6fd9df79fe8128c828d08a95d3878cf4aec282580baf358a3f2ec5"},
+    {file = "langchain_core-0.3.47.tar.gz", hash = "sha256:975a3daabf8e8d583749b3c553cc412d0527d935dfe820317431b475fa0c585a"},
 ]
 
 [package.dependencies]
@@ -1394,19 +1423,19 @@ reference = "tuna"
 
 [[package]]
 name = "langchain-openai"
-version = "0.2.14"
+version = "0.3.9"
 description = "An integration package connecting OpenAI and LangChain"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = "<4.0,>=3.9"
 groups = ["main"]
 files = [
-    {file = "langchain_openai-0.2.14-py3-none-any.whl", hash = "sha256:d232496662f79ece9a11caf7d798ba863e559c771bc366814f7688e0fe664fe8"},
-    {file = "langchain_openai-0.2.14.tar.gz", hash = "sha256:7a514f309e356b182a337c0ed36ab3fbe34d9834a235a3b85cb7f91ae775d978"},
+    {file = "langchain_openai-0.3.9-py3-none-any.whl", hash = "sha256:1ad95c09a620910c39a8eb826eb146bd96bfbc55e4fca78b1e28ffd5e4f5b261"},
+    {file = "langchain_openai-0.3.9.tar.gz", hash = "sha256:a2897d15765a435eff3fed7043235c25ec1e192e6c45a81e9e4fae2951335fb3"},
 ]
 
 [package.dependencies]
-langchain-core = ">=0.3.27,<0.4.0"
-openai = ">=1.58.1,<2.0.0"
+langchain-core = ">=0.3.45,<1.0.0"
+openai = ">=1.66.3,<2.0.0"
 tiktoken = ">=0.7,<1"
 
 [package.source]
@@ -1515,6 +1544,27 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tuna"
 
 [[package]]
+name = "langgraph-checkpoint-sqlite"
+version = "2.0.6"
+description = "Library with a SQLite implementation of LangGraph checkpoint saver."
+optional = false
+python-versions = ">=3.9.0,<4.0.0"
+groups = ["main"]
+files = [
+    {file = "langgraph_checkpoint_sqlite-2.0.6-py3-none-any.whl", hash = "sha256:d4aae7d72c728093f4296266020bf912f3c1e335e27987aa7f63dd22c9ae48c2"},
+    {file = "langgraph_checkpoint_sqlite-2.0.6.tar.gz", hash = "sha256:a58e8371f48854ddc5231bf9a3c3b38679abe2175e7357200f90ba62f3f97ddd"},
+]
+
+[package.dependencies]
+aiosqlite = ">=0.20,<0.22"
+langgraph-checkpoint = ">=2.0.15,<3.0.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tuna"
+
+[[package]]
 name = "langgraph-cli"
 version = "0.1.77"
 description = "CLI for interacting with LangGraph API"
@@ -1575,6 +1625,33 @@ files = [
 [package.dependencies]
 httpx = ">=0.25.2"
 orjson = ">=3.10.1"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tuna"
+
+[[package]]
+name = "langmem"
+version = "0.0.16"
+description = "Prebuilt utilities for memory management and retrieval."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "langmem-0.0.16-py3-none-any.whl", hash = "sha256:8245c4ea9ece119bf20991fe63591ac69f5b69444175c7b853123cd83f6718e9"},
+    {file = "langmem-0.0.16.tar.gz", hash = "sha256:26f831c3dbb0010ed5828d582151515f533dad8faa388429323c7cc8e97445fc"},
+]
+
+[package.dependencies]
+langchain = ">=0.3.15"
+langchain-anthropic = ">=0.3.3"
+langchain-core = ">=0.3.46"
+langchain-openai = ">=0.3.1"
+langgraph = ">=0.2.66"
+langgraph-checkpoint = ">=2.0.12"
+langsmith = ">=0.3.8"
+trustcall = ">=0.0.37"
 
 [package.source]
 type = "legacy"
@@ -3094,6 +3171,29 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tuna"
 
 [[package]]
+name = "trustcall"
+version = "0.0.38"
+description = "Tenacious & trustworthy tool calling built on LangGraph."
+optional = false
+python-versions = "<4.0,>=3.10"
+groups = ["main"]
+files = [
+    {file = "trustcall-0.0.38-py3-none-any.whl", hash = "sha256:90d5441f792059a6d5a08f90d306818363be7aa0f096002e30cfbcceee706351"},
+    {file = "trustcall-0.0.38.tar.gz", hash = "sha256:318d451737d88188254c468ae813d16b7c7b1d19da17d402a52629a0198f4646"},
+]
+
+[package.dependencies]
+dydantic = ">=0.0.8,<1.0.0"
+jsonpatch = ">=1.33,<2.0"
+langgraph = ">=0.2.25"
+langgraph-prebuilt = ">=0.1.2"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tuna"
+
+[[package]]
 name = "typer"
 version = "0.15.2"
 description = "Typer, build great CLIs. Easy to code. Based on Python type hints."
@@ -3515,4 +3615,4 @@ reference = "tuna"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "55f47610f5c60e09737a1e4055b650df216a2ee1b659b0adf2f5aa107e3b125f"
+content-hash = "ab7059a5734c097564f594111c6974f1353917cc5d1c9115f57eeb42cbf8b90a"
