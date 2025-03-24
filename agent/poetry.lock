@@ -14,8 +14,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "aiohttp"
@@ -123,8 +123,8 @@ speedups = ["Brotli ; platform_python_implementation == \"CPython\"", "aiodns (>
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "aiosignal"
@@ -143,8 +143,8 @@ frozenlist = ">=1.1.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "aiosqlite"
@@ -167,8 +167,8 @@ docs = ["sphinx (==8.1.3)", "sphinx-mdinclude (==0.6.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "annotated-types"
@@ -184,8 +184,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "anthropic"
@@ -214,8 +214,8 @@ vertex = ["google-auth (>=2,<3)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "anyio"
@@ -242,8 +242,8 @@ trio = ["trio (>=0.26.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "async-timeout"
@@ -260,8 +260,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "attrs"
@@ -285,8 +285,8 @@ tests-mypy = ["mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" a
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "certifi"
@@ -302,8 +302,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "cffi"
@@ -388,8 +388,8 @@ pycparser = "*"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "charset-normalizer"
@@ -495,8 +495,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "click"
@@ -515,8 +515,8 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "colorama"
@@ -533,8 +533,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "copilotkit"
@@ -561,8 +561,8 @@ toml = ">=0.10.2,<0.11.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "cryptography"
@@ -617,8 +617,8 @@ test-randomorder = ["pytest-randomly"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "dataclasses-json"
@@ -638,8 +638,8 @@ typing-inspect = ">=0.4.0,<1"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "distro"
@@ -655,8 +655,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "dydantic"
@@ -678,8 +678,8 @@ email = ["email-validator (>=2.1,<3.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "exceptiongroup"
@@ -699,8 +699,8 @@ test = ["pytest (>=6)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "fastapi"
@@ -725,8 +725,8 @@ standard = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.5)", "htt
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "fastmcp"
@@ -754,8 +754,8 @@ tests = ["pre-commit", "pyright (>=1.1.389)", "pytest (>=8.3.3)", "pytest-asynci
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "frozenlist"
@@ -861,8 +861,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "greenlet"
@@ -954,8 +954,8 @@ test = ["objgraph", "psutil"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "h11"
@@ -971,8 +971,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "httpcore"
@@ -998,8 +998,8 @@ trio = ["trio (>=0.22.0,<1.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "httpx"
@@ -1029,8 +1029,8 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "httpx-sse"
@@ -1046,8 +1046,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "idna"
@@ -1066,8 +1066,8 @@ all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "jiter"
@@ -1157,8 +1157,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "jsonpatch"
@@ -1177,8 +1177,8 @@ jsonpointer = ">=1.9"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "jsonpointer"
@@ -1194,8 +1194,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "jsonschema-rs"
@@ -1257,8 +1257,8 @@ tests = ["flask (>=2.2.5)", "hypothesis (>=6.79.4)", "pytest (>=7.4.4)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langchain"
@@ -1302,8 +1302,8 @@ xai = ["langchain-xai"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langchain-anthropic"
@@ -1324,8 +1324,8 @@ pydantic = ">=2.7.4,<3.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langchain-community"
@@ -1355,8 +1355,8 @@ tenacity = ">=8.1.0,<8.4.0 || >8.4.0,<10"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langchain-core"
@@ -1384,8 +1384,8 @@ typing-extensions = ">=4.7"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langchain-experimental"
@@ -1405,8 +1405,8 @@ langchain-core = ">=0.3.28,<0.4.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langchain-mcp-adapters"
@@ -1426,8 +1426,8 @@ mcp = ">=1.2.1"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langchain-openai"
@@ -1448,8 +1448,8 @@ tiktoken = ">=0.7,<1"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langchain-text-splitters"
@@ -1468,8 +1468,8 @@ langchain-core = ">=0.3.45,<1.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langgraph"
@@ -1491,8 +1491,8 @@ langgraph-sdk = ">=0.1.42,<0.2.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langgraph-api"
@@ -1527,8 +1527,8 @@ watchfiles = ">=0.13"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langgraph-checkpoint"
@@ -1548,8 +1548,8 @@ msgpack = ">=1.1.0,<2.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langgraph-checkpoint-sqlite"
@@ -1569,8 +1569,8 @@ langgraph-checkpoint = ">=2.0.15,<3.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langgraph-cli"
@@ -1594,8 +1594,8 @@ inmem = ["langgraph-api (>=0.0.32,<0.1.0) ; python_version >= \"3.11\" and pytho
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langgraph-prebuilt"
@@ -1615,8 +1615,8 @@ langgraph-checkpoint = ">=2.0.10,<3.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langgraph-sdk"
@@ -1636,8 +1636,8 @@ orjson = ">=3.10.1"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langmem"
@@ -1663,8 +1663,8 @@ trustcall = ">=0.0.37"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "langsmith"
@@ -1698,8 +1698,8 @@ pytest = ["pytest (>=7.0.0)", "rich (>=13.9.4,<14.0.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "markdown-it-py"
@@ -1728,8 +1728,8 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "marshmallow"
@@ -1753,8 +1753,8 @@ tests = ["pytest", "simplejson"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "mcp"
@@ -1785,8 +1785,8 @@ ws = ["websockets (>=15.0.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "mdurl"
@@ -1802,8 +1802,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "msgpack"
@@ -1881,8 +1881,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "multidict"
@@ -1991,8 +1991,8 @@ typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.11\""}
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "mypy-extensions"
@@ -2008,8 +2008,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "numpy"
@@ -2078,8 +2078,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "openai"
@@ -2110,8 +2110,8 @@ voice-helpers = ["numpy (>=2.0.2)", "sounddevice (>=0.5.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "orjson"
@@ -2204,8 +2204,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "packaging"
@@ -2221,8 +2221,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "partialjson"
@@ -2238,8 +2238,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "propcache"
@@ -2351,8 +2351,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "pycparser"
@@ -2369,8 +2369,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "pydantic"
@@ -2395,8 +2395,8 @@ timezone = ["tzdata ; python_version >= \"3.9\" and platform_system == \"Windows
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "pydantic-core"
@@ -2513,8 +2513,8 @@ typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "pydantic-settings"
@@ -2539,8 +2539,8 @@ yaml = ["pyyaml (>=6.0.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "pygments"
@@ -2559,8 +2559,8 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "pyjwt"
@@ -2583,8 +2583,8 @@ tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "python-dotenv"
@@ -2603,8 +2603,8 @@ cli = ["click (>=5.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "pyyaml"
@@ -2671,8 +2671,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "regex"
@@ -2780,8 +2780,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "requests"
@@ -2807,8 +2807,8 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "requests-toolbelt"
@@ -2827,8 +2827,8 @@ requests = ">=2.0.1,<3.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "rich"
@@ -2852,8 +2852,8 @@ jupyter = ["ipywidgets (>=7.5.1,<9)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "shellingham"
@@ -2869,8 +2869,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "sniffio"
@@ -2886,8 +2886,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "sqlalchemy"
@@ -2987,8 +2987,8 @@ sqlcipher = ["sqlcipher3_binary"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "sse-starlette"
@@ -3012,8 +3012,8 @@ examples = ["fastapi"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "starlette"
@@ -3035,8 +3035,8 @@ full = ["httpx (>=0.27.0,<0.29.0)", "itsdangerous", "jinja2", "python-multipart 
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "structlog"
@@ -3059,8 +3059,8 @@ typing = ["mypy (>=1.4)", "rich", "twisted"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "tenacity"
@@ -3080,8 +3080,8 @@ test = ["pytest", "tornado (>=4.5)", "typeguard"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "tiktoken"
@@ -3133,8 +3133,8 @@ blobfile = ["blobfile (>=2)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "toml"
@@ -3150,8 +3150,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "tqdm"
@@ -3177,8 +3177,8 @@ telegram = ["requests"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "trustcall"
@@ -3200,8 +3200,8 @@ langgraph-prebuilt = ">=0.1.2"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "typer"
@@ -3223,8 +3223,8 @@ typing-extensions = ">=3.7.4.3"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "typing-extensions"
@@ -3240,8 +3240,8 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "typing-inspect"
@@ -3261,8 +3261,8 @@ typing-extensions = ">=3.7.4"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "urllib3"
@@ -3284,8 +3284,8 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "uvicorn"
@@ -3309,8 +3309,8 @@ standard = ["colorama (>=0.4) ; sys_platform == \"win32\"", "httptools (>=0.5.0)
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "watchfiles"
@@ -3399,8 +3399,8 @@ anyio = ">=3.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "yarl"
@@ -3501,8 +3501,8 @@ propcache = ">=0.2.0"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [[package]]
 name = "zstandard"
@@ -3619,10 +3619,10 @@ cffi = ["cffi (>=1.11)"]
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "ab7059a5734c097564f594111c6974f1353917cc5d1c9115f57eeb42cbf8b90a"
+content-hash = "6739e3760d5a4765ac4f478a0f5747366c4bfa369288c060d0a87270e3506f01"

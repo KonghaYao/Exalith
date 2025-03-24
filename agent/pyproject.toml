@@ -51,6 +51,6 @@ langgraph = "^0.3.5"
 demo = "sample_agent.demo:main"
 
 [[tool.poetry.source]]
-name = "tuna"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+name = "aliyun"
+url = "http://mirrors.aliyun.com/pypi/simple/"
 priority = "primary"
