@@ -3,7 +3,7 @@ import { useCopilotAction } from "@copilotkit/react-core";
 // 单选 button
 export const CopilotSelectButton = (props: { enable?: boolean }) => {
   useCopilotAction({
-    name: "提供列表选择功能",
+    name: "provide_list_choice",
     description:
       "按钮组返回给用户（最多 10 条），用户从中选择一项，然后你提供更进一步的信息",
     parameters: [
