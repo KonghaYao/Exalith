@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-interface PreviewProps {
+export interface PreviewProps {
   data: Blob;
   type?: string;
   fileName?: string;
@@ -68,6 +68,29 @@ export const TextPreview = ({ data, fileName }: PreviewProps) => {
 
 // 图片预览组件
 export const ImagePreview = ({ data }: PreviewProps) => {
+  const [url, setUrl] = useState<string>("");
+
+  useEffect(() => {
+    const imageUrl = URL.createObjectURL(data);
+    setUrl(imageUrl);
+    return () => URL.revokeObjectURL(imageUrl);
+  }, [data]);
+
+  return (
+    <div className="w-full h-full flex items-center justify-center p-4">
+      {url && (
+        <img
+          src={url}
+          alt="preview"
+          className="max-w-full max-h-full object-contain"
+        />
+      )}
+    </div>
+  );
+};
+
+// 图片预览组件
+export const ExcelPreview = ({ data }: PreviewProps) => {
   const [url, setUrl] = useState<string>("");
 
   useEffect(() => {
