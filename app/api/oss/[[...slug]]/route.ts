@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { join } from "path";
-import { promises as fs } from "fs";
+import { createReadStream, promises as fs } from "fs";
 import { stat } from "fs/promises";
 
 // 设置基础路径，用于映射本地磁盘路径
@@ -20,14 +20,12 @@ export async function GET(
   try {
     const slugPath = params.slug ? params.slug.join("/") : "";
     const filePath = join(baseURL, slugPath);
-
     const stats = await stat(filePath);
 
     if (stats.isDirectory()) {
       const files = await fs.readdir(filePath);
       return new Response(JSON.stringify(files));
     } else {
-      const fileContent = await fs.readFile(filePath);
       const searchParams = request.nextUrl.searchParams;
       const isPreview = searchParams.get("preview") === "true";
 
@@ -44,10 +42,36 @@ export async function GET(
           { status: 200 },
         );
       }
+      const fileStream = createReadStream(decodeURIComponent(filePath));
+      const fileName = params.slug[params.slug.length - 1];
 
-      return new Response(fileContent);
+      const stream = new ReadableStream({
+        async start(controller) {
+          fileStream.on("data", (chunk) => {
+            controller.enqueue(chunk);
+          });
+
+          fileStream.on("end", () => {
+            controller.close();
+          });
+
+          fileStream.on("error", (error) => {
+            controller.error(error);
+          });
+        },
+      });
+      const headers = new Headers();
+      headers.set("Content-Type", "application/octet-stream");
+      headers.set(
+        "Content-Disposition",
+        `attachment; filename="${encodeURIComponent(fileName)}"`,
+      );
+      headers.set("Content-Length", stats.size.toString());
+
+      return new Response(stream, { headers });
     }
   } catch (error) {
+    console.error("Error reading file:", error);
     if (!params.slug) {
       try {
         const files = await fs.readdir(baseURL);

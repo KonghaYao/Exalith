@@ -1,20 +1,23 @@
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
-import { CopilotSelectButton } from "./CopilotSelectButton";
-import { CopilotPreview } from "../FilePreview/CopilotPreview";
 export const plugins = [
-  {
-    name: "select_buttons",
-    code: "select_buttons",
-    description: "选择列表",
-    component: CopilotSelectButton,
-  },
-  {
-    name: "preview_file",
-    code: "preview_file",
-    description: "预览远程文件",
-    component: CopilotPreview,
-  },
-];
+  // {
+  //   name: "select_buttons",
+  //   code: "select_buttons",
+  //   description: "选择列表",
+  //   component: CopilotSelectButton,
+  // },
+  // {
+  //   name: "preview_file",
+  //   code: "preview_file",
+  //   description: "预览远程文件",
+  //   component: CopilotPreview,
+  // },
+] as {
+  name: string;
+  code: string;
+  description: string;
+  component: React.FC<{ enable?: boolean }>;
+}[];
 export const CopilotFEPlugin = () => {
   const [selectedPlugins, setSelectedPlugins] = useLocalStorage<string[]>(
     "mcp-selected-plugins",

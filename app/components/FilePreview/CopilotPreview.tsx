@@ -9,7 +9,7 @@ import {
   PDFPreview,
   MediaPreview,
 } from "./PreviewComponents";
-import ExcelPreview from './Preview/Excel'
+import ExcelPreview from "./Preview/Excel";
 import {
   AlertCircleIcon,
   CheckCircleIcon,
@@ -35,7 +35,7 @@ const getFileType = (filePath: string) => {
     "css",
     "md",
   ];
-  const excelExts = ['xlsx','xls']
+  const excelExts = ["xlsx", "xls"];
 
   if (imageExts.includes(ext)) return "image";
   if (videoExts.includes(ext)) return "video";
@@ -48,20 +48,20 @@ const getFileType = (filePath: string) => {
 export const CopilotPreview = (props: { enable?: boolean }) => {
   const tab = useTab();
   useCopilotAction({
-    name: "preview_file_to_user",
+    name: "open_file_path_to_user",
     description:
-      "预览文件链接，比如图片、视频、音频、文本等。可以用于展示生成的结果文件，没有其他功能，其他功能请调用 agent",
+      "提供文件链接，比如图片、视频、音频、文本等。可以用于展示生成的链接，但是不能直接观察",
     parameters: [
       {
         name: "filePath",
         type: "string",
-        description: "文件路径",
+        description: "预览文件路径",
         required: true,
       },
       {
-        name: "previewType",
+        name: "fileType",
         type: "string",
-        description: "预览类型，比如 text、image、video、audio",
+        description: "文件类型，比如 text、image、video、audio",
         required: false,
       },
     ],
@@ -96,7 +96,7 @@ export const CopilotPreview = (props: { enable?: boolean }) => {
             message: "已经帮用户预览完成，用户已看到预览内容",
             data: {
               filePath: args.filePath,
-              previewType: args.previewType,
+              previewType: args.fileType,
               size: previewState.previewData?.size,
             },
           });
@@ -234,7 +234,9 @@ export const PreviewComponent = () => {
             case "pdf":
               return <PDFPreview data={previewFile.previewState.previewData} />;
             case "excel":
-              return <ExcelPreview data={previewFile.previewState.previewData} />;    
+              return (
+                <ExcelPreview data={previewFile.previewState.previewData} />
+              );
             case "code":
             case "text":
             default:

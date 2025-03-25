@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Tabs, Alert } from 'antd';
-import { FileSpreadsheet, Loader2 } from 'lucide-react';
-import { PreviewProps } from '../PreviewComponents';
+import React, { useState, useEffect } from "react";
+import { Table, Tabs, Alert } from "antd";
+import { FileSpreadsheet, Loader2 } from "lucide-react";
+import { PreviewProps } from "../PreviewComponents";
 
-export const ExcelPreview: React.FC<PreviewProps> = ({ data, type, fileName }) => {
-  const [sheets, setSheets] = useState<{
-    name: string;
-    rows: any[][];
-  }[]>([]);
+export const ExcelPreview: React.FC<PreviewProps> = ({
+  data,
+  type,
+  fileName,
+}) => {
+  const [sheets, setSheets] = useState<
+    {
+      name: string;
+      rows: any[][];
+    }[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,26 +21,37 @@ export const ExcelPreview: React.FC<PreviewProps> = ({ data, type, fileName }) =
     const parseExcelFile = async () => {
       try {
         setLoading(true);
-        
-        const { default: readXlsxFile, readSheetNames } = (await import('read-excel-file'));
-        
-        const file = data instanceof File ? data : new File([data], fileName || 'file.xlsx', { type: type || 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        
+
+        const { default: readXlsxFile, readSheetNames } = await import(
+          "read-excel-file"
+        );
+
+        const file =
+          data instanceof File
+            ? data
+            : new File([data], fileName || "file.xlsx", {
+                type:
+                  type ||
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              });
+
         const sheets = await readSheetNames(file);
         const parsedSheets = await Promise.all(
           sheets.map(async (sheet) => {
             const rows = await readXlsxFile(file, { sheet });
             return {
               name: sheet,
-              rows: rows
+              rows: rows,
             };
-          })
+          }),
         );
         setSheets(parsedSheets);
         setError(null);
       } catch (err) {
-        console.error('Error parsing Excel file:', err);
-        setError('Unable to preview the Excel file. Ensure it is a valid Excel file.');
+        console.error("Error parsing Excel file:", err);
+        setError(
+          "Unable to preview the Excel file. Ensure it is a valid Excel file.",
+        );
         setSheets([]);
       } finally {
         setLoading(false);
@@ -48,7 +65,7 @@ export const ExcelPreview: React.FC<PreviewProps> = ({ data, type, fileName }) =
 
   const generateColumns = (rows: any[][]) => {
     if (rows.length === 0) return [];
-    
+
     return rows[0].map((header, index) => ({
       title: (
         <div className="font-semibold text-gray-700 whitespace-normal break-words min-w-[120px] px-2">
@@ -63,21 +80,21 @@ export const ExcelPreview: React.FC<PreviewProps> = ({ data, type, fileName }) =
         if (text === null || text === undefined) {
           return <span className="text-gray-400 min-w-[120px] block">-</span>;
         }
-        
+
         // Convert to string and handle line breaks
         const displayText = String(text);
         return (
-          <div 
+          <div
             className="whitespace-normal break-words min-w-[120px] min-h-[40px] flex items-center px-2"
-            style={{ 
-              maxHeight: '200px', 
-              overflow: 'auto' 
+            style={{
+              maxHeight: "200px",
+              overflow: "auto",
             }}
           >
-            {displayText.split('\n').map((line, idx) => (
+            {displayText.split("\n").map((line, idx) => (
               <React.Fragment key={idx}>
                 {line}
-                {idx < displayText.split('\n').length - 1 && <br />}
+                {idx < displayText.split("\n").length - 1 && <br />}
               </React.Fragment>
             ))}
           </div>
@@ -85,12 +102,12 @@ export const ExcelPreview: React.FC<PreviewProps> = ({ data, type, fileName }) =
       },
       onCell: () => ({
         style: {
-          whiteSpace: 'normal',
-          wordWrap: 'break-word',
-          minWidth: '120px',
-          padding: '8px'
-        }
-      })
+          whiteSpace: "normal",
+          wordWrap: "break-word",
+          minWidth: "120px",
+          padding: "8px",
+        },
+      }),
     }));
   };
 
@@ -117,11 +134,11 @@ export const ExcelPreview: React.FC<PreviewProps> = ({ data, type, fileName }) =
   if (error) {
     return (
       <div className="p-4">
-        <Alert 
-          message="Preview Error" 
-          description={error} 
-          type="error" 
-          showIcon 
+        <Alert
+          message="Preview Error"
+          description={error}
+          type="error"
+          showIcon
           icon={<FileSpreadsheet className="text-red-500" size={20} />}
         />
       </div>
@@ -131,11 +148,11 @@ export const ExcelPreview: React.FC<PreviewProps> = ({ data, type, fileName }) =
   if (sheets.length === 0) {
     return (
       <div className="p-4">
-        <Alert 
-          message="No Data" 
-          description="No sheets found in the file." 
-          type="warning" 
-          showIcon 
+        <Alert
+          message="No Data"
+          description="No sheets found in the file."
+          type="warning"
+          showIcon
           icon={<FileSpreadsheet className="text-yellow-500" size={20} />}
         />
       </div>
@@ -144,13 +161,13 @@ export const ExcelPreview: React.FC<PreviewProps> = ({ data, type, fileName }) =
 
   return (
     <div className="w-full h-full p-4 bg-gray-50 rounded-lg shadow-sm">
-      <Tabs 
-        type="card" 
-        tabBarStyle={{ 
-          marginBottom: '16px', 
-          backgroundColor: 'white', 
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      <Tabs
+        type="card"
+        tabBarStyle={{
+          marginBottom: "16px",
+          backgroundColor: "white",
+          borderRadius: "8px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         }}
       >
         {sheets.map((sheet) => (
@@ -160,21 +177,25 @@ export const ExcelPreview: React.FC<PreviewProps> = ({ data, type, fileName }) =
               {sheet.name} Sheet
             </div>
             <Table
-              columns={generateColumns(sheet.rows)}
+              columns={
+                generateColumns(
+                  sheet.rows,
+                ) as import("antd/lib/table").ColumnType<any>[]
+              }
               dataSource={transformRows(sheet.rows)}
               scroll={{ x: true, y: 400 }}
               pagination={{
                 pageSize: 50,
                 showSizeChanger: true,
-                pageSizeOptions: ['10', '50', '100'],
+                pageSizeOptions: ["10", "50", "100"],
                 showTotal: (total) => `Total ${total} rows`,
-                size: 'default'
+                size: "default",
               }}
               bordered
               size="middle"
               className="bg-white rounded-lg shadow-sm"
-              rowClassName={(record, index) => 
-                index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? "bg-gray-50" : "bg-white"
               }
             />
           </Tabs.TabPane>

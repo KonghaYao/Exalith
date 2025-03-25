@@ -41,7 +41,7 @@ const runtime = new CopilotRuntime({
       agents: [
         {
           name: "llm_agent",
-          description: "A helpful LLM agent.",
+          description: "一个可以操作文件、数据清洗的 agent",
         },
       ],
     }),
