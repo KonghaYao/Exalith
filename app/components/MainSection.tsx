@@ -6,6 +6,9 @@ import { FileText, Settings, Folder } from "lucide-react";
 import FileList from "./FileManager/FileList";
 import { PreviewComponent } from "./FilePreview/CopilotPreview";
 import { useTab } from "./TabContext";
+import { useCopilotChat } from "@copilotkit/react-core";
+import { useFileSystem } from "./FileManager/FileSystemContext";
+import { useEffect } from "react";
 
 const tabConfig = [
   {
@@ -26,6 +29,16 @@ const tabConfig = [
 ] as const;
 
 export function MainSection() {
+  const messages = useCopilotChat();
+  const files = useFileSystem();
+  // 监听 messages, 长度变化时，重新渲染files
+  useEffect(() => {
+    // 当消息列表长度发生变化时，触发文件系统重新渲染
+    if (messages.visibleMessages.length > 0) {
+      files.loadFiles();
+    }
+  }, [messages.visibleMessages.length]);
+
   const { tab, setTab } = useTab();
 
   return (

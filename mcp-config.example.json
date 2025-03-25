@@ -1,5 +1,5 @@
 {
-  "excel-helper": {
+  "excel助手": {
     "url": "http://localhost:8000/sse",
     "transport": "sse",
     "enable": true
@@ -7,6 +7,11 @@
   "图像生成": {
     "url": "http://localhost:6798/admin/image_gen_bot/sse",
     "transport": "sse",
-    "enable": true
+    "enable": false
+  },
+  "文件浏览器": {
+    "url": "http://localhost:6798/admin/filesystem_bot/sse",
+    "transport": "sse",
+    "enable": false
   }
 }

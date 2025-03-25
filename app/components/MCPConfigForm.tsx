@@ -56,6 +56,9 @@ export function MCPConfigForm() {
   );
 
   const configs = savedConfigs || {};
+  const resetConfig = () => {
+    setConfigs(example as any);
+  };
   const setConfigs = (newConfigs: Record<string, ServerConfig>) => {
     setAgentState({ ...agentState, mcp_config: clearAgentConfig(newConfigs) });
     setSavedConfigs(newConfigs);
@@ -210,6 +213,7 @@ export function MCPConfigForm() {
         onEditServer={handleEditServer}
         onRemoveServer={removeConfig}
         onToggleServer={handleToggleServer}
+        onResetConfig={resetConfig}
       />
 
       {showAddServerForm && (

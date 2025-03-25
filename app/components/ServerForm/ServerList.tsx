@@ -22,6 +22,7 @@ interface ServerListProps {
   onEditServer: (name: string, config: ServerConfig) => void;
   onRemoveServer: (name: string) => void;
   onToggleServer: (name: string, config: ServerConfig) => void;
+  onResetConfig: () => void;
 }
 
 export function ServerList({
@@ -29,12 +30,41 @@ export function ServerList({
   onEditServer,
   onRemoveServer,
   onToggleServer,
+  onResetConfig,
 }: ServerListProps) {
   const totalServers = Object.keys(configs).length;
 
   return (
     <div className="bg-white border rounded-md p-6">
-      <h2 className="text-lg font-semibold mb-4">Server List</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold">Server List</h2>
+        <button
+          onClick={() => {
+            if (
+              window.confirm("确定要重置所有服务器配置吗？这将恢复到默认配置。")
+            ) {
+              onResetConfig();
+            }
+          }}
+          className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 flex items-center gap-1"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+          重置配置
+        </button>
+      </div>
 
       {totalServers === 0 ? (
         <div className="text-gray-500 text-center py-10">
