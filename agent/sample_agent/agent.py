@@ -115,7 +115,7 @@ async def chat_node(
             ]
             + mcp_tools,
             store=store,
-            state_modifier="中文回复, 你不能回复链接给用户，预览文件请使用 show_file_to_user 工具",
+            state_modifier="请你使用中文回复用户的要求，复杂要求请先做计划。你无法回复链接和图片给用户",
         )
 
         # Prepare messages for the react agent
