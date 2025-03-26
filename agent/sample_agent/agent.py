@@ -115,7 +115,7 @@ async def chat_node(
             ]
             + mcp_tools,
             store=store,
-            state_modifier="你是一个数据清理大师，请严格按照用户需求完成任务，并使用中文回复用户的要求，复杂任务请先做计划。你需要具体查看文件确认用户的需求能够运行，然后调用工具完成任务。你无法回复链接和图片给用户",
+            state_modifier="你是一个数据清理大师，请严格按照用户需求完成任务，并使用中文回复用户的要求，复杂任务请先做计划。你需要具体查看文件确认用户的需求能够运行，然后调用工具完成任务。如果有结果文件，默认保留原始列。你无法回复链接和图片给用户",
         )
 
         agent_input = {
@@ -129,91 +129,6 @@ async def chat_node(
         return Command(
             goto=END,
             update={"messages": state["messages"] + agent_response.get("messages", [])},
-        )
-
-
-async def plan_node(
-    state: AgentState, config: RunnableConfig
-) -> Command[Union[Literal["chat_node"], Literal["__end__"]]]:
-    """
-    This node analyzes the user input and creates an execution plan.
-    """
-    if state.get("has_plan"):
-        return Command(goto="chat_node")
-
-    # Get MCP configuration from state
-    mcp_config = state.get("mcp_config")
-
-    # Set up the MCP client and model
-    async with MultiServerMCPClient(mcp_config) as mcp_client:
-        actions = state.get("copilotkit", {}).get("actions", [])
-        # Get the tools
-        mcp_tools = mcp_client.get_tools()
-
-        async def call_tool(
-            **arguments: dict[str, Any],
-        ) -> tuple[str | list[str], None]:
-            return ["ok", None]
-
-        mcp_tools.extend(
-            [
-                StructuredTool(
-                    name=tool["name"],
-                    description=tool["description"] or "",
-                    args_schema=tool["parameters"],
-                    coroutine=call_tool,
-                    response_format="content",
-                )
-                for tool in actions
-            ]
-        )
-        model = ChatOpenAI(
-            model=os.getenv("OPENAI_MODEL"),
-            base_url=os.getenv("OPENAI_BASE_URL"),
-            api_key=os.getenv("OPENAI_API_KEY"),
-        )
-        model = create_react_agent(model, mcp_tools)
-
-        # Create planning prompt
-        messages = state["messages"]
-
-        # 找到上一个用户的输入
-        last_message = None
-        for message in reversed(messages):
-            if isinstance(message, HumanMessage):
-                last_message = message
-
-        if last_message is None:
-            return Command(
-                goto=END,
-                update={
-                    "messages": messages
-                    + [{"role": "assistant", "content": "无法找到用户输入"}]
-                },
-            )
-
-        planning_prompt = [
-            {
-                "role": "system",
-                "content": "你是一个计划助手，负责分析用户输入并编写计划书，请将任务分解为大纲步骤，最多三级, 以 Markdown 形式返回。可以查看工具的作用，然后根据工具返回结果，但是你不能执行工具。",
-            },
-            {
-                "role": "user",
-                "content": f"以下为用户输入, 请你开始编写计划书：\n{last_message.text()}",
-            },
-        ]
-
-        # Get plan from model
-        response = await model.ainvoke({"messages": planning_prompt})
-        plan = response.get("messages", [])
-
-        # Update state with plan
-        return Command(
-            goto=END,
-            update={
-                "has_plan": True,
-                "messages": messages + plan,
-            },
         )
 
 
