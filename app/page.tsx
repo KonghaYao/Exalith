@@ -19,6 +19,7 @@ function Home() {
           runtimeUrl="/api/copilotkit"
           showDevConsole={false}
           key={chatKey}
+          agent="llm_agent"
         >
           <div className="min-h-screen flex relative">
             <ChatSection chatKey={chatKey} setChatKey={setChatKey} />

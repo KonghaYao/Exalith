@@ -115,13 +115,9 @@ async def chat_node(
             ]
             + mcp_tools,
             store=store,
-            state_modifier="请你使用中文回复用户的要求，复杂要求请先做计划。你无法回复链接和图片给用户",
+            state_modifier="你是一个数据清理大师，请严格按照用户需求完成任务，并使用中文回复用户的要求，复杂任务请先做计划。你需要具体查看文件确认用户的需求能够运行，然后调用工具完成任务。你无法回复链接和图片给用户",
         )
 
-        # Prepare messages for the react agent
-        # for i in state["messages"]:
-        #     if isinstance(i, ToolMessage):
-        #         i.content = i.content[:200] + "..."
         agent_input = {
             "messages": state["messages"],
         }
