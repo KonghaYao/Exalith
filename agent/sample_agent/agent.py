@@ -134,7 +134,6 @@ async def chat_node(
 
 # Define the workflow graph with planning and chat nodes
 workflow = StateGraph(AgentState)
-workflow.add_node("plan_node", plan_node)
 workflow.add_node("chat_node", chat_node)
 workflow.set_entry_point("chat_node")
 

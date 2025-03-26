@@ -1360,14 +1360,14 @@ reference = "aliyun"
 
 [[package]]
 name = "langchain-core"
-version = "0.3.47"
+version = "0.3.48"
 description = "Building applications with LLMs through composability"
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["main"]
 files = [
-    {file = "langchain_core-0.3.47-py3-none-any.whl", hash = "sha256:ef7c78202e6fd9df79fe8128c828d08a95d3878cf4aec282580baf358a3f2ec5"},
-    {file = "langchain_core-0.3.47.tar.gz", hash = "sha256:975a3daabf8e8d583749b3c553cc412d0527d935dfe820317431b475fa0c585a"},
+    {file = "langchain_core-0.3.48-py3-none-any.whl", hash = "sha256:21e4fe84262b9c7ad8aefe7816439ede130893f8a64b8c965cd9695c2be91c73"},
+    {file = "langchain_core-0.3.48.tar.gz", hash = "sha256:be4b2fe36d8a11fb4b6b13e0808b12aea9f25e345624ffafe1d606afb6059f21"},
 ]
 
 [package.dependencies]
@@ -1410,19 +1410,19 @@ reference = "aliyun"
 
 [[package]]
 name = "langchain-mcp-adapters"
-version = "0.0.3"
+version = "0.0.5"
 description = "Make Anthropic Model Context Protocol (MCP) tools compatible with LangChain and LangGraph agents."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "langchain_mcp_adapters-0.0.3-py3-none-any.whl", hash = "sha256:c8d987878d76beb14f37c77391db9717719ce7c5d749536b53bb4afd68d11a7d"},
-    {file = "langchain_mcp_adapters-0.0.3.tar.gz", hash = "sha256:08dd2e833ed7f7e49130bcb3cfdaae0fafbbc0083e9f77ba3fb85eedca64c61a"},
+    {file = "langchain_mcp_adapters-0.0.5-py3-none-any.whl", hash = "sha256:8601beb4692c64a8ef8961468ec73c24558804ff09a7c54612bd2d5225ac4ff8"},
+    {file = "langchain_mcp_adapters-0.0.5.tar.gz", hash = "sha256:d05de412b2910ec652f8ef6008fb7f8ec80db9e4f06593db1d613ebafc15b83d"},
 ]
 
 [package.dependencies]
-langchain-core = ">=0.3.36"
-mcp = ">=1.2.1"
+langchain-core = ">=0.3.36,<0.4"
+mcp = ">=1.4.1,<1.5"
 
 [package.source]
 type = "legacy"
@@ -1431,19 +1431,19 @@ reference = "aliyun"
 
 [[package]]
 name = "langchain-openai"
-version = "0.3.9"
+version = "0.3.10"
 description = "An integration package connecting OpenAI and LangChain"
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["main"]
 files = [
-    {file = "langchain_openai-0.3.9-py3-none-any.whl", hash = "sha256:1ad95c09a620910c39a8eb826eb146bd96bfbc55e4fca78b1e28ffd5e4f5b261"},
-    {file = "langchain_openai-0.3.9.tar.gz", hash = "sha256:a2897d15765a435eff3fed7043235c25ec1e192e6c45a81e9e4fae2951335fb3"},
+    {file = "langchain_openai-0.3.10-py3-none-any.whl", hash = "sha256:87e9d23bbe41e9b137334e9f3922a73686ba6a4c908154d3dd7cb47955db7d54"},
+    {file = "langchain_openai-0.3.10.tar.gz", hash = "sha256:4161f563551cdd97f8fa059f32551b816697148a24a06533e4745e2c4cbd37aa"},
 ]
 
 [package.dependencies]
-langchain-core = ">=0.3.45,<1.0.0"
-openai = ">=1.66.3,<2.0.0"
+langchain-core = ">=0.3.48,<1.0.0"
+openai = ">=1.68.2,<2.0.0"
 tiktoken = ">=0.7,<1"
 
 [package.source]
@@ -1758,14 +1758,14 @@ reference = "aliyun"
 
 [[package]]
 name = "mcp"
-version = "1.5.0"
+version = "1.4.1"
 description = "Model Context Protocol SDK"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "mcp-1.5.0-py3-none-any.whl", hash = "sha256:51c3f35ce93cb702f7513c12406bbea9665ef75a08db909200b07da9db641527"},
-    {file = "mcp-1.5.0.tar.gz", hash = "sha256:5b2766c05e68e01a2034875e250139839498c61792163a7b221fc170c12f5aa9"},
+    {file = "mcp-1.4.1-py3-none-any.whl", hash = "sha256:a7716b1ec1c054e76f49806f7d96113b99fc1166fc9244c2c6f19867cb75b593"},
+    {file = "mcp-1.4.1.tar.gz", hash = "sha256:b9655d2de6313f9d55a7d1df62b3c3fe27a530100cc85bf23729145b0dba4c7a"},
 ]
 
 [package.dependencies]
@@ -3625,4 +3625,4 @@ reference = "aliyun"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "6739e3760d5a4765ac4f478a0f5747366c4bfa369288c060d0a87270e3506f01"
+content-hash = "fafd989bdd9553fdfa5ec47aae6fa3f1079046fde4820484a8a55631ad7113c6"
