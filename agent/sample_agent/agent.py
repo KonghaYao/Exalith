@@ -105,6 +105,10 @@ async def chat_node(
             model=os.getenv("OPENAI_MODEL"),
             base_url=os.getenv("OPENAI_BASE_URL"),
             api_key=os.getenv("OPENAI_API_KEY"),
+            temperature=0.1,  # Lower temperature for more consistent, precise data cleaning
+            presence_penalty=0.0,  # Neutral setting for data cleaning (no need to artificially increase topic diversity)
+            frequency_penalty=0.3,  # Slight penalty to avoid repetitive explanations/solutions
+            top_p=0.95,  # High value but not 1.0 to maintain focused, accurate responses while filtering unlikely tokens
         )
         # Combine tools
         react_agent = create_react_agent(
