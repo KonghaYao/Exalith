@@ -116,8 +116,8 @@ async def chat_node(
             + mcp_tools,
             store=store,
             state_modifier="你是一个数据清理大师，请严格按照用户需求完成任务，并使用中文回复用户的要求，复杂任务请先做计划。你需要具体查看文件确认用户的需求能够运行，然后调用工具完成任务。如果有结果文件，默认保留原始列。"
+            + "你无法回复链接和图片给用户。编写代码时，不用编写 if __name__ == '__main__'。注意，所有的 import 都需要写在函数内，避免全局导入函数的性能损耗。"
             + "地址解析请使用 cpca 库(已安装) 示例：\nimport cpca\ndf[['省', '市', '区', '地址']] = cpca.transform(location_str)。"
-            + "你无法回复链接和图片给用户。编写代码时，不用编写 if __name__ == '__main__'。",
         )
 
         agent_input = {
