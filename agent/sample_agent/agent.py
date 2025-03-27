@@ -5,31 +5,23 @@ It defines the workflow graph, state, tools, nodes and edges.
 
 from typing_extensions import Literal, TypedDict, Dict, List, Any, Union, Optional
 from langchain_openai import ChatOpenAI
-from langchain_core.utils.function_calling import (
-    convert_to_openai_function,
-    convert_to_openai_tool,
-)
-from langchain_core.tools import BaseTool, StructuredTool, ToolException
+
+from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.types import Command
 from copilotkit import CopilotKitState
-from langchain_mcp_adapters.client import MultiServerMCPClient
-from langchain_mcp_adapters.tools import convert_mcp_tool_to_langchain_tool
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import ToolMessage, AIMessage, HumanMessage
-from langgraph.store.memory import InMemoryStore
-from langmem import create_manage_memory_tool, create_search_memory_tool
-import os
 import pathlib
-
-store = InMemoryStore(
-    index={
-        "dims": 1536,
-        "embed": "openai:text-embedding-3-small",
-    }
+import os
+from sample_agent.config import (
+    store,
+    initialize_tools,
+    STATE_MODIFIER,
 )
+from sample_agent.errors import handle_tool_error, ToolInitializationError
 
 
 # Define the connection type structures
@@ -50,105 +42,78 @@ MCPConfig = Dict[str, Union[StdioConnection, SSEConnection]]
 
 class AgentState(CopilotKitState):
     """
-    Here we define the state of the agent
-
-    In this instance, we're inheriting from CopilotKitState, which will bring in
-    the CopilotKitState fields. We're also adding custom fields:
-    - mcp_config: used to configure MCP services for the agent
-    - has_plan: indicates whether a plan has been created
-    - plan: stores the execution plan
+    Enhanced agent state with improved state management and error handling.
     """
 
-    # Define mcp_config as an optional field without skipping validation
     mcp_config: Optional[MCPConfig]
-    # Define planning related fields
-    has_plan: bool = False
+    error_count: int = 0
+    max_retries: int = 2
 
 
 async def chat_node(
     state: AgentState, config: RunnableConfig
 ) -> Command[Literal["__end__"]]:
     """
-    This is a simplified agent that uses the ReAct agent as a subgraph.
-    It handles both chat responses and tool execution in one node.
+    Enhanced chat node with improved error handling and state management.
     """
-
-    # Get MCP configuration from state, or use the default config if not provided
-    mcp_config = state.get("mcp_config")
-
-    # Set up the MCP client and tools using the configuration from state
-    async with MultiServerMCPClient(mcp_config) as mcp_client:
+    try:
+        mcp_config = state.get("mcp_config")
         actions = state.get("copilotkit", {}).get("actions", [])
-        # Get the tools
-        mcp_tools = mcp_client.get_tools()
 
-        async def call_tool(
-            **arguments: dict[str, Any],
-        ) -> tuple[str | list[str], None]:
-            return ["ok", None]
+        async with MultiServerMCPClient(mcp_config) as mcp_client:
+            # Initialize tools with error handling
+            tools = await initialize_tools(mcp_client, actions)
+            if not tools:
+                raise ToolInitializationError("Failed to initialize tools")
 
-        mcp_tools.extend(
-            [
-                StructuredTool(
-                    name=tool["name"],
-                    description=tool["description"] or "",
-                    args_schema=tool["parameters"],
-                    coroutine=call_tool,
-                    response_format="content",
+            # Create the react agent with optimized configuration
+            react_agent = create_react_agent(
+                ChatOpenAI(
+                    model=os.getenv("OPENAI_MODEL"),
+                    base_url=os.getenv("OPENAI_BASE_URL"),
+                    api_key=os.getenv("OPENAI_API_KEY"),
+                    temperature=0.1,
+                    presence_penalty=0.0,
+                    frequency_penalty=0.3,
+                    top_p=0.95,
+                ),
+                tools,
+                store=store,
+                state_modifier=STATE_MODIFIER,
+            )
+
+            # Execute agent with error handling
+            try:
+                agent_response = await react_agent.ainvoke(
+                    {"messages": state["messages"]}
                 )
-                for tool in actions
-            ]
-        )
+                state["error_count"] = 0  # Reset error count on success
+            except Exception as e:
+                state["error_count"] = state.get("error_count", 0) + 1
+                error_msg, details = handle_tool_error(e)
+                if state["error_count"] >= state.get("max_retries", 2):
+                    return Command(
+                        goto=END,
+                        update={
+                            "messages": state["messages"]
+                            + [AIMessage(content=f"达到最大重试次数: {error_msg}")]
+                        },
+                    )
+                raise
 
-        # Create the react agent
-        model = ChatOpenAI(
-            model=os.getenv("OPENAI_MODEL"),
-            base_url=os.getenv("OPENAI_BASE_URL"),
-            api_key=os.getenv("OPENAI_API_KEY"),
-            temperature=0.1,  # Lower temperature for more consistent, precise data cleaning
-            presence_penalty=0.0,  # Neutral setting for data cleaning (no need to artificially increase topic diversity)
-            frequency_penalty=0.3,  # Slight penalty to avoid repetitive explanations/solutions
-            top_p=0.95,  # High value but not 1.0 to maintain focused, accurate responses while filtering unlikely tokens
-        )
-        # Combine tools
-        react_agent = create_react_agent(
-            model,
-            [
-                create_manage_memory_tool(namespace=("memories",)),
-                create_search_memory_tool(namespace=("memories",)),
-            ]
-            + mcp_tools,
-            store=store,
-            state_modifier="""
-你是一个数据清理大师，请严格按照用户需求完成任务，并使用中文回复用户的要求，复杂任务请先做计划。
-你需要具体查看文件确认用户的需求能够运行，然后调用工具完成任务。如果有结果文件，默认保留原始列。
+            # Update state and return success response
+            return Command(
+                goto=END,
+                update={
+                    "messages": state["messages"] + agent_response.get("messages", [])
+                },
+            )
 
-注意事项：
-1. 你无法回复链接和图片给用户
-2. 编写代码时，不用编写 if __name__ == '__main__'
-3. !!!所有的 import 都需要写在函数内，避免全局导入函数的性能损耗
-4. 你犯错最多2次，然后需要用户同意才能继续
-5. 数据类型并不一定一致，请注意
-
-地址解析示例：
-def main():
-    import cpca
-    address_df = cpca.transform(single_df_col) # DataFrame, 没有其它入参 
-    address_df # 返回 DataFrame 包含 '省', '市', '区', '地址', 'adcode' 列
-"""
-        )
-
-        agent_input = {
-            "messages": state["messages"],
-        }
-
-        # Run the react agent subgraph with our input
-        agent_response = await react_agent.ainvoke(agent_input)
-
-        # End the graph with the updated messages
+    except Exception as e:
+        error_msg, details = handle_tool_error(e)
         return Command(
             goto=END,
-            update={"messages": state["messages"] + agent_response.get("messages", [])},
+            update={"messages": state["messages"] + [AIMessage(content=error_msg)]},
         )
 
 
