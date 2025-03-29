@@ -6,7 +6,24 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import example from "../../mcp-config.example.json";
 
 type ConnectionType = "stdio" | "sse";
-
+export const ModelConfigs = [
+  {
+    label: "qwen-plus",
+    value: "qwen-plus",
+  },
+  {
+    label: "qwen-max",
+    value: "qwen-max",
+  },
+  {
+    label: "qwen-turbo",
+    value: "qwen-turbo",
+  },
+  {
+    label: "qwq-plus",
+    value: "qwq-plus",
+  },
+];
 interface StdioConfig {
   command: string;
   args: string[];
@@ -25,6 +42,8 @@ export type ServerConfig = StdioConfig | SSEConfig;
 export interface AgentState {
   mcp_config: Record<string, ServerConfig>;
   plan_enabled: boolean;
+  web_search_enabled: boolean;
+  model_name: string;
 }
 
 const STORAGE_KEY = "mcp-agent-state";
@@ -57,12 +76,30 @@ export function MCPConfigProvider({ children }: { children: ReactNode }) {
   const [savedConfigs, setSavedConfigs] = useLocalStorage<
     Record<string, ServerConfig>
   >(STORAGE_KEY, example as any);
+  const savedState = localStorage?.getItem("mcp_input_state") || "";
+  let extraConfig = {};
+  if (savedState) {
+    try {
+      const state = JSON.parse(savedState);
+      const { plan_enabled, web_search_enabled, model_name } = state;
+      extraConfig = {
+        plan_enabled,
+        web_search_enabled,
+        model_name,
+      };
+    } catch (e) {
+      console.error("Failed to parse saved agent state:", e);
+    }
+  }
   const { state: agentState, setState: setAgentState } = useCoAgent<AgentState>(
     {
       name: "llm_agent",
       initialState: {
         mcp_config: clearAgentConfig(savedConfigs),
         plan_enabled: false,
+        web_search_enabled: false,
+        model_name: process.env.OPENAI_MODEL || "qwen-plus",
+        ...extraConfig,
       },
     },
   );

@@ -48,8 +48,10 @@ class AgentState(CopilotKitState):
     mcp_config: Optional[MCPConfig]
     error_count: int = 0
     max_retries: int = 2
+    web_search_enabled: bool = False
     plan_enabled: bool = False  # 控制是否启用计划节点
     planned = False  # 控制是否已经生成了计划
+    model_name: str = os.getenv("OPENAI_MODEL")
 
 
 async def plan_node(state: AgentState, config: RunnableConfig):
@@ -68,7 +70,7 @@ async def plan_node(state: AgentState, config: RunnableConfig):
 
             # 创建计划生成器
             planner = ChatOpenAI(
-                model=os.getenv("OPENAI_MODEL"),
+                model=state.get("model_name", os.getenv("OPENAI_MODEL")),
                 base_url=os.getenv("OPENAI_BASE_URL"),
                 api_key=os.getenv("OPENAI_API_KEY"),
                 temperature=0.1,
@@ -114,17 +116,24 @@ async def chat_node(state: AgentState, config: RunnableConfig):
             tools = await initialize_tools(mcp_client, actions)
             if not tools:
                 raise ToolInitializationError("Failed to initialize tools")
-
+            print(
+                state.get(
+                    "model_name",
+                )
+            )
             # Create the react agent with optimized configuration
             react_agent = create_react_agent(
                 ChatOpenAI(
-                    model=os.getenv("OPENAI_MODEL"),
+                    model=state.get("model_name", os.getenv("OPENAI_MODEL")),
                     base_url=os.getenv("OPENAI_BASE_URL"),
                     api_key=os.getenv("OPENAI_API_KEY"),
                     temperature=0.1,
                     presence_penalty=0.0,
                     frequency_penalty=0.3,
                     top_p=0.95,
+                    extra_body={
+                        "enable_search": state.get("web_search_enabled", False)
+                    },  # 启用互联网搜索
                 ),
                 tools,
                 store=store,

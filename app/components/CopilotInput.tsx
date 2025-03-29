@@ -1,10 +1,12 @@
 import { InputProps } from "@copilotkit/react-ui";
-import { Send, Eraser, Brain } from "lucide-react";
-import { Mentions, Switch } from "antd";
-import { JSX, useRef, useState } from "react";
+import { Send, Eraser, Brain, Globe } from "lucide-react";
+import { Mentions, Switch, Select } from "antd";
+import { JSX, useRef, useState, useEffect } from "react";
 import "./CopilotInput.css";
 import { useFileSystem } from "./FileManager/FileSystemContext";
-import { useMCPConfig } from "../contexts/MCPConfigContext";
+import { ModelConfigs, useMCPConfig } from "../contexts/MCPConfigContext";
+import { useMount } from "ahooks";
+
 export default function CopilotInput({
   inProgress,
   onSend,
@@ -12,33 +14,63 @@ export default function CopilotInput({
   children,
 }: InputProps & { children: JSX.Element; onReset?: () => void }) {
   const system = useFileSystem();
-  const handleSubmit = (value: string) => {
-    if (value?.trim()) {
-      const filePrefix =
-        system.selectedFiles.length > 0
-          ? `${system.selectedFiles
-              .map((i, index) => {
-                return `<file path="${i.path}">${i.name}</file>`;
-              })
-              .join("\n")}\n`
-          : "";
-      system.clearSelection();
-      onSend(filePrefix + value);
-    }
-  };
-  const input = useRef<any>(null);
+  const agent = useMCPConfig();
   const [value, setValue] = useState("");
+  const input = useRef<any>(null);
+  const [isMac, setIsMac] = useState(false);
+
+  const handleSubmit = (value: string) => {
+    const trimmedValue = value?.trim();
+    if (!trimmedValue) return;
+
+    const filePrefix =
+      system.selectedFiles.length > 0
+        ? system.selectedFiles
+            .map((i) => `<file path="${i.path}">${i.name}</file>`)
+            .join("\n") + "\n"
+        : "";
+
+    system.clearSelection();
+    onSend(filePrefix + trimmedValue);
+  };
   const wrapperStyle =
     "flex flex-col items-center gap-2 p-4 rounded-t-4xl border border-gray-200 bg-white shadow-xl";
-  const buttonStyle =
-    "w-8 h-8 flex-none rounded-full border text-gray-600 hover:text-gray-800 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer";
+  const baseButtonStyle = `h-8 flex-none rounded-full border transition-colors duration-200 ${inProgress ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`;
+  const iconButtonStyle = `${baseButtonStyle} w-8 text-gray-600 hover:text-gray-800 disabled:text-gray-300`;
+  const featureButtonStyle = (enabled: boolean) =>
+    `${baseButtonStyle} px-2 text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-1 ${enabled ? "text-emerald-600 border-emerald-600" : ""}`;
 
-  const agent = useMCPConfig();
+  useMount(() => {
+    setIsMac(
+      globalThis.navigator?.platform?.toLowerCase?.()?.includes?.("mac"),
+    );
+  });
+
+  const saveAgentState = (newState: any) => {
+    localStorage.setItem(
+      "mcp_input_state",
+      JSON.stringify({
+        plan_enabled: newState.plan_enabled,
+        web_search_enabled: newState.web_search_enabled,
+        model_name: newState.model_name,
+      }),
+    );
+  };
+
   const togglePlan = () => {
-    agent.setAgentState((i) => ({
-      ...i,
-      plan_enabled: !i.plan_enabled,
-    }));
+    agent.setAgentState((i) => {
+      const newState = { ...i, plan_enabled: !i.plan_enabled };
+      saveAgentState(newState);
+      return newState;
+    });
+  };
+
+  const toggleWebSearch = () => {
+    agent.setAgentState((i) => {
+      const newState = { ...i, web_search_enabled: !i.web_search_enabled };
+      saveAgentState(newState);
+      return newState;
+    });
   };
   return (
     <section
@@ -55,11 +87,7 @@ export default function CopilotInput({
           variant="borderless"
           style={{ width: "100%" }}
           disabled={inProgress}
-          placeholder={`${
-            globalThis.navigator?.platform?.toLowerCase?.()?.includes?.("mac")
-              ? "⌘"
-              : "Ctrl"
-          } + Enter 向 Agent 发送信息`}
+          placeholder={`${isMac ? "⌘" : "Ctrl"} + Enter 向 Agent 发送信息`}
           value={value}
           onChange={setValue}
           onKeyDown={(e) => {
@@ -78,27 +106,47 @@ export default function CopilotInput({
         <div className="w-full flex gap-4">
           <button
             onClick={onReset}
-            className={buttonStyle}
+            className={iconButtonStyle}
             disabled={inProgress}
             aria-label="Reset chat"
           >
             <Eraser size={16} />
           </button>
-          <div className="flex-1 flex items-center justify-center gap-2"></div>
-          {/* <button>{JSON.stringify(agent.agentState)}</button> */}
+
           <button
             onClick={togglePlan}
             disabled={inProgress}
-            className={`h-8 px-2 flex-none rounded-full text-sm transition-colors border duration-200 bg-gray-100  hover:bg-gray-200 ${agent.agentState.plan_enabled ? "text-green-700  border-green-700" : ""} ${inProgress ? "cursor-not-allowed opacity-50" : "cursor-pointer"} flex items-center gap-1`}
+            className={featureButtonStyle(agent.agentState.plan_enabled)}
           >
             <Brain size={16} />
             深度规划
           </button>
           <button
+            onClick={toggleWebSearch}
             disabled={inProgress}
-            className={
-              "w-8 h-8 flex-none rounded-full border hover:bg-green-600 disabled:bg-green-200 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer bg-green-500 text-white"
-            }
+            className={featureButtonStyle(agent.agentState.web_search_enabled)}
+          >
+            <Globe size={16} />
+            网络搜索
+          </button>
+          <div className="flex-1 flex items-center justify-center gap-2"></div>
+          <Select
+            value={agent.agentState.model_name || "qwen-plus"}
+            onChange={(value) => {
+              agent.setAgentState((i) => {
+                const newState = { ...i, model_name: value };
+                saveAgentState(newState);
+                return newState;
+              });
+            }}
+            style={{ width: 120 }}
+            options={ModelConfigs}
+            disabled={inProgress}
+            className="text-sm"
+          />
+          <button
+            disabled={inProgress}
+            className={`${baseButtonStyle} w-8 bg-green-500 text-white hover:bg-green-600 disabled:bg-green-200`}
             onClick={(e) => {
               handleSubmit(value);
               setValue("");
