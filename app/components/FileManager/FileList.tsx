@@ -18,6 +18,7 @@ import { ListView } from "./FileViews/ListView";
 import { GridView } from "./FileViews/GridView";
 import { useFilePreview } from "../FilePreview/FilePreviewContext";
 import { useTab } from "../TabContext";
+import { useCopilotChat } from "@copilotkit/react-core";
 
 export interface FileInfo {
   name: string;
@@ -40,7 +41,13 @@ export default function FileList() {
   const [showNewFolderDialog, setShowNewFolderDialog] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const previewFile = useFilePreview();
-
+  const chat = useCopilotChat();
+  // 当信息返回时，刷新文件列表
+  useEffect(() => {
+    if (!chat.isLoading) {
+      loadFiles();
+    }
+  }, [chat.isLoading]);
   useEffect(() => {
     loadFiles();
   }, [currentPath]);
@@ -78,11 +85,7 @@ export default function FileList() {
           return previewFile.preview(join(currentPath, file.name));
         }
         const path = `/api/oss/${encodeURIComponent(join(currentPath, file.name))}`;
-        const response = await fetch(path);
-        if (!response.ok) throw new Error("Download failed");
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
+        const url = path;
         const a = document.createElement("a");
         a.href = url;
         a.download = file.name;

@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { join } from "path";
 import { createReadStream, promises as fs } from "fs";
 import { stat } from "fs/promises";
+import { Readable } from "stream";
 
 // 设置基础路径，用于映射本地磁盘路径
 const baseURL = process.env.OSS_BASE_PATH || "/tmp/oss-storage";
@@ -45,21 +46,6 @@ export async function GET(
       const fileStream = createReadStream(decodeURIComponent(filePath));
       const fileName = params.slug[params.slug.length - 1];
 
-      const stream = new ReadableStream({
-        async start(controller) {
-          fileStream.on("data", (chunk) => {
-            controller.enqueue(chunk);
-          });
-
-          fileStream.on("end", () => {
-            controller.close();
-          });
-
-          fileStream.on("error", (error) => {
-            controller.error(error);
-          });
-        },
-      });
       const headers = new Headers();
       headers.set("Content-Type", "application/octet-stream");
       headers.set(
@@ -68,7 +54,9 @@ export async function GET(
       );
       headers.set("Content-Length", stats.size.toString());
 
-      return new Response(stream, { headers });
+      return new Response(Readable.toWeb(fileStream) as any as ReadableStream, {
+        headers,
+      });
     }
   } catch (error) {
     console.error("Error reading file:", error);

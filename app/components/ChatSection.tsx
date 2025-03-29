@@ -7,7 +7,6 @@ import { InstructionsModal } from "./InstructionsModal";
 import { DefaultInstructions } from "../DefaultInstructions";
 import { SelectedFileGroup } from "./FileManager/SelectedFileGroup";
 import UserMessage from "./UserMessage";
-import ResponseButton from "./ResponseButton";
 import { Settings } from "lucide-react";
 
 export function ChatSection({
