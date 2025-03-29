@@ -48,7 +48,7 @@ export function MainSection() {
           {tabConfig.map((item) => (
             <button
               key={item.key}
-              className={`cursor-pointer px-4 py-2 inline-flex items-center gap-2 ${tab === item.key ? "border-b-2 border-blue-300" : ""}`}
+              className={`cursor-pointer px-4 py-2 inline-flex items-center gap-2 ${tab === item.key ? "border-b-2 border-blue-500" : ""}`}
               onClick={() => setTab(item.key)}
             >
               <item.icon className="h-4 w-4" />

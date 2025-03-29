@@ -1,11 +1,12 @@
 import { InputProps } from "@copilotkit/react-ui";
-import { Send, Eraser, Brain, Globe } from "lucide-react";
+import { Send, Eraser, Brain, Globe, Square } from "lucide-react";
 import { Mentions, Switch, Select } from "antd";
 import { JSX, useRef, useState, useEffect } from "react";
 import "./CopilotInput.css";
 import { useFileSystem } from "./FileManager/FileSystemContext";
 import { ModelConfigs, useMCPConfig } from "../contexts/MCPConfigContext";
 import { useMount } from "ahooks";
+import { useCopilotChat } from "@copilotkit/react-core";
 
 export default function CopilotInput({
   inProgress,
@@ -72,6 +73,7 @@ export default function CopilotInput({
       return newState;
     });
   };
+  const { stopGeneration } = useCopilotChat();
   return (
     <section
       className="copilot-input"
@@ -144,17 +146,26 @@ export default function CopilotInput({
             disabled={inProgress}
             className="text-sm"
           />
-          <button
-            disabled={inProgress}
-            className={`${baseButtonStyle} w-8 bg-green-500 text-white hover:bg-green-600 disabled:bg-green-200`}
-            onClick={(e) => {
-              handleSubmit(value);
-              setValue("");
-            }}
-            aria-label="Send message"
-          >
-            <Send size={16} />
-          </button>
+          {inProgress ? (
+            <button
+              onClick={stopGeneration}
+              className={`${baseButtonStyle} w-8 bg-red-500 text-white hover:bg-red-600 cursor-pointer`}
+              aria-label="Stop generation"
+            >
+              <Square size={16} />
+            </button>
+          ) : (
+            <button
+              className={`${baseButtonStyle} w-8 bg-green-500 text-white hover:bg-green-600 disabled:bg-green-200`}
+              onClick={(e) => {
+                handleSubmit(value);
+                setValue("");
+              }}
+              aria-label="Send message"
+            >
+              <Send size={16} />
+            </button>
+          )}
         </div>
       </div>
     </section>

@@ -178,7 +178,7 @@ export default function FileList() {
     setCurrentPath(parentPath);
   };
 
-  const [viewType, setViewType] = useState<"list" | "grid">("grid");
+  const [viewType, setViewType] = useState<"list" | "grid">("list");
 
   useEffect(() => {
     if (error) {
