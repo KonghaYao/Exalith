@@ -1,5 +1,5 @@
 import { InputProps } from "@copilotkit/react-ui";
-import { ArrowUpFromDot, Eraser } from "lucide-react";
+import { Send, Eraser, Brain } from "lucide-react";
 import { Mentions, Switch } from "antd";
 import { JSX, useRef, useState } from "react";
 import "./CopilotInput.css";
@@ -75,7 +75,7 @@ export default function CopilotInput({
             },
           ]}
         />
-        <div className="w-full flex">
+        <div className="w-full flex gap-4">
           <button
             onClick={onReset}
             className={buttonStyle}
@@ -85,12 +85,14 @@ export default function CopilotInput({
             <Eraser size={16} />
           </button>
           <div className="flex-1 flex items-center justify-center gap-2"></div>
+          {/* <button>{JSON.stringify(agent.agentState)}</button> */}
           <button
             onClick={togglePlan}
             disabled={inProgress}
-            className={`flex items-center justify-center px-2  rounded-full border transition-colors duration-200 ${agent.agentState.plan_enabled ? "bg-green-500 border-green-600 text-white" : "bg-gray-200 border-gray-300 text-gray-600"} ${inProgress ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+            className={`h-8 px-2 flex-none rounded-full text-sm transition-colors border duration-200 bg-gray-100  hover:bg-gray-200 ${agent.agentState.plan_enabled ? "text-green-700  border-green-700" : ""} ${inProgress ? "cursor-not-allowed opacity-50" : "cursor-pointer"} flex items-center gap-1`}
           >
-            启用规划
+            <Brain size={16} />
+            深度规划
           </button>
           <button
             disabled={inProgress}
@@ -103,7 +105,7 @@ export default function CopilotInput({
             }}
             aria-label="Send message"
           >
-            <ArrowUpFromDot size={16} />
+            <Send size={16} />
           </button>
         </div>
       </div>

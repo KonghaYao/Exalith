@@ -52,16 +52,14 @@ class AgentState(CopilotKitState):
     planned = False  # 控制是否已经生成了计划
 
 
-async def plan_node(
-    state: AgentState, config: RunnableConfig
-) -> Command[Literal["chat_node", "__end__"]]:
+async def plan_node(state: AgentState, config: RunnableConfig):
     """
     计划节点，用于生成执行计划。只有当用户手动开启计划按钮时才会执行此节点。
     """
     try:
         mcp_config = state.get("mcp_config")
         actions = state.get("copilotkit", {}).get("actions", [])
-
+        print("plan", state.get("planned"))
         async with MultiServerMCPClient(mcp_config) as mcp_client:
             # 初始化工具
             tools = await initialize_tools(mcp_client, actions)
@@ -75,7 +73,6 @@ async def plan_node(
                 api_key=os.getenv("OPENAI_API_KEY"),
                 temperature=0.1,
             )
-
             # 获取用户最新消息
             user_messages = [
                 msg for msg in state["messages"] if isinstance(msg, HumanMessage)
@@ -83,36 +80,28 @@ async def plan_node(
             latest_user_message = user_messages[-1].content if user_messages else ""
 
             # 生成计划
-            plan_prompt = f"根据用户的请求：'{latest_user_message}'，请生成一个执行计划，列出需要完成的步骤："
+            plan_prompt = f"根据用户的请求：'{latest_user_message}'，请生成一个执行计划，根据用户输入的信息长度，输出合适长度，列出需要完成的步骤，层次不超过2层："
             plan_response = await planner.ainvoke([HumanMessage(content=plan_prompt)])
 
             # Reset error count on success and set planned to True
-            return Command(
-                goto="chat_node",
-                update={
-                    "messages": state["messages"] + [plan_response],
-                    "planned": True,
-                },
-            )
+            return {
+                "messages": state["messages"] + [plan_response],
+                "planned": True,
+            }
 
     except Exception as e:
         error_msg, details = handle_tool_error(e)
-        return Command(
-            goto="chat_node",
-            update={
-                "messages": state["messages"]
-                + [AIMessage(content=f"计划生成失败: {error_msg}")],
-                "planned": True,
-            },
-        )
+        return {
+            "messages": state["messages"]
+            + [AIMessage(content=f"计划生成失败: {error_msg}")],
+            "planned": True,
+        }
 
 
 # 计划完成节点已移除，计划节点现在直接设置planned=True并跳转到chat_node
 
 
-async def chat_node(
-    state: AgentState, config: RunnableConfig
-) -> Command[Literal["__end__"]]:
+async def chat_node(state: AgentState, config: RunnableConfig):
     """
     Enhanced chat node with improved error handling and state management.
     """
@@ -150,14 +139,10 @@ async def chat_node(
                 # Update state with success response and reset error count
                 new_state = state.copy()
                 new_state["error_count"] = 0
-                return Command(
-                    goto=END,
-                    update={
-                        "messages": state["messages"]
-                        + agent_response.get("messages", []),
-                        "error_count": 0,
-                    },
-                )
+                return {
+                    "messages": state["messages"] + agent_response.get("messages", []),
+                    "error_count": 0,
+                }
             except Exception as e:
                 error_count = state.get("error_count", 0) + 1
                 error_msg, details = handle_tool_error(e)
@@ -186,15 +171,13 @@ async def chat_node(
 
     except Exception as e:
         error_msg, details = handle_tool_error(e)
-        return Command(
-            goto=END,
-            update={"messages": state["messages"] + [AIMessage(content=error_msg)]},
-        )
+        return {"messages": state["messages"] + [AIMessage(content=error_msg)]}
 
 
 # 添加条件路由
 def should_plan(state: AgentState) -> Literal["plan_node", "chat_node"]:
     """根据state中的plan_enabled字段决定是否执行计划节点"""
+    print("should_plan", state.get("planned"))
     # 如果计划已完成，直接进入chat_node
     if state.get("planned", False):
         return "chat_node"
@@ -204,13 +187,18 @@ def should_plan(state: AgentState) -> Literal["plan_node", "chat_node"]:
 
 # Define the workflow graph with planning and chat nodes
 workflow = StateGraph(AgentState)
-workflow.add_node("should_plan", should_plan)
 workflow.add_node("plan_node", plan_node)
 workflow.add_node("chat_node", chat_node)
 
+
+workflow.add_conditional_edges(START, should_plan, ["plan_node", "chat_node"])
 workflow.add_conditional_edges(
-    START,
-    should_plan,
+    "plan_node",
+    lambda state: "chat_node" if state.get("planned", False) else "end",
+    {
+        "chat_node": "chat_node",
+        "end": END,
+    },
 )
 
 # Compile the workflow graph

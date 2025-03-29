@@ -1658,6 +1658,27 @@ url = "http://mirrors.aliyun.com/pypi/simple"
 reference = "aliyun"
 
 [[package]]
+name = "langgraph-supervisor"
+version = "0.0.14"
+description = "An implementation of a supervisor multi-agent architecture using LangGraph"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "langgraph_supervisor-0.0.14-py3-none-any.whl", hash = "sha256:67f1bbafe802949e543cc8d41b9664d4857bd51a08870b113400843425eba44f"},
+    {file = "langgraph_supervisor-0.0.14.tar.gz", hash = "sha256:561c9b8464fd97139cb39e3f7536cdb5c1f263e9d8da71ed719a446ee5f48b24"},
+]
+
+[package.dependencies]
+langgraph = ">=0.3.5,<0.4.0"
+langgraph-prebuilt = ">=0.1.7,<0.2.0"
+
+[package.source]
+type = "legacy"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
+
+[[package]]
 name = "langmem"
 version = "0.0.17"
 description = "Prebuilt utilities for memory management and retrieval."
@@ -3767,4 +3788,4 @@ reference = "aliyun"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "e3616b44177bc368ff04ec4a905d2e2f8583913f188512117d91915a515a3627"
+content-hash = "ac3f28bdc9d80fc2a97fb0546fa88d167f3cbc2c567ff38fb7821f5b06c921ff"

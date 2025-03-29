@@ -25,6 +25,7 @@ dependencies = [
     "langchain-experimental (>=0.3.4,<0.4.0)",
     "langmem>=0.0.16",
     "langgraph-checkpoint-sqlite>=2.0.6",
+    "langgraph-supervisor (>=0.0.14,<0.0.15)",
 ]
 
 [build-system]
