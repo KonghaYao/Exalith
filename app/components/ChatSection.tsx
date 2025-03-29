@@ -31,7 +31,7 @@ export function ChatSection({
         />
         <button
           onClick={() => setIsInstructionsModalOpen(true)}
-          className="absolute top-4 right-4 z-10 p-2 text-gray-600 hover:text-gray-800 "
+          className="absolute top-4 left-4 z-10 p-2 text-gray-600 hover:text-gray-800 "
           aria-label="自定义指令"
         >
           <Settings></Settings>
