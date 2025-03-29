@@ -65,7 +65,9 @@ interface MCPConfigContextType {
   resetConfig: () => void;
   isLoading: boolean;
   agentState: AgentState;
-  setAgentState: (state: AgentState) => void;
+  setAgentState: (
+    state: AgentState | ((state?: AgentState) => AgentState),
+  ) => void;
 }
 
 const MCPConfigContext = createContext<MCPConfigContextType | undefined>(

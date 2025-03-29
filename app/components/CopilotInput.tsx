@@ -60,7 +60,7 @@ export default function CopilotInput({
 
   const togglePlan = () => {
     agent.setAgentState((i) => {
-      const newState = { ...i, plan_enabled: !i.plan_enabled };
+      const newState = { ...i!, plan_enabled: !i!.plan_enabled };
       saveAgentState(newState);
       return newState;
     });
@@ -68,7 +68,7 @@ export default function CopilotInput({
 
   const toggleWebSearch = () => {
     agent.setAgentState((i) => {
-      const newState = { ...i, web_search_enabled: !i.web_search_enabled };
+      const newState = { ...i!, web_search_enabled: !i!.web_search_enabled };
       saveAgentState(newState);
       return newState;
     });
@@ -136,7 +136,7 @@ export default function CopilotInput({
             value={agent.agentState.model_name || "qwen-plus"}
             onChange={(value) => {
               agent.setAgentState((i) => {
-                const newState = { ...i, model_name: value };
+                const newState = { ...i!, model_name: value };
                 saveAgentState(newState);
                 return newState;
               });

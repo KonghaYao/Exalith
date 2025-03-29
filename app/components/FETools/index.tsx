@@ -1,4 +1,5 @@
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
+import { CopilotImageGen } from "./ImageGen";
 export const plugins = [
   // {
   //   name: "select_buttons",
@@ -12,12 +13,13 @@ export const plugins = [
   //   description: "预览远程文件",
   //   component: CopilotPreview,
   // },
-] as {
-  name: string;
-  code: string;
-  description: string;
-  component: React.FC<{ enable?: boolean }>;
-}[];
+  {
+    name: "generate_image",
+    code: "generate_image",
+    description: "文生图",
+    component: CopilotImageGen,
+  },
+];
 export const CopilotFEPlugin = () => {
   const [selectedPlugins, setSelectedPlugins] = useLocalStorage<string[]>(
     "mcp-selected-plugins",
