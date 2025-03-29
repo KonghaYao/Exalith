@@ -6,7 +6,7 @@ import { FileText, Settings, Folder } from "lucide-react";
 import FileList from "./FileManager/FileList";
 import { PreviewComponent } from "./FilePreview/CopilotPreview";
 import { useTab } from "./TabContext";
-import { useCopilotChat } from "@copilotkit/react-core";
+import { useCoAgent, useCopilotChat } from "@copilotkit/react-core";
 import { useFileSystem } from "./FileManager/FileSystemContext";
 import { useEffect } from "react";
 

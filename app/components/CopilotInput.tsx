@@ -1,9 +1,10 @@
 import { InputProps } from "@copilotkit/react-ui";
 import { ArrowUpFromDot, Eraser } from "lucide-react";
-import { Mentions } from "antd";
+import { Mentions, Switch } from "antd";
 import { JSX, useRef, useState } from "react";
 import "./CopilotInput.css";
 import { useFileSystem } from "./FileManager/FileSystemContext";
+import { useMCPConfig } from "../contexts/MCPConfigContext";
 export default function CopilotInput({
   inProgress,
   onSend,
@@ -32,6 +33,13 @@ export default function CopilotInput({
   const buttonStyle =
     "w-8 h-8 flex-none rounded-full border text-gray-600 hover:text-gray-800 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer";
 
+  const agent = useMCPConfig();
+  const togglePlan = () => {
+    agent.setAgentState((i) => ({
+      ...i,
+      plan_enabled: !i.plan_enabled,
+    }));
+  };
   return (
     <section
       className="copilot-input"
@@ -76,7 +84,14 @@ export default function CopilotInput({
           >
             <Eraser size={16} />
           </button>
-          <div className="flex-1"></div>
+          <div className="flex-1 flex items-center justify-center gap-2"></div>
+          <button
+            onClick={togglePlan}
+            disabled={inProgress}
+            className={`flex items-center justify-center px-2  rounded-full border transition-colors duration-200 ${agent.agentState.plan_enabled ? "bg-green-500 border-green-600 text-white" : "bg-gray-200 border-gray-300 text-gray-600"} ${inProgress ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+          >
+            启用规划
+          </button>
           <button
             disabled={inProgress}
             className={

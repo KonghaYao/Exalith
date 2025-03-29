@@ -8,7 +8,7 @@ from langchain_openai import ChatOpenAI
 
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_core.runnables import RunnableConfig
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, END, START
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.types import Command
 from copilotkit import CopilotKitState
@@ -48,6 +48,66 @@ class AgentState(CopilotKitState):
     mcp_config: Optional[MCPConfig]
     error_count: int = 0
     max_retries: int = 2
+    plan_enabled: bool = False  # 控制是否启用计划节点
+    planned = False  # 控制是否已经生成了计划
+
+
+async def plan_node(
+    state: AgentState, config: RunnableConfig
+) -> Command[Literal["chat_node", "__end__"]]:
+    """
+    计划节点，用于生成执行计划。只有当用户手动开启计划按钮时才会执行此节点。
+    """
+    try:
+        mcp_config = state.get("mcp_config")
+        actions = state.get("copilotkit", {}).get("actions", [])
+
+        async with MultiServerMCPClient(mcp_config) as mcp_client:
+            # 初始化工具
+            tools = await initialize_tools(mcp_client, actions)
+            if not tools:
+                raise ToolInitializationError("Failed to initialize tools")
+
+            # 创建计划生成器
+            planner = ChatOpenAI(
+                model=os.getenv("OPENAI_MODEL"),
+                base_url=os.getenv("OPENAI_BASE_URL"),
+                api_key=os.getenv("OPENAI_API_KEY"),
+                temperature=0.1,
+            )
+
+            # 获取用户最新消息
+            user_messages = [
+                msg for msg in state["messages"] if isinstance(msg, HumanMessage)
+            ]
+            latest_user_message = user_messages[-1].content if user_messages else ""
+
+            # 生成计划
+            plan_prompt = f"根据用户的请求：'{latest_user_message}'，请生成一个执行计划，列出需要完成的步骤："
+            plan_response = await planner.ainvoke([HumanMessage(content=plan_prompt)])
+
+            # Reset error count on success and set planned to True
+            return Command(
+                goto="chat_node",
+                update={
+                    "messages": state["messages"] + [plan_response],
+                    "planned": True,
+                },
+            )
+
+    except Exception as e:
+        error_msg, details = handle_tool_error(e)
+        return Command(
+            goto="chat_node",
+            update={
+                "messages": state["messages"]
+                + [AIMessage(content=f"计划生成失败: {error_msg}")],
+                "planned": True,
+            },
+        )
+
+
+# 计划完成节点已移除，计划节点现在直接设置planned=True并跳转到chat_node
 
 
 async def chat_node(
@@ -87,27 +147,42 @@ async def chat_node(
                 agent_response = await react_agent.ainvoke(
                     {"messages": state["messages"]}
                 )
-                state["error_count"] = 0  # Reset error count on success
+                # Update state with success response and reset error count
+                new_state = state.copy()
+                new_state["error_count"] = 0
+                return Command(
+                    goto=END,
+                    update={
+                        "messages": state["messages"]
+                        + agent_response.get("messages", []),
+                        "error_count": 0,
+                    },
+                )
             except Exception as e:
-                state["error_count"] = state.get("error_count", 0) + 1
+                error_count = state.get("error_count", 0) + 1
                 error_msg, details = handle_tool_error(e)
-                if state["error_count"] >= state.get("max_retries", 2):
+                if error_count >= state.get("max_retries", 2):
                     return Command(
                         goto=END,
                         update={
                             "messages": state["messages"]
-                            + [AIMessage(content=f"达到最大重试次数: {error_msg}")]
+                            + [AIMessage(content=f"达到最大重试次数: {error_msg}")],
+                            "error_count": error_count,
                         },
                     )
-                raise
-
-            # Update state and return success response
-            return Command(
-                goto=END,
-                update={
-                    "messages": state["messages"] + agent_response.get("messages", [])
-                },
-            )
+                # Update error count and re-raise for retry
+                return Command(
+                    goto=END,
+                    update={
+                        "messages": state["messages"]
+                        + [
+                            AIMessage(
+                                content=f"执行出错 (尝试 {error_count}/{state.get('max_retries', 2)}): {error_msg}"
+                            )
+                        ],
+                        "error_count": error_count,
+                    },
+                )
 
     except Exception as e:
         error_msg, details = handle_tool_error(e)
@@ -117,10 +192,26 @@ async def chat_node(
         )
 
 
+# 添加条件路由
+def should_plan(state: AgentState) -> Literal["plan_node", "chat_node"]:
+    """根据state中的plan_enabled字段决定是否执行计划节点"""
+    # 如果计划已完成，直接进入chat_node
+    if state.get("planned", False):
+        return "chat_node"
+    # 否则根据plan_enabled决定是否需要生成计划
+    return "plan_node" if state.get("plan_enabled", False) else "chat_node"
+
+
 # Define the workflow graph with planning and chat nodes
 workflow = StateGraph(AgentState)
+workflow.add_node("should_plan", should_plan)
+workflow.add_node("plan_node", plan_node)
 workflow.add_node("chat_node", chat_node)
-workflow.set_entry_point("chat_node")
+
+workflow.add_conditional_edges(
+    START,
+    should_plan,
+)
 
 # Compile the workflow graph
 # 配置 SQLite 数据库路径

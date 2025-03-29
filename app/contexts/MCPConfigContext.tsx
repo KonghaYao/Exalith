@@ -1,0 +1,105 @@
+"use client";
+
+import { createContext, useContext, ReactNode } from "react";
+import { useCoAgent } from "@copilotkit/react-core";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import example from "../../mcp-config.example.json";
+
+type ConnectionType = "stdio" | "sse";
+
+interface StdioConfig {
+  command: string;
+  args: string[];
+  transport: "stdio";
+  enable?: boolean;
+}
+
+interface SSEConfig {
+  url: string;
+  transport: "sse";
+  enable?: boolean;
+}
+
+export type ServerConfig = StdioConfig | SSEConfig;
+
+export interface AgentState {
+  mcp_config: Record<string, ServerConfig>;
+  plan_enabled: boolean;
+}
+
+const STORAGE_KEY = "mcp-agent-state";
+
+const clearAgentConfig = (config: Record<string, ServerConfig>) => {
+  const filteredConfig: Record<string, ServerConfig> = {};
+  for (const [key, value] of Object.entries(config)) {
+    if (value.enable !== false) {
+      const { enable, ...rest } = value;
+      filteredConfig[key] = rest;
+    }
+  }
+  return filteredConfig;
+};
+
+interface MCPConfigContextType {
+  configs: Record<string, ServerConfig>;
+  setConfigs: (newConfigs: Record<string, ServerConfig>) => void;
+  resetConfig: () => void;
+  isLoading: boolean;
+  agentState: AgentState;
+  setAgentState: (state: AgentState) => void;
+}
+
+const MCPConfigContext = createContext<MCPConfigContextType | undefined>(
+  undefined,
+);
+
+export function MCPConfigProvider({ children }: { children: ReactNode }) {
+  const [savedConfigs, setSavedConfigs] = useLocalStorage<
+    Record<string, ServerConfig>
+  >(STORAGE_KEY, example as any);
+  const { state: agentState, setState: setAgentState } = useCoAgent<AgentState>(
+    {
+      name: "llm_agent",
+      initialState: {
+        mcp_config: clearAgentConfig(savedConfigs),
+        plan_enabled: false,
+      },
+    },
+  );
+
+  const configs = savedConfigs || {};
+
+  const resetConfig = () => {
+    setConfigs(example as any);
+  };
+
+  const setConfigs = (newConfigs: Record<string, ServerConfig>) => {
+    setAgentState({ ...agentState, mcp_config: clearAgentConfig(newConfigs) });
+    setSavedConfigs(newConfigs);
+  };
+
+  const isLoading = !agentState;
+
+  return (
+    <MCPConfigContext.Provider
+      value={{
+        configs,
+        setConfigs,
+        resetConfig,
+        isLoading,
+        agentState,
+        setAgentState,
+      }}
+    >
+      {children}
+    </MCPConfigContext.Provider>
+  );
+}
+
+export function useMCPConfig() {
+  const context = useContext(MCPConfigContext);
+  if (context === undefined) {
+    throw new Error("useMCPConfig must be used within a MCPConfigProvider");
+  }
+  return context;
+}

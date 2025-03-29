@@ -45,7 +45,6 @@ export function ChatSection({
               <SelectedFileGroup></SelectedFileGroup>
             </CopilotInput>
           )}
-          ResponseButton={ResponseButton}
           instructions={instructions}
           labels={{
             title: "MCP 助手",

@@ -8,6 +8,7 @@ import { FilePreviewProvider } from "./components/FilePreview/FilePreviewContext
 import { TabProvider } from "./components/TabContext";
 import { ChatSection } from "./components/ChatSection";
 import { MainSection } from "./components/MainSection";
+import { MCPConfigProvider } from "./contexts/MCPConfigContext";
 
 function Home() {
   const [chatKey, setChatKey] = useState(0);
@@ -21,11 +22,13 @@ function Home() {
           key={chatKey}
           agent="llm_agent"
         >
-          <div className="min-h-screen flex relative">
-            <ChatSection chatKey={chatKey} setChatKey={setChatKey} />
-            <CopilotActionHandler />
-            <MainSection />
-          </div>
+          <MCPConfigProvider>
+            <div className="min-h-screen flex relative">
+              <ChatSection chatKey={chatKey} setChatKey={setChatKey} />
+              <CopilotActionHandler />
+              <MainSection />
+            </div>
+          </MCPConfigProvider>
         </CopilotKit>
       </FilePreviewProvider>
     </FileSystemProvider>

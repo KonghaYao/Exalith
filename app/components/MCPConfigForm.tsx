@@ -1,75 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useCoAgent } from "@copilotkit/react-core";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useState } from "react";
 import { Header } from "./ServerForm/Header";
 import { ServerStatistics } from "./ServerForm/ServerStatistics";
 import { AddServerForm } from "./ServerForm/AddServerForm";
 import { ServerList } from "./ServerForm/ServerList";
+import { ServerConfig, useMCPConfig } from "../contexts/MCPConfigContext";
 
 type ConnectionType = "stdio" | "sse";
 
-interface StdioConfig {
-  command: string;
-  args: string[];
-  transport: "stdio";
-  enable?: boolean;
-}
-
-interface SSEConfig {
-  url: string;
-  transport: "sse";
-  enable?: boolean;
-}
-
-type ServerConfig = StdioConfig | SSEConfig;
-
-interface AgentState {
-  mcp_config: Record<string, ServerConfig>;
-}
-
-const STORAGE_KEY = "mcp-agent-state";
-
-const clearAgentConfig = (config: Record<string, ServerConfig>) => {
-  const filteredConfig: Record<string, ServerConfig> = {};
-  for (const [key, value] of Object.entries(config)) {
-    if (value.enable !== false) {
-      const { enable, ...rest } = value;
-      filteredConfig[key] = rest;
-    }
-  }
-  return filteredConfig;
-};
-import example from "../../mcp-config.example.json";
 export function MCPConfigForm() {
-  const [savedConfigs, setSavedConfigs] = useLocalStorage<
-    Record<string, ServerConfig>
-  >(STORAGE_KEY, example as any);
-  const { state: agentState, setState: setAgentState } = useCoAgent<AgentState>(
-    {
-      name: "llm_agent",
-      initialState: {
-        mcp_config: clearAgentConfig(savedConfigs),
-      },
-    },
-  );
-
-  const configs = savedConfigs || {};
-  const resetConfig = () => {
-    setConfigs(example as any);
-  };
-  const setConfigs = (newConfigs: Record<string, ServerConfig>) => {
-    setAgentState({ ...agentState, mcp_config: clearAgentConfig(newConfigs) });
-    setSavedConfigs(newConfigs);
-  };
+  const { configs, setConfigs, resetConfig, isLoading } = useMCPConfig();
 
   const [serverName, setServerName] = useState("");
   const [connectionType, setConnectionType] = useState<ConnectionType>("stdio");
   const [command, setCommand] = useState("");
   const [args, setArgs] = useState("");
   const [url, setUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const [showAddServerForm, setShowAddServerForm] = useState(false);
   const [editingServer, setEditingServer] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -81,12 +28,6 @@ export function MCPConfigForm() {
   const sseServers = Object.values(configs).filter(
     (config) => config.transport === "sse",
   ).length;
-
-  useEffect(() => {
-    if (agentState) {
-      setIsLoading(false);
-    }
-  }, [agentState]);
 
   const addConfig = () => {
     if (!serverName) return;
