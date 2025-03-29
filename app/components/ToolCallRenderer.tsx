@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import { Timer } from "./Timer";
 
 type ToolCallRendererProps = {
   name: string;
@@ -16,6 +17,7 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
   result,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [displayMode, setDisplayMode] = useState<"json" | "text">("text");
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -26,15 +28,15 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
     try {
       return JSON.stringify(obj, null, 2);
     } catch {
-      return String(obj);
+      return obj?.toString();
     }
   }, []);
 
   const memoizedArgs = useMemo(() => formatJSON(args), [args, formatJSON]);
-  const memoizedResult = useMemo(
-    () => result && formatJSON(result),
-    [result, formatJSON],
-  );
+  const memoizedResult = useMemo(() => {
+    if (!result) return "";
+    return displayMode === "json" ? formatJSON(result) : String(result);
+  }, [result, formatJSON, displayMode]);
 
   // Status color mapping
   const statusColors: Record<string, string> = {
@@ -57,13 +59,16 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
         className="flex items-center justify-between p-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
         onClick={toggleExpand}
       >
-        <div className="flex items-center space-x-2">
-          <div
-            className={`text-xs px-2 py-1 rounded-full ${statusColor} transition-colors duration-200 ease-in-out`}
-          >
-            {status}
+        <div className="flex items-center space-x-2 flex-1">
+          <div className="flex items-center space-x-2">
+            <div
+              className={`text-xs px-2 py-1 rounded-full ${statusColor} transition-colors duration-200 ease-in-out`}
+            >
+              {status}
+            </div>
           </div>
-          <div className="font-medium text-gray-700">{name}</div>
+          <div className="font-medium text-gray-700 flex-1">{name}</div>
+          {/* <Timer status={result} /> */}
         </div>
         <button
           className="text-gray-500 hover:text-gray-700 focus:outline-none transition-transform transform"
@@ -102,8 +107,28 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
           {/* Result Section - shown only if there's a result */}
           {result && (
             <div>
-              <div className="text-sm font-medium text-gray-500 mb-1">
-                Result:
+              <div className="flex justify-between items-center mb-1">
+                <div className="text-sm font-medium text-gray-500">Result:</div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDisplayMode("json");
+                    }}
+                    className={`px-2 py-1 text-xs rounded ${displayMode === "json" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-600"}`}
+                  >
+                    JSON
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDisplayMode("text");
+                    }}
+                    className={`px-2 py-1 text-xs rounded ${displayMode === "text" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-600"}`}
+                  >
+                    Text
+                  </button>
+                </div>
               </div>
               <pre className="text-xs bg-gray-50 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all max-w-full max-h-40">
                 {memoizedResult}
