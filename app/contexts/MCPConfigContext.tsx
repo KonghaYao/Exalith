@@ -78,7 +78,7 @@ export function MCPConfigProvider({ children }: { children: ReactNode }) {
   const [savedConfigs, setSavedConfigs] = useLocalStorage<
     Record<string, ServerConfig>
   >(STORAGE_KEY, example as any);
-  const savedState = localStorage?.getItem("mcp_input_state") || "";
+  const savedState = globalThis.localStorage?.getItem("mcp_input_state") || "";
   let extraConfig = {};
   if (savedState) {
     try {

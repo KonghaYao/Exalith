@@ -49,7 +49,7 @@ fastmcp = "^0.4.1"
 langgraph = "^0.3.5"
 
 [tool.poetry.scripts]
-demo = "sample_agent.demo:main"
+dev = "sample_agent.supervisor:main"
 
 [[tool.poetry.source]]
 name = "aliyun"
