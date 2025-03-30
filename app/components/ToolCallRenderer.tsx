@@ -29,7 +29,7 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
     try {
       return JSON.stringify(obj, null, 2);
     } catch {
-      return obj?.toString();
+      return obj;
     }
   }, []);
 
