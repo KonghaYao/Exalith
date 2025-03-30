@@ -9,7 +9,7 @@ import { TabProvider } from "./components/TabContext";
 import { ChatSection } from "./components/ChatSection";
 import { MainSection } from "./components/MainSection";
 import { MCPConfigProvider } from "./contexts/MCPConfigContext";
-
+import "@ant-design/v5-patch-for-react-19";
 function Home() {
   const [chatKey, setChatKey] = useState(0);
 

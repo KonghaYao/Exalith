@@ -179,7 +179,7 @@
 
 /* 自定义的 file 标签*/
 file {
-  @apply border border-gray-200 rounded-xl mx-1 bg-gray-50 px-1;
+  @apply border border-gray-300 rounded-xl mx-1 bg-gray-100 px-2;
 }
 
 /* 隐藏滚动条 */

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { Timer } from "./Timer";
+import { CopyButton } from "./CopyButton";
 
 type ToolCallRendererProps = {
   name: string;
@@ -96,8 +97,11 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
         <div className="p-3 border-t border-gray-200">
           {/* Arguments Section */}
           <div className="mb-3">
-            <div className="text-sm font-medium text-gray-500 mb-1">
-              Arguments:
+            <div className="flex justify-between items-center mb-1">
+              <div className="text-sm font-medium text-gray-500">
+                Arguments:
+              </div>
+              <CopyButton text={memoizedArgs} />
             </div>
             <pre className="text-xs bg-gray-50 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all max-w-full max-h-40">
               {memoizedArgs}
@@ -109,7 +113,7 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
             <div>
               <div className="flex justify-between items-center mb-1">
                 <div className="text-sm font-medium text-gray-500">Result:</div>
-                <div className="flex space-x-2">
+                <div className="flex items-center space-x-2">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -128,6 +132,7 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
                   >
                     Text
                   </button>
+                  <CopyButton text={memoizedResult} />
                 </div>
               </div>
               <pre className="text-xs bg-gray-50 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all max-w-full max-h-40">
