@@ -9,12 +9,14 @@ import os
 
 
 def create_planner_model(
-    model_name: Optional[str] = None, web_search_enabled: bool = False
+    model_name: Optional[str] = None,
+    web_search_enabled: bool = False,
 ) -> ChatOpenAI:
     """Create a model instance optimized for planning tasks.
 
     Args:
         model_name: Optional model name to use. Defaults to environment variable.
+        web_search_enabled: Whether to enable web search capability.
 
     Returns:
         ChatOpenAI: Configured model instance for planning.
@@ -62,7 +64,6 @@ def create_dispatcher_model(
 
     Args:
         model_name: Optional model name to use. Defaults to environment variable.
-        web_search_enabled: Whether to enable web search capability.
 
     Returns:
         ChatOpenAI: Configured model instance for task dispatching.
@@ -76,5 +77,4 @@ def create_dispatcher_model(
         frequency_penalty=0.0,  # No penalty for repeated tokens to ensure clear communication
         top_p=0.9,
         max_tokens=256,  # Limit token usage for faster responses
-        extra_body={"enable_search": web_search_enabled},
     )

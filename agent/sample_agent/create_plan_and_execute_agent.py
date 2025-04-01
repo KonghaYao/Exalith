@@ -14,6 +14,7 @@ from langgraph.types import Command
 from copilotkit import CopilotKitState
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import ToolMessage, AIMessage, HumanMessage
+from langgraph.prebuilt.chat_agent_executor import AgentState
 import pathlib
 import os
 from sample_agent.config import (
@@ -41,7 +42,7 @@ class SSEConnection(TypedDict):
 MCPConfig = Dict[str, Union[StdioConnection, SSEConnection]]
 
 
-class AgentState(CopilotKitState):
+class AgentState(CopilotKitState, AgentState):
     """
     Enhanced agent state with improved state management and error handling.
     """
