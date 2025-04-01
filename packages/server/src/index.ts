@@ -7,6 +7,8 @@ import FileSystem from "./filesystem.js";
 import npmBot from "./npmAgent.js";
 import openSourceBot from "./opensource.js";
 import pollinationBot from "./pollination.js";
+import ragflowBot from "./ragflow.js";
+import 'dotenv/config'
 const app = express();
 
 const transportStore = new Map<string, Map<string, SSEServerTransport>>();
@@ -17,6 +19,7 @@ const appMap = new Map<string, McpServer>([
   ["opensource_bot", openSourceBot],
   ["image_gen_bot", pollinationBot],
   // ["database_bot", databaseBot],
+  ["ragflow_bot", ragflowBot],
 ]);
 
 app.get(`/:id/:name/sse`, async (req, res) => {
