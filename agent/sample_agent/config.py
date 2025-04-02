@@ -48,8 +48,8 @@ async def initialize_tools(mcp_client: MultiServerMCPClient, actions: list) -> l
 
         # Add memory management tools
         memory_tools = [
-            create_manage_memory_tool(namespace=("memories",)),
-            create_search_memory_tool(namespace=("memories",)),
+            # create_manage_memory_tool(namespace=("memories",)),
+            # create_search_memory_tool(namespace=("memories",)),
         ]
 
         return memory_tools + mcp_tools
@@ -57,8 +57,8 @@ async def initialize_tools(mcp_client: MultiServerMCPClient, actions: list) -> l
         # Log error and return basic tools
         print(f"Error initializing tools: {str(e)}")
         return [
-            create_manage_memory_tool(namespace=("memories",)),
-            create_search_memory_tool(namespace=("memories",)),
+            # create_manage_memory_tool(namespace=("memories",)),
+            # create_search_memory_tool(namespace=("memories",)),
         ]
 
 

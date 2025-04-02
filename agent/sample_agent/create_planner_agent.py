@@ -1,6 +1,12 @@
 """
-This is the main entry point for the agent.
-It defines the workflow graph, state, tools, nodes and edges.
+创建规划代理的主入口模块。
+
+本模块负责定义和构建规划代理的工作流图，包括状态管理、工具集成、节点定义和边缘连接。
+主要功能：
+- 构建双节点工作流（研究节点和规划节点）
+- 管理代理状态和消息流
+- 集成外部工具和模型
+- 处理异常和错误情况
 """
 
 # Standard library imports
@@ -75,15 +81,14 @@ def create_planner_agent(
         """
         try:
             # 生成计划
-            STATE_MODIFIER = """你是一个专注于信息收集的专业研究代理，不需要进行汇总，收集完成只需要回复"收集完成"即可。
-你的角色仅限于收集和组织信息，为后面的计划报告过程做准备。
-你的主要职责包括：
-- 使用适当的工具访问多样且可靠的信息来源
-- 系统地收集相关信息，不需要汇总
-- 不要生成完整报告、分析性结论或建议。
-- 执行完工具之后，不需要回复用户
-- 最多能进行五次工具使用
-    """
+            STATE_MODIFIER = """你是一个专注于数据分析和信息收集的研究代理。你的职责是收集和任务相关信息，并不需要完成用户提出的任务：
+- 仅使用查看和分析类工具，严格禁止使用任何写入功能的工具
+- 系统地收集和分析任务相关信息
+- 保持客观，不做主观判断或建议
+- 每次工具使用后保持沉默
+- 信息收集完成时，仅回复"收集完成"
+- 工具使用次数不超过五次
+"""
             react_agent = create_react_agent(
                 research_model,
                 tools,
@@ -101,7 +106,11 @@ def create_planner_agent(
             error_msg, details = handle_tool_error(e)
             return {
                 "messages": state["messages"]
-                + [AIMessage(content=f"计划生成失败: {error_msg}")],
+                + [
+                    AIMessage(
+                        content=f"规划生成失败 - {error_msg}。请检查输入参数和系统状态"
+                    )
+                ],
             }
 
     async def plan_node(state: AgentState):
