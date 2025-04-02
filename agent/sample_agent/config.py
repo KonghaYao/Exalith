@@ -64,7 +64,7 @@ async def initialize_tools(mcp_client: MultiServerMCPClient, actions: list) -> l
 
 # Agent state modifier template
 STATE_MODIFIER = """
-你是一个数据清理大师，请严格按照用户需求完成任务，并使用中文回复用户的要求，复杂任务请先做计划。
+你是一个数据清理大师，请严格按照用户需求或者计划完成任务。
 你需要具体检查文件, 检查表的列的状态，确认用户的需求能够运行，然后调用工具完成任务。如果有结果文件，默认保留原始列。
 
 注意事项：

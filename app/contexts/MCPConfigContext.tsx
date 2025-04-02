@@ -23,6 +23,10 @@ export const ModelConfigs = [
     label: "qwq-plus",
     value: "qwq-plus",
   },
+  {
+    label: "deepseek-chat",
+    value: "deepseek-chat",
+  },
 ];
 interface StdioConfig {
   command: string;
