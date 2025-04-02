@@ -1,13 +1,15 @@
 "use client";
 
 import { useCopilotAction } from "@copilotkit/react-core";
-import { ToolCallRenderer } from "../components/ToolCallRenderer";
+import { ToolCallRenderer } from "./Action/ToolCallRenderer";
 
-/**
- * Client component that handles Copilot actions
- * This component has no UI of its own, it just sets up the action handler
- */
 export const CopilotActionHandler: React.FC = () => {
+  // useCoAgentStateRender({
+  //   name: "llm_agent",
+  //   render: (context) => <div>
+
+  //   </div>,
+  // });
   // add a custom action renderer for all actions
   useCopilotAction({
     name: "*",

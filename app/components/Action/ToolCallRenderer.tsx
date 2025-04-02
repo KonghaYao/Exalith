@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
-import { Timer } from "./Timer";
-import { CopyButton } from "./CopyButton";
+import { useState } from "react";
+import { CopyButton } from "../CopyButton";
+import { StatusBadge } from "./StatusBadge";
+import { useJSONFormatter } from "../../hooks/useJSONFormatter";
 
 type ToolCallRendererProps = {
   name: string;
@@ -24,34 +25,8 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  // Format JSON objects for display
-  const formatJSON = useCallback((obj: any) => {
-    try {
-      return JSON.stringify(obj, null, 2);
-    } catch {
-      return obj;
-    }
-  }, []);
-
-  const memoizedArgs = useMemo(() => formatJSON(args), [args, formatJSON]);
-  const memoizedResult = useMemo(() => {
-    if (!result) return "";
-    return displayMode === "json" ? formatJSON(result) : String(result);
-  }, [result, formatJSON, displayMode]);
-
-  // Status color mapping
-  const statusColors: Record<string, string> = {
-    executing: "bg-yellow-100 text-yellow-800 border border-yellow-300",
-    complete: "bg-green-100 text-green-800 border border-green-300",
-    error: "bg-red-100 text-red-800 border border-red-300",
-    inProgress: "bg-blue-100 text-blue-800 border border-blue-300",
-    unknown: "bg-gray-100 text-gray-800 border border-gray-300",
-  };
-
-  const statusColor = useMemo(
-    () => statusColors[status.toLowerCase()] || statusColors.unknown,
-    [status],
-  );
+  const memoizedArgs = useJSONFormatter(args, "json");
+  const memoizedResult = useJSONFormatter(result, displayMode);
 
   return (
     <div className="my-2 rounded-4xl border border-gray-200 overflow-hidden shadow-sm">
@@ -62,11 +37,7 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
       >
         <div className="flex items-center space-x-2 flex-1">
           <div className="flex items-center space-x-2">
-            <div
-              className={`text-xs px-2 py-1 rounded-full ${statusColor} transition-colors duration-200 ease-in-out`}
-            >
-              {status}
-            </div>
+            <StatusBadge status={status} />
           </div>
           <div className="font-medium text-gray-700 flex-1">{name}</div>
           {/* <Timer status={result} /> */}
