@@ -32,12 +32,10 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.types import Command
 from langgraph.prebuilt import create_react_agent
 from langgraph.prebuilt.chat_agent_executor import AgentState
-from copilotkit import CopilotKitState
 
 # Local imports
-from sample_agent.config import store, initialize_tools, STATE_MODIFIER
-from sample_agent.errors import handle_tool_error, ToolInitializationError
-from sample_agent.model_factory import create_planner_model, create_chat_model
+from sample_agent.config import initialize_tools
+from sample_agent.errors import handle_tool_error
 
 
 def create_planner_agent(
@@ -58,20 +56,33 @@ def create_planner_agent(
     name: Optional[str] = None,
 ):
 
-    async def research_node(state: AgentState, config: RunnableConfig):
+    async def research_node(state: AgentState):
         """
-        信息搜索节点，搜索的信息交由计划节点
+        信息搜索节点：负责收集和组织任务相关的信息
+
+        参数:
+            state (AgentState): 当前代理状态，包含消息历史和上下文信息
+
+        返回:
+            dict: 包含更新后的消息列表的状态字典
+                - messages: 包含原始消息和响应消息的列表
+
+        功能:
+            - 使用专业研究代理收集任务相关信息
+            - 限制工具使用次数最多5次
+            - 不进行信息汇总，仅收集原始数据
+            - 为计划节点提供决策所需的信息基础
         """
         try:
             # 生成计划
             STATE_MODIFIER = """你是一个专注于信息收集的专业研究代理，不需要进行汇总，收集完成只需要回复"收集完成"即可。
-    你的角色仅限于收集和组织信息，为后面的计划报告过程做准备。
-    你的主要职责包括：
-    - 使用适当的工具访问多样且可靠的信息来源
-    - 系统地收集相关信息，不需要汇总
-    - 不要生成完整报告、分析性结论或建议。
-    - 执行完工具之后，不需要回复用户
-    - 最多能进行五次工具使用
+你的角色仅限于收集和组织信息，为后面的计划报告过程做准备。
+你的主要职责包括：
+- 使用适当的工具访问多样且可靠的信息来源
+- 系统地收集相关信息，不需要汇总
+- 不要生成完整报告、分析性结论或建议。
+- 执行完工具之后，不需要回复用户
+- 最多能进行五次工具使用
     """
             react_agent = create_react_agent(
                 research_model,
@@ -93,29 +104,39 @@ def create_planner_agent(
                 + [AIMessage(content=f"计划生成失败: {error_msg}")],
             }
 
-    async def plan_node(state: AgentState, config: RunnableConfig):
+    async def plan_node(state: AgentState):
         """
-        计划节点，用于生成执行计划。只有当用户手动开启计划按钮时才会执行此节点。
+        计划节点：基于收集的信息生成结构化执行计划
+
+        参数:
+            state (AgentState): 当前代理状态，包含消息历史和上下文信息
+
+        返回:
+            dict: 包含更新后的消息列表的状态字典
+                - messages: 包含原始消息和计划响应的列表
+
+        功能:
+            - 分析用户请求的复杂度
+            - 制定具体可执行的步骤
+            - 生成两层结构的任务分解
+            - 预判可能的执行障碍
         """
         try:
 
             # 生成计划
             plan_prompt = f"""
-    请根据用户的请求和工具返回的信息，创建一个清晰、结构化的执行计划。
+请根据任务复杂度和上面收集到的信息生成一份执行计划。
+计划的文章长度取决于用户提出的需求，而不是一味求长。
+对于简单任务，直接给出关键步骤，不需要细节内容；
+对于复杂任务，再展开子步骤和细节。
+你可以修复一些用户的执行要求缺陷，但是不必扩展用户的需求，揣测用户的意图。
+不用给出示例代码，简述流程即可。
 
-    在制定计划时，请考虑以下几点：
-    1. 用户请求的复杂程度
-    2. 完全满足请求所需的必要步骤
-    3. 可能出现的潜在挑战
-
-    请按照以下格式组织您的计划：
-    - 使用主要步骤和子步骤的层次结构
-    - 层次结构最多限制为2层
-    - 根据复杂性调整详细程度
-    - 确保步骤具体且可执行
-
-    请专注于创建一个能有效解决以上问题的计划
-    """
+请确保：
+1. 步骤清晰可执行，简洁
+2. 复杂任务最多展开两层
+3. 关注实际执行效果
+"""
             messages = state["messages"].copy()
             plan_response = await planner_model.ainvoke(
                 messages + [HumanMessage(content=plan_prompt)]
@@ -145,10 +166,6 @@ def create_planner_agent(
         "research_node",
         "plan_node",
     )
-    # Define the edges
-    # Finally, we compile it!
-    # This compiles it into a LangChain Runnable,
-    # meaning you can use it as you would any other runnable
     return workflow.compile(
         checkpointer=checkpointer,
         store=store,
