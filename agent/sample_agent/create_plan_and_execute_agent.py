@@ -55,6 +55,7 @@ class AgentState(CopilotKitState, AgentState):
     plan_enabled: bool = False  # 控制是否启用计划节点
     planned = False  # 控制是否已经生成了计划
     model_name: str = os.getenv("OPENAI_MODEL")
+    next_step: str | None = None
 
 
 async def plan_node(state: AgentState, config: RunnableConfig):
@@ -95,7 +96,7 @@ async def plan_node(state: AgentState, config: RunnableConfig):
         }
 
 
-async def chat_node(state: AgentState, config: RunnableConfig):
+async def excel_helper(state: AgentState, config: RunnableConfig):
     """
     Enhanced chat node with improved error handling and state management.
     """
@@ -166,6 +167,21 @@ async def chat_node(state: AgentState, config: RunnableConfig):
         }
 
 
+from sample_agent.create_classify import classify_intent
+
+
+async def chat_node(state):
+    target = await classify_intent(
+        state,
+        {
+            "excel-helper": "一个处理Excel的专家",
+        },
+    )
+    return {
+        "next_step": target
+    }
+
+
 # 添加条件路由
 def should_plan(state: AgentState) -> Literal["plan_node", "chat_node"]:
     """根据state中的plan_enabled字段决定是否执行计划节点"""
@@ -182,6 +198,7 @@ def create_plan_and_execute_agent():
     workflow = StateGraph(AgentState)
     workflow.add_node("plan_node", plan_node)
     workflow.add_node("chat_node", chat_node)
+    workflow.add_node("excel-helper", excel_helper)
 
     workflow.add_conditional_edges(START, should_plan, ["plan_node", "chat_node"])
 
@@ -190,6 +207,14 @@ def create_plan_and_execute_agent():
         lambda state: "chat_node" if state.get("planned", False) else END,
         {
             "chat_node": "chat_node",
+            "end": END,
+        },
+    )
+    workflow.add_conditional_edges(
+        "chat_node",
+        lambda state: state.get("next_step", "end"),
+        {
+            "excel-helper": "excel-helper",
             "end": END,
         },
     )
