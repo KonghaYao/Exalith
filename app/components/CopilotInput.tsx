@@ -1,5 +1,5 @@
 import { InputProps } from "@copilotkit/react-ui";
-import { Send, Eraser, Brain, Globe, Square } from "lucide-react";
+import { Send, Eraser, Brain, Globe, Square, Edit } from "lucide-react";
 import { Mentions, Switch, Select } from "antd";
 import { JSX, useRef, useState, useEffect } from "react";
 import "./CopilotInput.css";
@@ -7,6 +7,7 @@ import { useFileSystem } from "./FileManager/FileSystemContext";
 import { ModelConfigs, useMCPConfig } from "../contexts/MCPConfigContext";
 import { useMount } from "ahooks";
 import { useCopilotChat } from "@copilotkit/react-core";
+import { PromptPro } from "./PromptPro";
 
 export default function CopilotInput({
   inProgress,
@@ -19,6 +20,7 @@ export default function CopilotInput({
   const [value, setValue] = useState("");
   const input = useRef<any>(null);
   const [isMac, setIsMac] = useState(false);
+  const [showPromptPro, setShowPromptPro] = useState(false);
 
   const handleSubmit = (value: string) => {
     const trimmedValue = value?.trim();
@@ -35,8 +37,8 @@ export default function CopilotInput({
     onSend(filePrefix + trimmedValue);
   };
   const wrapperStyle =
-    "flex flex-col items-center gap-2 p-4 rounded-t-4xl border border-gray-200 bg-white shadow-xl";
-  const baseButtonStyle = `h-8 flex-none rounded-full border transition-colors duration-200 ${inProgress ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`;
+    "border-gradient-cool flex flex-col items-center gap-2 p-4 rounded-t-4xl border border-gray-200 bg-white shadow-xl";
+  const baseButtonStyle = `h-8 flex-none rounded-full border border-gray-300 transition-colors duration-200 ${inProgress ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`;
   const iconButtonStyle = `${baseButtonStyle} w-8 text-gray-600 hover:text-gray-800 disabled:text-gray-300`;
   const featureButtonStyle = (enabled: boolean) =>
     `${baseButtonStyle} px-2 text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-1 ${enabled ? "text-emerald-600 border-emerald-600" : ""}`;
@@ -76,11 +78,17 @@ export default function CopilotInput({
   const { stopGeneration } = useCopilotChat();
   return (
     <section
-      className="copilot-input"
+      className="copilot-input "
       style={{
         fontFamily: "'LXGW WenKai Light'",
       }}
     >
+      <PromptPro
+        value={value}
+        onApply={setValue}
+        visible={showPromptPro}
+        onClose={() => setShowPromptPro(false)}
+      ></PromptPro>
       <div className={wrapperStyle}>
         {children}
         <Mentions
@@ -132,7 +140,14 @@ export default function CopilotInput({
             网络搜索
           </button>
           <div className="flex-1 flex items-center justify-center gap-2"></div>
-
+          <button
+            onClick={() => setShowPromptPro(true)}
+            className={`${baseButtonStyle} w-8 text-gray-600 hover:text-gray-800 disabled:text-gray-300`}
+            disabled={inProgress}
+            aria-label="Open PromptPro"
+          >
+            <Edit size={16} />
+          </button>
           <Select
             value={agent.agentState.model_name || "qwen-plus"}
             onChange={(value) => {

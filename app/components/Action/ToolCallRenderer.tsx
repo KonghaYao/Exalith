@@ -29,7 +29,7 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
   const memoizedResult = useJSONFormatter(result, displayMode);
 
   return (
-    <div className="my-2 rounded-4xl border border-gray-200 overflow-hidden shadow-sm">
+    <div className="my-2 rounded-4xl border-gradient-cool overflow-hidden shadow-sm">
       {/* Header - always visible */}
       <div
         className="flex items-center justify-between p-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"

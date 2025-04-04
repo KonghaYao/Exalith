@@ -186,3 +186,27 @@ file {
 ::-webkit-scrollbar {
   display: none;
 }
+
+.border-gradient-cool {
+  border: 1px solid transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image:
+    linear-gradient(to right, #fff, #fff),
+    linear-gradient(90deg, #40cf20, #33d6d1, #19bad2);
+  transition: box-shadow 0.3s ease;
+}
+.border-gradient-cool-b {
+  border-bottom: 1px solid transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image:
+    linear-gradient(to right, #fff, #fff),
+    linear-gradient(90deg, #40cf20, #33d6d1, #19bad2);
+  transition: box-shadow 0.3s ease;
+}
+
+/* 添加shadow 就会有浮动效果 */
+.border-gradient-cool-shadow:hover {
+  box-shadow: 0 0 15px #33d6d1;
+}
