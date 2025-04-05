@@ -7,5 +7,14 @@ export const useContext = (extra: RequestHandlerExtra) => {
     console.log("SessionId is null");
     return {};
   }
-  return context[extra.sessionId];
+
+  const contextData = context[extra.sessionId] || {};
+
+  // Transform x-a headers
+  for (const [key, value] of Object.entries(contextData)) {
+    if (key.toLowerCase().startsWith("x-")) {
+      contextData[key.replace("x-", "").toUpperCase()] = value;
+    }
+  }
+  return contextData;
 };
