@@ -6,6 +6,7 @@ import { ServerStatistics } from "./ServerForm/ServerStatistics";
 import { AddServerForm } from "./ServerForm/AddServerForm";
 import { ServerList } from "./ServerForm/ServerList";
 import { ServerConfig, useMCPConfig } from "../contexts/MCPConfigContext";
+import { ConfigManager } from "./ServerForm/ConfigManager";
 
 type ConnectionType = "stdio" | "sse";
 
@@ -17,6 +18,7 @@ export function MCPConfigForm() {
   const [command, setCommand] = useState("");
   const [args, setArgs] = useState("");
   const [url, setUrl] = useState("");
+  const [headers, setHeaders] = useState<Record<string, string>>({});
   const [showAddServerForm, setShowAddServerForm] = useState(false);
   const [editingServer, setEditingServer] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,33 +31,29 @@ export function MCPConfigForm() {
     (config) => config.transport === "sse",
   ).length;
 
-  const addConfig = () => {
-    if (!serverName) return;
-    const newConfig =
-      connectionType === "stdio"
-        ? {
-            command,
-            args: args.split(" ").filter((arg) => arg.trim() !== ""),
-            transport: "stdio" as const,
-            enable: true,
-          }
-        : {
-            url,
-            transport: "sse" as const,
-            enable: true,
-          };
-
-    setConfigs({
-      ...configs,
-      [serverName]: newConfig,
-    });
-
+  const resetForm = () => {
     setServerName("");
     setCommand("");
     setArgs("");
     setUrl("");
+    setHeaders({});
     setShowAddServerForm(false);
+    setEditingServer(null);
+    setIsEditing(false);
   };
+
+  const { handleSubmit: addConfig } = ConfigManager({
+    serverName,
+    connectionType,
+    command,
+    args,
+    url,
+    headers,
+    configs,
+    setConfigs,
+    editingServer: null,
+    resetForm,
+  });
 
   const removeConfig = (name: string) => {
     const newConfigs = { ...configs };
@@ -107,6 +105,7 @@ export function MCPConfigForm() {
       setArgs(config.args.join(" "));
     } else {
       setUrl(config.url);
+      setHeaders(config.headers || {});
     }
   };
 
@@ -135,6 +134,7 @@ export function MCPConfigForm() {
           setCommand("");
           setArgs("");
           setUrl("");
+          setHeaders({});
           setShowAddServerForm(true);
         }}
       />
@@ -165,63 +165,28 @@ export function MCPConfigForm() {
           command={command}
           args={args}
           url={url}
+          headers={headers}
           onServerNameChange={setServerName}
           onConnectionTypeChange={setConnectionType}
           onCommandChange={setCommand}
           onArgsChange={setArgs}
           onUrlChange={setUrl}
+          onHeadersChange={setHeaders}
           onClose={() => setShowAddServerForm(false)}
           onSubmit={() => {
-            if (isEditing) {
-              if (editingServer && editingServer !== serverName) {
-                const newConfigs = { ...configs };
-                delete newConfigs[editingServer];
-                const updatedConfig =
-                  connectionType === "stdio"
-                    ? {
-                        command,
-                        args: args
-                          .split(" ")
-                          .filter((arg) => arg.trim() !== ""),
-                        transport: "stdio" as const,
-                      }
-                    : {
-                        url,
-                        transport: "sse" as const,
-                      };
-                setConfigs({
-                  ...newConfigs,
-                  [serverName]: updatedConfig,
-                });
-              } else {
-                const updatedConfig =
-                  connectionType === "stdio"
-                    ? {
-                        command,
-                        args: args
-                          .split(" ")
-                          .filter((arg) => arg.trim() !== ""),
-                        transport: "stdio" as const,
-                      }
-                    : {
-                        url,
-                        transport: "sse" as const,
-                      };
-                setConfigs({
-                  ...configs,
-                  [serverName]: updatedConfig,
-                });
-              }
-            } else {
-              addConfig();
-            }
-            setEditingServer(null);
-            setIsEditing(false);
-            setShowAddServerForm(false);
-            setServerName("");
-            setCommand("");
-            setArgs("");
-            setUrl("");
+            const { handleSubmit } = ConfigManager({
+              serverName,
+              connectionType,
+              command,
+              args,
+              url,
+              headers,
+              configs,
+              setConfigs,
+              editingServer,
+              resetForm,
+            });
+            handleSubmit();
           }}
         />
       )}

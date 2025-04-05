@@ -7,11 +7,13 @@ interface AddServerFormProps {
   command: string;
   args: string;
   url: string;
+  headers: Record<string, string>;
   onServerNameChange: (value: string) => void;
   onConnectionTypeChange: (type: "stdio" | "sse") => void;
   onCommandChange: (value: string) => void;
   onArgsChange: (value: string) => void;
   onUrlChange: (value: string) => void;
+  onHeadersChange: (headers: Record<string, string>) => void;
   onClose: () => void;
   onSubmit: () => void;
 }
@@ -23,11 +25,13 @@ export function AddServerForm({
   command,
   args,
   url,
+  headers,
   onServerNameChange,
   onConnectionTypeChange,
   onCommandChange,
   onArgsChange,
   onUrlChange,
+  onHeadersChange,
   onClose,
   onSubmit,
 }: AddServerFormProps) {
@@ -177,16 +181,87 @@ export function AddServerForm({
               </div>
             </>
           ) : (
-            <div>
-              <label className="block text-sm font-medium mb-1">URL</label>
-              <input
-                type="text"
-                value={url}
-                onChange={(e) => onUrlChange(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md text-sm"
-                placeholder="e.g., http://localhost:8000/events"
-              />
-            </div>
+            <>
+              <div>
+                <label className="block text-sm font-medium mb-1">URL</label>
+                <input
+                  type="text"
+                  value={url}
+                  onChange={(e) => onUrlChange(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                  placeholder="e.g., http://localhost:8000/events"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Headers
+                </label>
+                <div className="space-y-2">
+                  {Object.entries(headers).map(([key, value], index) => (
+                    <div key={index} className="flex space-x-2">
+                      <input
+                        type="text"
+                        value={key}
+                        onChange={(e) => {
+                          const newHeaders = { ...headers };
+                          const oldValue = newHeaders[key];
+                          delete newHeaders[key];
+                          newHeaders[e.target.value] = oldValue;
+                          onHeadersChange(newHeaders);
+                        }}
+                        className="w-1/2 px-3 py-2 border rounded-md text-sm"
+                        placeholder="Header name"
+                      />
+                      <input
+                        type="text"
+                        value={value}
+                        onChange={(e) => {
+                          onHeadersChange({
+                            ...headers,
+                            [key]: e.target.value,
+                          });
+                        }}
+                        className="w-1/2 px-3 py-2 border rounded-md text-sm"
+                        placeholder="Header value"
+                      />
+                      <button
+                        onClick={() => {
+                          const newHeaders = { ...headers };
+                          delete newHeaders[key];
+                          onHeadersChange(newHeaders);
+                        }}
+                        className="p-2 text-red-500 hover:text-red-700"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-5 h-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newKey = `header${Object.keys(headers).length + 1}`;
+                      onHeadersChange({ ...headers, [newKey]: "" });
+                    }}
+                    className="w-full px-3 py-2 border border-dashed rounded-md text-sm text-gray-600 hover:text-gray-800 hover:border-gray-400"
+                  >
+                    + Add Header
+                  </button>
+                </div>
+              </div>
+            </>
           )}
 
           <div className="flex justify-end space-x-2 pt-2">

@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import z from "zod";
-
+import "dotenv/config";
+import { useContext } from "./context.js";
 const server = new McpServer(
   {
     name: "网络助手",
@@ -25,13 +26,13 @@ server.tool(
     count: z.number().min(1).max(50).optional().default(10),
     page: z.number().min(1).optional().default(1),
   },
-  async (args) => {
+  async (args, extra) => {
+    const info = useContext(extra);
+    console.log(info);
     const res = await fetch("https://api.langsearch.com/v1/web-search", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${
-          process.env.SEARCH_API_KEY || "sk-90452b2bcf294c95bcaa378586df6862"
-        }`,
+        Authorization: `Bearer ${info["x-search-key"] || process.env.SEARCH_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(args),

@@ -46,6 +46,7 @@ interface SSEConfig {
   url: string;
   transport: "sse";
   enable?: boolean;
+  headers: Record<string, string>;
 }
 
 export type ServerConfig = StdioConfig | SSEConfig;

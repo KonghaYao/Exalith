@@ -106,6 +106,77 @@ async def excel_helper(state: AgentState, config: RunnableConfig):
         mcp_config = state.get("mcp_config")
         actions = state.get("copilotkit", {}).get("actions", [])
 
+        async with MultiServerMCPClient(
+            [{"url": "http://localhost:8000/sse", "transport": "sse"}]
+        ) as mcp_client:
+            # Initialize tools with error handling
+            tools = await initialize_tools(mcp_client, actions)
+            # Create the react agent with optimized configuration
+            react_agent = create_react_agent(
+                create_chat_model(
+                    model_name=state.get("model_name"),
+                    web_search_enabled=state.get("web_search_enabled", False),
+                ),
+                tools,
+                store=store,
+                state_modifier=STATE_MODIFIER,
+            )
+
+            # Execute agent with error handling
+            try:
+                agent_response = await react_agent.ainvoke(
+                    {"messages": state["messages"]}
+                )
+                # Update state with success response and reset error count
+                return {
+                    "messages": state["messages"] + agent_response.get("messages", []),
+                    "error_count": 0,
+                    "planned": True,
+                }
+            except Exception as e:
+                error_count = state.get("error_count", 0) + 1
+                error_msg, details = handle_tool_error(e)
+                if error_count >= state.get("max_retries", 2):
+                    return Command(
+                        goto=END,
+                        update={
+                            "messages": state["messages"]
+                            + [AIMessage(content=f"达到最大重试次数: {error_msg}")],
+                            "error_count": error_count,
+                            "planned": True,
+                        },
+                    )
+                # Update error count and re-raise for retry
+                return Command(
+                    goto=END,
+                    update={
+                        "messages": state["messages"]
+                        + [
+                            AIMessage(
+                                content=f"执行出错 (尝试 {error_count}/{state.get('max_retries', 2)}): {error_msg}"
+                            )
+                        ],
+                        "error_count": error_count,
+                        "planned": True,
+                    },
+                )
+
+    except Exception as e:
+        error_msg, details = handle_tool_error(e)
+        return {
+            "messages": state["messages"] + [AIMessage(content=error_msg)],
+            "planned": True,
+        }
+
+
+async def all_helper(state: AgentState, config: RunnableConfig):
+    """
+    Enhanced chat node with improved error handling and state management.
+    """
+    try:
+        mcp_config = state.get("mcp_config")
+        actions = state.get("copilotkit", {}).get("actions", [])
+
         async with MultiServerMCPClient(mcp_config) as mcp_client:
             # Initialize tools with error handling
             tools = await initialize_tools(mcp_client, actions)
@@ -175,6 +246,7 @@ async def chat_node(state):
         state,
         {
             "excel-helper": "一个处理Excel的专家",
+            "all-helper": "一个全能的助手，只有找不到其他专家的时候才会调用",
         },
     )
     return {"next_step": target}
@@ -197,6 +269,7 @@ def create_plan_and_execute_agent():
     workflow.add_node("plan_node", plan_node)
     workflow.add_node("chat_node", chat_node)
     workflow.add_node("excel-helper", excel_helper)
+    workflow.add_node("all-helper", all_helper)
 
     workflow.add_conditional_edges(START, should_plan, ["plan_node", "chat_node"])
 
@@ -213,6 +286,7 @@ def create_plan_and_execute_agent():
         lambda state: state.get("next_step", "end"),
         {
             "excel-helper": "excel-helper",
+            "all-helper": "all-helper",
             "end": END,
         },
     )
