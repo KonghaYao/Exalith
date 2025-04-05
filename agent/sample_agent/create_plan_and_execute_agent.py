@@ -64,7 +64,7 @@ async def plan_node(state: AgentState, config: RunnableConfig):
     信息搜索节点，搜索的信息交由计划节点
     """
     try:
-        mcp_config = state.get("mcp_config")
+        mcp_config = process_mcp_config_headers(state.get("mcp_config"))
         actions = state.get("copilotkit", {}).get("actions", [])
         async with MultiServerMCPClient(mcp_config) as mcp_client:
             # 初始化工具
@@ -103,7 +103,7 @@ async def excel_helper(state: AgentState, config: RunnableConfig):
     Enhanced chat node with improved error handling and state management.
     """
     try:
-        mcp_config = state.get("mcp_config")
+        mcp_config = process_mcp_config_headers(state.get("mcp_config"))
         actions = state.get("copilotkit", {}).get("actions", [])
 
         async with MultiServerMCPClient(
@@ -174,7 +174,7 @@ async def all_helper(state: AgentState, config: RunnableConfig):
     Enhanced chat node with improved error handling and state management.
     """
     try:
-        mcp_config = state.get("mcp_config")
+        mcp_config = process_mcp_config_headers(state.get("mcp_config"))
         actions = state.get("copilotkit", {}).get("actions", [])
 
         async with MultiServerMCPClient(mcp_config) as mcp_client:
@@ -239,6 +239,7 @@ async def all_helper(state: AgentState, config: RunnableConfig):
 
 
 from sample_agent.create_classify import classify_intent
+from sample_agent.utils import process_mcp_config_headers
 
 
 async def chat_node(state):

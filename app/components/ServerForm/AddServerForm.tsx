@@ -194,7 +194,7 @@ export function AddServerForm({
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Headers
+                  Environment
                 </label>
                 <div className="space-y-2">
                   {Object.entries(headers).map(([key, value], index) => (
