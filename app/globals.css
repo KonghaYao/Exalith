@@ -52,6 +52,9 @@
 .copilotKitMarkdown ol {
   padding-inline-start: 40px;
 }
+.copilotKitMarkdown hr {
+  margin-bottom: 1rem;
+}
 
 .copilotKitMessage {
   font-size: 1.2rem !important;

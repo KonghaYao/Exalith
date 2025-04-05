@@ -4,7 +4,11 @@ import { Mentions, Switch, Select } from "antd";
 import { JSX, useRef, useState, useEffect } from "react";
 import "./CopilotInput.css";
 import { useFileSystem } from "./FileManager/FileSystemContext";
-import { ModelConfigs, useMCPConfig } from "../contexts/MCPConfigContext";
+import {
+  ModelConfigs,
+  ThinkingModelConfigs,
+  useMCPConfig,
+} from "../contexts/MCPConfigContext";
 import { useMount } from "ahooks";
 import { useCopilotChat } from "@copilotkit/react-core";
 import { PromptPro } from "./PromptPro";
@@ -159,6 +163,21 @@ export default function CopilotInput({
             }}
             style={{ width: 120 }}
             options={ModelConfigs}
+            disabled={inProgress}
+            className="text-sm"
+          />
+          <Select
+            value={agent.agentState.thinking_model}
+            onChange={(value) => {
+              agent.setAgentState((i) => {
+                const newState = { ...i!, thinking_model: value };
+                saveAgentState(newState);
+                return newState;
+              });
+            }}
+            allowClear
+            style={{ width: 120 }}
+            options={ThinkingModelConfigs}
             disabled={inProgress}
             className="text-sm"
           />

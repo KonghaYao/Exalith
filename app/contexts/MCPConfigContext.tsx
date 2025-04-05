@@ -20,12 +20,19 @@ export const ModelConfigs = [
     value: "qwen-turbo",
   },
   {
-    label: "qwq-plus",
+    label: "deepseek-chat",
+    value: "deepseek-chat",
+  },
+];
+
+export const ThinkingModelConfigs = [
+  {
+    label: "QWQ plus",
     value: "qwq-plus",
   },
   {
-    label: "deepseek-chat",
-    value: "deepseek-chat",
+    label: "DeepSeek R1",
+    value: "deepseek-reasoner",
   },
 ];
 interface StdioConfig {
@@ -48,6 +55,7 @@ export interface AgentState {
   plan_enabled: boolean;
   web_search_enabled: boolean;
   model_name: string;
+  thinking_model?: string;
 }
 
 const STORAGE_KEY = "mcp-agent-state";

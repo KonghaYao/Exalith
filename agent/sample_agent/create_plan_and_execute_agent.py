@@ -55,6 +55,7 @@ class AgentState(CopilotKitState, AgentState):
     plan_enabled: bool = False  # 控制是否启用计划节点
     planned = False  # 控制是否已经生成了计划
     model_name: str = os.getenv("OPENAI_MODEL")
+    thinking_model_name: str | None = None
     next_step: str | None = None
 
 
@@ -69,9 +70,10 @@ async def plan_node(state: AgentState, config: RunnableConfig):
             # 初始化工具
             tools = await initialize_tools(mcp_client, actions)
             if not tools:
-                raise ToolInitializationError("Failed to initialize tools")
-
-            planner_model = create_planner_model(state.get("model_name"))
+                return {}
+            planner_model = create_planner_model(
+                state.get("thinking_model_name") or state.get("model_name")
+            )
             research_model = create_planner_model(state.get("model_name"))
             planner_agent = create_planner_agent(
                 planner_model=planner_model,
@@ -107,8 +109,6 @@ async def excel_helper(state: AgentState, config: RunnableConfig):
         async with MultiServerMCPClient(mcp_config) as mcp_client:
             # Initialize tools with error handling
             tools = await initialize_tools(mcp_client, actions)
-            if not tools:
-                raise ToolInitializationError("Failed to initialize tools")
             # Create the react agent with optimized configuration
             react_agent = create_react_agent(
                 create_chat_model(
@@ -177,9 +177,7 @@ async def chat_node(state):
             "excel-helper": "一个处理Excel的专家",
         },
     )
-    return {
-        "next_step": target
-    }
+    return {"next_step": target}
 
 
 # 添加条件路由
