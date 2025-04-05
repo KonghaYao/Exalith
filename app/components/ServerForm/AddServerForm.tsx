@@ -1,5 +1,7 @@
 "use client";
 
+import { PenSquare, Plus, X, Terminal, Globe, Check } from "lucide-react";
+
 interface AddServerFormProps {
   isEditing: boolean;
   serverName: string;
@@ -37,47 +39,21 @@ export function AddServerForm({
 }: AddServerFormProps) {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div className="bg-white border rounded-lg p-6 w-full max-w-md">
+      <div className="border-gradient-cool shadow-2xl rounded-lg p-6 w-full max-w-md ">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d={
-                  isEditing
-                    ? "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    : "M12 4v16m8-8H4"
-                }
-              />
-            </svg>
+            {isEditing ? (
+              <PenSquare className="w-5 h-5 mr-2" />
+            ) : (
+              <Plus className="w-5 h-5 mr-2" />
+            )}
             {isEditing ? "Edit Server" : "Add New Server"}
           </h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -109,20 +85,7 @@ export function AddServerForm({
                     : "bg-white text-gray-700"
                 }`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+                <Terminal className="w-4 h-4 mr-1" />
                 Standard IO
               </button>
               <button
@@ -134,20 +97,7 @@ export function AddServerForm({
                     : "bg-white text-gray-700"
                 }`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
-                  />
-                </svg>
+                <Globe className="w-4 h-4 mr-1" />
                 SSE
               </button>
             </div>
@@ -232,20 +182,7 @@ export function AddServerForm({
                         }}
                         className="p-2 text-red-500 hover:text-red-700"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-5 h-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
+                        <X className="w-5 h-5" />
                       </button>
                     </div>
                   ))}
@@ -269,40 +206,18 @@ export function AddServerForm({
               onClick={onClose}
               className="px-4 py-2 border text-gray-700 rounded-md hover:bg-gray-50 text-sm font-medium flex items-center"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <X className="w-4 h-4 mr-1" />
               Cancel
             </button>
             <button
               onClick={onSubmit}
               className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-sm font-medium flex items-center"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={isEditing ? "M5 13l4 4L19 7" : "M12 4v16m8-8H4"}
-                />
-              </svg>
+              {isEditing ? (
+                <Check className="w-4 h-4 mr-1" />
+              ) : (
+                <Plus className="w-4 h-4 mr-1" />
+              )}
               {isEditing ? "Save Changes" : "Add Server"}
             </button>
           </div>
