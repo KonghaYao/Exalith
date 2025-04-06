@@ -34,11 +34,19 @@ from langgraph.prebuilt.chat_agent_executor import AgentState
 from sample_agent.errors import handle_tool_error
 
 
-def create_planner_agent(
+class ExpertState(AgentState):
+    plan_enabled: bool = False  # 控制是否启用计划节点
+    searched: bool = False
+    planned: bool = False
+
+
+def create_expert_agent(
     research_model: Union[str, LanguageModelLike],
     planner_model: Union[str, LanguageModelLike],
+    execute_model: Union[str, LanguageModelLike],
     tools: Union[Sequence[Union[BaseTool, Callable]], ToolNode],
     research_system_prompt: Optional[Prompt] = None,
+    execute_system_prompt: Optional[Prompt] = None,
     plan_prompt: Optional[Prompt] = "请根据上面的信息，开始你的任务",
     plan_system_prompt: Optional[
         Prompt
@@ -60,7 +68,7 @@ def create_planner_agent(
     response_format: Optional[
         Union[StructuredResponseSchema, tuple[str, StructuredResponseSchema]]
     ] = None,
-    state_schema: Optional[StateSchemaType] = None,
+    state_schema: Optional[StateSchemaType] = ExpertState,
     config_schema: Optional[Type[Any]] = None,
     checkpointer: Optional[Checkpointer] = None,
     store: Optional[BaseStore] = None,
@@ -70,7 +78,7 @@ def create_planner_agent(
     name: Optional[str] = None,
 ):
 
-    async def research_node(state: AgentState):
+    async def research_node(state: ExpertState):
         """
         信息搜索节点：负责收集和组织任务相关的信息
 
@@ -87,7 +95,16 @@ def create_planner_agent(
             - 不进行信息汇总，仅收集原始数据
             - 为计划节点提供决策所需的信息基础
         """
+        print("research_node", state.get("plan_enabled"))
         try:
+            if (
+                state.get("plan_enabled", False) == False
+                or state.get("searched", False) == True
+            ):
+                return {
+                    "messages": state["messages"],
+                    "searched": True,
+                }
             react_agent = create_react_agent(
                 research_model,
                 tools,
@@ -99,6 +116,7 @@ def create_planner_agent(
             # Reset error count on success and set planned to True
             return {
                 "messages": state["messages"] + plan_response.get("messages", []),
+                "searched": True,
             }
 
         except Exception as e:
@@ -107,12 +125,13 @@ def create_planner_agent(
                 "messages": state["messages"]
                 + [
                     AIMessage(
-                        content=f"规划生成失败 - {error_msg}。请检查输入参数和系统状态"
+                        content=f"规划生成失败 - {error_msg} {e}。请检查输入参数和系统状态"
                     )
                 ],
+                "searched": False,
             }
 
-    async def plan_node(state: AgentState):
+    async def plan_node(state: ExpertState):
         """
         计划节点：基于收集的信息生成结构化执行计划
 
@@ -130,7 +149,14 @@ def create_planner_agent(
             - 预判可能的执行障碍
         """
         try:
-
+            if (
+                state.get("plan_enabled", False) == False
+                or state.get("planned", False) == True
+            ):
+                return {
+                    "messages": state["messages"],
+                    "planned": True,
+                }
             messages = state["messages"].copy()
             plan_response = await planner_model.ainvoke(
                 [
@@ -143,19 +169,48 @@ def create_planner_agent(
             # Reset error count on success and set planned to True
             return {
                 "messages": state["messages"] + [plan_response],
+                "planned": True,
             }
 
         except Exception as e:
             error_msg, details = handle_tool_error(e)
             return {
                 "messages": state["messages"]
-                + [AIMessage(content=f"计划生成失败: {error_msg}")],
+                + [AIMessage(content=f"计划生成失败: {error_msg} {e}")],
+                "planned": False,
+            }
+
+    async def execute_node(state: ExpertState):
+        try:
+            react_agent = create_react_agent(
+                execute_model,
+                tools,
+                store=store,
+                state_modifier=execute_system_prompt,
+            )
+            plan_response = await react_agent.ainvoke(state)
+
+            # Reset error count on success and set planned to True
+            return {
+                "messages": state["messages"] + plan_response.get("messages", []),
+            }
+
+        except Exception as e:
+            error_msg, details = handle_tool_error(e)
+            return {
+                "messages": state["messages"]
+                + [
+                    AIMessage(
+                        content=f"规划生成失败 - {error_msg} {e}。请检查输入参数和系统状态"
+                    )
+                ],
             }
 
     # Define the workflow graph with planning and chat nodes
-    workflow = StateGraph(AgentState)
+    workflow = StateGraph(state_schema or ExpertState)
     workflow.add_node("research_node", research_node)
     workflow.add_node("plan_node", plan_node)
+    workflow.add_node("execute_node", execute_node)
     workflow.add_edge(
         START,
         "research_node",
@@ -163,6 +218,10 @@ def create_planner_agent(
     workflow.add_edge(
         "research_node",
         "plan_node",
+    )
+    workflow.add_edge(
+        "plan_node",
+        "execute_node",
     )
     return workflow.compile(
         checkpointer=checkpointer,
