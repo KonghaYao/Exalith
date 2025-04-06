@@ -260,7 +260,7 @@ export default function FileList() {
         />
       </Modal>
 
-      {loading ? (
+      {loading && files.length === 0 ? (
         <div className="text-center py-12 flex-1 bg-white">
           <Spin size="large" tip="加载中..." />
         </div>

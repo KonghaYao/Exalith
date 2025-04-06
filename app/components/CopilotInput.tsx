@@ -1,5 +1,14 @@
 import { InputProps } from "@copilotkit/react-ui";
-import { Send, Eraser, Brain, Globe, Square, Edit } from "lucide-react";
+import {
+  Send,
+  Eraser,
+  Brain,
+  Globe,
+  Square,
+  Edit,
+  WandSparkles,
+  Sparkles,
+} from "lucide-react";
 import { Mentions, Switch, Select } from "antd";
 import { JSX, useRef, useState, useEffect } from "react";
 import "./CopilotInput.css";
@@ -41,11 +50,11 @@ export default function CopilotInput({
     onSend(filePrefix + trimmedValue);
   };
   const wrapperStyle =
-    "border-gradient-cool flex flex-col items-center gap-2 p-4 rounded-t-4xl border border-gray-200 bg-white shadow-xl";
-  const baseButtonStyle = `h-8 flex-none rounded-full border border-gray-300 transition-colors duration-200 ${inProgress ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`;
+    "border-gradient-cool text-gray-800 flex flex-col items-center gap-2 p-4 rounded-t-4xl border border-gray-200 bg-white shadow-xl";
+  const baseButtonStyle = `h-8 flex-none rounded-full bg-gray-100 border border-gray-200 transition-colors duration-200 ${inProgress ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`;
   const iconButtonStyle = `${baseButtonStyle} w-8 text-gray-600 hover:text-gray-800 disabled:text-gray-300`;
   const featureButtonStyle = (enabled: boolean) =>
-    `${baseButtonStyle} px-2 text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-1 ${enabled ? "text-emerald-600 border-emerald-600" : ""}`;
+    `${baseButtonStyle} px-2 text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-1 ${enabled ? "text-emerald-600 border-gray-300" : ""}`;
 
   useMount(() => {
     setIsMac(
@@ -87,17 +96,19 @@ export default function CopilotInput({
         fontFamily: "'LXGW WenKai Light'",
       }}
     >
-      <PromptPro
-        value={value}
-        onApply={setValue}
-        visible={showPromptPro}
-        onClose={() => setShowPromptPro(false)}
-      ></PromptPro>
+      <nav className="relative w-full">
+        <PromptPro
+          value={value}
+          onApply={setValue}
+          visible={showPromptPro}
+          onClose={() => setShowPromptPro(false)}
+        ></PromptPro>
+      </nav>
       <div className={wrapperStyle}>
         {children}
         <Mentions
           ref={input}
-          autoSize
+          autoSize={{ minRows: 2, maxRows: 6 }}
           variant="borderless"
           style={{ width: "100%" }}
           disabled={inProgress}
@@ -117,14 +128,14 @@ export default function CopilotInput({
             },
           ]}
         />
-        <div className="w-full flex gap-4">
+        <div className="w-full flex gap-4 border-t border-gray-200 pt-4">
           <button
-            onClick={onReset}
-            className={iconButtonStyle}
+            onClick={() => setShowPromptPro(true)}
+            className={`${baseButtonStyle} w-8 text-gray-600 hover:text-gray-800 disabled:text-gray-300`}
             disabled={inProgress}
-            aria-label="Reset chat"
+            aria-label="Open PromptPro"
           >
-            <Eraser size={16} />
+            <WandSparkles size={16} />
           </button>
 
           <button
@@ -132,7 +143,7 @@ export default function CopilotInput({
             disabled={inProgress}
             className={featureButtonStyle(agent.agentState.plan_enabled)}
           >
-            <Brain size={16} />
+            <Sparkles size={16} />
             深度规划
           </button>
           <button
@@ -143,14 +154,15 @@ export default function CopilotInput({
             <Globe size={16} />
             网络搜索
           </button>
+
           <div className="flex-1 flex items-center justify-center gap-2"></div>
           <button
-            onClick={() => setShowPromptPro(true)}
-            className={`${baseButtonStyle} w-8 text-gray-600 hover:text-gray-800 disabled:text-gray-300`}
+            onClick={onReset}
+            className={iconButtonStyle}
             disabled={inProgress}
-            aria-label="Open PromptPro"
+            aria-label="Reset chat"
           >
-            <Edit size={16} />
+            <Eraser size={16} />
           </button>
           <Select
             value={agent.agentState.model_name || "qwen-plus"}
@@ -166,7 +178,7 @@ export default function CopilotInput({
             disabled={inProgress}
             className="text-sm"
           />
-          <Select
+          {/* <Select
             value={agent.agentState.thinking_model}
             onChange={(value) => {
               agent.setAgentState((i) => {
@@ -180,7 +192,7 @@ export default function CopilotInput({
             options={ThinkingModelConfigs}
             disabled={inProgress}
             className="text-sm"
-          />
+          /> */}
           {inProgress ? (
             <button
               onClick={stopGeneration}
