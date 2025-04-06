@@ -1,28 +1,17 @@
 "use client";
-import { PlusIcon, ServerIcon } from "lucide-react";
+import {
+  PlusIcon,
+  ServerIcon,
+  Upload,
+  Download,
+  ExternalLink as ExternalLinkIcon,
+} from "lucide-react";
 
 interface HeaderProps {
   onImportConfig: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onExportConfig: () => void;
   onAddServer: () => void;
 }
-
-const ExternalLink = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-3 h-3 ml-1"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-    />
-  </svg>
-);
 
 export function Header({
   onImportConfig,
@@ -50,7 +39,7 @@ export function Header({
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
             >
               <span className="mr-1">GitHub</span>
-              <ExternalLink />
+              <ExternalLinkIcon className="w-3 h-3 ml-1" />
             </a>
             <a
               href="https://docs.copilotkit.ai/"
@@ -59,7 +48,7 @@ export function Header({
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
             >
               <span className="mr-1">CopilotKit</span>
-              <ExternalLink />
+              <ExternalLinkIcon className="w-3 h-3 ml-1" />
             </a>
           </div>
         </div>
@@ -75,47 +64,21 @@ export function Header({
             onClick={() => document.getElementById("import-config")?.click()}
             className="w-full sm:w-auto px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 flex items-center gap-1 justify-center"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-              />
-            </svg>
+            <Upload className="h-4 w-4" />
             导入配置
           </button>
           <button
             onClick={onExportConfig}
             className="w-full sm:w-auto px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 flex items-center gap-1 justify-center"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              />
-            </svg>
+            <Download className="h-4 w-4" />
             导出配置
           </button>
           <button
             onClick={onAddServer}
             className="w-full sm:w-auto px-3 py-1.5 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 flex items-center gap-1 justify-center"
           >
-            <PlusIcon></PlusIcon>
+            <PlusIcon />
             Add Server
           </button>
         </div>

@@ -1,7 +1,16 @@
 "use client";
 
 import { ServerConfig } from "@/app/contexts/ServerConfig";
-import { Power, PowerOff } from "lucide-react";
+import {
+  Power,
+  PowerOff,
+  Edit,
+  Trash2,
+  RefreshCw,
+  Monitor,
+  Globe,
+  ExternalLink,
+} from "lucide-react";
 
 export interface ServerListProps {
   configs: Record<string, ServerConfig>;
@@ -21,7 +30,7 @@ export function ServerList({
   const totalServers = Object.keys(configs).length;
 
   return (
-    <div className="bg-white border rounded-md p-6">
+    <div className="bg-white rounded-md">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Server List</h2>
         <button
@@ -34,20 +43,7 @@ export function ServerList({
           }}
           className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 flex items-center gap-1"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
+          <RefreshCw className="h-4 w-4" />
           重置配置
         </button>
       </div>
@@ -71,35 +67,9 @@ export function ServerList({
                     <h3 className="font-semibold">{name}</h3>
                     <div className="inline-flex items-center px-2 py-0.5 bg-gray-100 text-xs rounded mt-1">
                       {config.transport === "stdio" ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-3 h-3 mr-1"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
+                        <Monitor className="w-3 h-3 mr-1" />
                       ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-3 h-3 mr-1"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
-                          />
-                        </svg>
+                        <Globe className="w-3 h-3 mr-1" />
                       )}
                       {config.transport}
                     </div>
@@ -123,39 +93,13 @@ export function ServerList({
                       onClick={() => onEditServer(name, config)}
                       className="text-gray-400 hover:text-blue-500"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        />
-                      </svg>
+                      <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => onRemoveServer(name)}
                       className="text-gray-400 hover:text-red-500"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -184,20 +128,7 @@ export function ServerList({
           className="text-gray-700 hover:text-gray-900 inline-flex items-center mr-2"
         >
           mcp.composio.dev
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-3 h-3 ml-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-            />
-          </svg>
+          <ExternalLink className="w-3 h-3 ml-1" />
         </a>
         and{" "}
         <a
@@ -207,20 +138,7 @@ export function ServerList({
           className="text-gray-700 hover:text-gray-900 inline-flex items-center"
         >
           mcp.run
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-3 h-3 ml-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-            />
-          </svg>
+          <ExternalLink className="w-3 h-3 ml-1" />
         </a>
       </div>
     </div>
