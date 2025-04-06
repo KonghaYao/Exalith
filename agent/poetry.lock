@@ -1696,6 +1696,27 @@ url = "http://mirrors.aliyun.com/pypi/simple"
 reference = "aliyun"
 
 [[package]]
+name = "langgraph-swarm"
+version = "0.0.9"
+description = "An implementation of a multi-agent swarm using LangGraph"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "langgraph_swarm-0.0.9-py3-none-any.whl", hash = "sha256:94816342a175aa2bfb539d96df66448b9d749b91dcbdbad8c9bc750902039acb"},
+    {file = "langgraph_swarm-0.0.9.tar.gz", hash = "sha256:c416b4d5c5e37e0e25c355fb09f229cb5c5cd87417a1d50a19eb5734be0ee5f4"},
+]
+
+[package.dependencies]
+langchain-core = ">=0.3.40,<0.4.0"
+langgraph = ">=0.3.5,<0.4.0"
+
+[package.source]
+type = "legacy"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
+
+[[package]]
 name = "langmem"
 version = "0.0.17"
 description = "Prebuilt utilities for memory management and retrieval."
@@ -3805,4 +3826,4 @@ reference = "aliyun"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "f39662c9593f16803c5e6bf95c48024728ad0f249879a6ce33c5be756b9b6e39"
+content-hash = "72e382c1af17bb793058c5f459c34ad83d59af9c4c5c9b2414d6192434be0031"
