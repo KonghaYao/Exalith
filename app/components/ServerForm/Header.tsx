@@ -34,9 +34,7 @@ export function Header({
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-1">
         <div className="flex items-center">
           <ServerIcon></ServerIcon>
-          <h1 className="ml-4 text-3xl sm:text-5xl font-semibold">
-            Open MCP Client
-          </h1>
+          <h1 className="ml-4 text-3xl sm:text-5xl font-semibold">MCP 设置</h1>
         </div>
       </div>
       <div className="flex flex-col justify-between items-start sm:items-center mt-4 gap-4">
@@ -51,7 +49,7 @@ export function Header({
               rel="noopener noreferrer"
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
             >
-              <span className="mr-1">GitHub Repo</span>
+              <span className="mr-1">GitHub</span>
               <ExternalLink />
             </a>
             <a
@@ -60,7 +58,7 @@ export function Header({
               rel="noopener noreferrer"
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
             >
-              <span className="mr-1">Documentation</span>
+              <span className="mr-1">CopilotKit</span>
               <ExternalLink />
             </a>
           </div>

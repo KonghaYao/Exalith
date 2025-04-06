@@ -147,7 +147,7 @@ export const CopilotPreview = (props: { enable?: boolean }) => {
 
 export const PreviewComponent = () => {
   const previewFile = useFilePreview();
-
+  const { setTab } = useTab();
   if (previewFile.previewState.loading) {
     return <div className="text-gray-500">Loading...</div>;
   }
@@ -177,6 +177,12 @@ export const PreviewComponent = () => {
           />
         </svg>
         <p>请选择要预览的文件</p>
+        <button
+          className="mt-4 px-4 py-2 bg-white border cursor-pointer rounded-md"
+          onClick={() => setTab("files")}
+        >
+          文件列表
+        </button>
       </div>
     );
   }

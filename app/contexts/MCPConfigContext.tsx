@@ -4,6 +4,7 @@ import { createContext, useContext, ReactNode } from "react";
 import { useCoAgent } from "@copilotkit/react-core";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import example from "../../mcp-config.example.json";
+import { ServerConfig } from "./ServerConfig";
 
 type ConnectionType = "stdio" | "sse";
 export const ModelConfigs = [
@@ -35,22 +36,6 @@ export const ThinkingModelConfigs = [
     value: "deepseek-reasoner",
   },
 ];
-interface StdioConfig {
-  command: string;
-  args: string[];
-  transport: "stdio";
-  enable?: boolean;
-}
-
-interface SSEConfig {
-  url: string;
-  transport: "sse";
-  enable?: boolean;
-  headers: Record<string, string>;
-}
-
-export type ServerConfig = StdioConfig | SSEConfig;
-
 export interface AgentState {
   mcp_config: Record<string, ServerConfig>;
   plan_enabled: boolean;

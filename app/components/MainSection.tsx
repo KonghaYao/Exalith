@@ -91,13 +91,13 @@ export function MainSection() {
         </div>
       )}
       <button
-        className="absolute top-[50%]  -right-4 w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center transition-transform duration-300 cursor-pointer shadow"
+        className="absolute top-[50%]  -right-4 w-8 h-8 bg-emerald-500 hover:bg-emerald-600 transition-all text-white rounded-full flex items-center justify-center duration-300 cursor-pointer shadow"
         onClick={() => setTab(tab ? undefined : "files")}
         style={{
           transform: tab ? "rotate(0deg)" : "rotate(180deg)",
         }}
       >
-        <ChevronLeft></ChevronLeft>
+        <ChevronLeft className="h-4 w-4" />
       </button>
     </section>
   );

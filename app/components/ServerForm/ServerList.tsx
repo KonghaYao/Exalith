@@ -1,23 +1,9 @@
 "use client";
 
+import { ServerConfig } from "@/app/contexts/ServerConfig";
 import { Power, PowerOff } from "lucide-react";
 
-interface StdioConfig {
-  command: string;
-  args: string[];
-  transport: "stdio";
-  enable?: boolean;
-}
-
-interface SSEConfig {
-  url: string;
-  transport: "sse";
-  enable?: boolean;
-}
-
-type ServerConfig = StdioConfig | SSEConfig;
-
-interface ServerListProps {
+export interface ServerListProps {
   configs: Record<string, ServerConfig>;
   onEditServer: (name: string, config: ServerConfig) => void;
   onRemoveServer: (name: string) => void;
