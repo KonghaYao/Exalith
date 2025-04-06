@@ -158,11 +158,14 @@ def create_expert_agent(
                     "planned": True,
                 }
             messages = state["messages"].copy()
+            filtered_messages = [
+                msg for msg in messages if not isinstance(msg, SystemMessage)
+            ]
             plan_response = await planner_model.ainvoke(
                 [
                     SystemMessage(content=plan_system_prompt),
                 ]
-                + messages
+                + filtered_messages
                 + [HumanMessage(content=plan_prompt)]
             )
 

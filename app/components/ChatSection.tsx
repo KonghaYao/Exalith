@@ -10,6 +10,7 @@ import UserMessage from "./UserMessage";
 import { Settings } from "lucide-react";
 import { useCoAgentStateRender } from "@copilotkit/react-core";
 import { Loader2 } from "lucide-react";
+import { AssistantMessage } from "./AssistantMessage";
 export function ChatSection({
   chatKey,
   setChatKey,
@@ -40,6 +41,7 @@ export function ChatSection({
           className="h-screen flex flex-col "
           key={chatKey}
           UserMessage={UserMessage}
+          AssistantMessage={AssistantMessage}
           Input={(props) => (
             <CopilotInput {...props} onReset={() => setChatKey((k) => k + 1)}>
               <SelectedFileGroup></SelectedFileGroup>
