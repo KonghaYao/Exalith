@@ -188,7 +188,7 @@ export const PreviewComponent = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       <div className="p-4 border-b border-gray-200 bg-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -206,7 +206,7 @@ export const PreviewComponent = () => {
           </div>
         </div>
       </div>
-      <div className="p-4 flex-1 max-w-xl">
+      <div className="flex-1 overflow-hidden">
         {(() => {
           const type =
             previewFile.previewState.previewType ||

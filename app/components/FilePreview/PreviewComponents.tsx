@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Image } from "antd";
 
 export interface PreviewProps {
   data: Blob;
@@ -58,15 +59,17 @@ export const TextPreview = ({ data, fileName }: PreviewProps) => {
   if (isTooBig) {
     return (
       <div className="w-full h-full flex items-center justify-center text-gray-500">
-        文件过大（超过512KB），无法预览
+        文件过大，无法预览
       </div>
     );
   }
 
-  return <div className="w-full h-full overflow-auto">{content}</div>;
+  return (
+    <div className="w-full h-full overflow-auto flex flex-col">{content}</div>
+  );
 };
-
 // 图片预览组件
+
 export const ImagePreview = ({ data }: PreviewProps) => {
   const [url, setUrl] = useState<string>("");
 
@@ -78,36 +81,7 @@ export const ImagePreview = ({ data }: PreviewProps) => {
 
   return (
     <div className="w-full h-full flex items-center justify-center p-4">
-      {url && (
-        <img
-          src={url}
-          alt="preview"
-          className="max-w-full max-h-full object-contain"
-        />
-      )}
-    </div>
-  );
-};
-
-// 图片预览组件
-export const ExcelPreview = ({ data }: PreviewProps) => {
-  const [url, setUrl] = useState<string>("");
-
-  useEffect(() => {
-    const imageUrl = URL.createObjectURL(data);
-    setUrl(imageUrl);
-    return () => URL.revokeObjectURL(imageUrl);
-  }, [data]);
-
-  return (
-    <div className="w-full h-full flex items-center justify-center p-4">
-      {url && (
-        <img
-          src={url}
-          alt="preview"
-          className="max-w-full max-h-full object-contain"
-        />
-      )}
+      {url && <Image src={url} alt="preview" />}
     </div>
   );
 };

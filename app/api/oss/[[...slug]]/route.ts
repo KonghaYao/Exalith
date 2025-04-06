@@ -31,7 +31,7 @@ export async function GET(
       const isPreview = searchParams.get("preview") === "true";
 
       // 5MB in bytes
-      const MAX_PREVIEW_SIZE = 5 * 1024 * 1024;
+      const MAX_PREVIEW_SIZE = 20 * 1024 * 1024;
 
       if (isPreview && stats.size > MAX_PREVIEW_SIZE) {
         return new Response(
