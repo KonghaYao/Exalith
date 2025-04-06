@@ -24,9 +24,9 @@ function Home() {
         >
           <MCPConfigProvider>
             <div className="min-h-screen flex relative">
+              <MainSection />
               <ChatSection chatKey={chatKey} setChatKey={setChatKey} />
               <CopilotActionHandler />
-              <MainSection />
             </div>
           </MCPConfigProvider>
         </CopilotKit>

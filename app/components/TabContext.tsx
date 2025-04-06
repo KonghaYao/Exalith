@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from "react";
 
-type TabType = "preview" | "config" | "files" | "artifacts";
+type TabType = "preview" | "config" | "files" | "artifacts" | undefined;
 
 interface TabContextType {
   tab: TabType;
