@@ -38,7 +38,7 @@ def create_planner_agent(
     research_model: Union[str, LanguageModelLike],
     planner_model: Union[str, LanguageModelLike],
     tools: Union[Sequence[Union[BaseTool, Callable]], ToolNode],
-    prompt: Optional[Prompt] = None,
+    research_system_prompt: Optional[Prompt] = None,
     plan_prompt: Optional[Prompt] = "请根据上面的信息，开始你的任务",
     plan_system_prompt: Optional[
         Prompt
@@ -89,7 +89,10 @@ def create_planner_agent(
         """
         try:
             react_agent = create_react_agent(
-                research_model, tools, store=store, state_modifier=prompt
+                research_model,
+                tools,
+                store=store,
+                state_modifier=research_system_prompt,
             )
             plan_response = await react_agent.ainvoke(state)
 
