@@ -11,12 +11,13 @@ import os
 def create_classify_model(
     model_name: Optional[str] = None,
 ) -> ChatOpenAI:
-    
+
     return ChatOpenAI(
         model=model_name or os.getenv("OPENAI_MODEL"),
         base_url=os.getenv("OPENAI_BASE_URL"),
         api_key=os.getenv("OPENAI_API_KEY"),
     )
+
 
 def create_planner_model(
     model_name: Optional[str] = None,

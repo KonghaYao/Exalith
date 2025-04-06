@@ -26,7 +26,7 @@ from langgraph.types import Checkpointer
 from langgraph.store.base import BaseStore
 
 # Third-party imports
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.graph import StateGraph, START
 from langgraph.prebuilt import create_react_agent
 from langgraph.prebuilt.chat_agent_executor import AgentState
@@ -39,6 +39,24 @@ def create_planner_agent(
     planner_model: Union[str, LanguageModelLike],
     tools: Union[Sequence[Union[BaseTool, Callable]], ToolNode],
     prompt: Optional[Prompt] = None,
+    plan_prompt: Optional[Prompt] = "请根据上面的信息，开始你的任务",
+    plan_system_prompt: Optional[
+        Prompt
+    ] = f"""
+请根据任务复杂度和收集到的信息生成一份具有针对性的执行计划。
+计划的文章长度取决于用户提出的需求，而不是一味求长。
+对于简单任务，直接给出关键步骤，不需要细节内容；
+对于复杂任务，再展开子步骤和细节。
+你可以修复一些用户的执行要求缺陷，但是不必扩展用户的需求，揣测用户的意图。
+不用给出示例代码，简述流程即可。
+
+请确保：
+1. 步骤清晰可执行，简洁
+2. 复杂任务最多展开两层
+3. 关注实际执行效果
+4. 需要针对具体的细节制定步骤，在说明时，写清除具体是哪个部分通过什么方式实现什么效果
+5. 不要给出示例代码
+""",
     response_format: Optional[
         Union[StructuredResponseSchema, tuple[str, StructuredResponseSchema]]
     ] = None,
@@ -70,20 +88,8 @@ def create_planner_agent(
             - 为计划节点提供决策所需的信息基础
         """
         try:
-            # 生成计划
-            STATE_MODIFIER = """你是一个专注于数据分析和信息收集的研究代理。你的职责是收集和任务相关信息，并不需要完成用户提出的任务：
-- 仅使用查看和分析类工具，严格禁止使用任何写入功能的工具
-- 系统地收集和分析任务相关信息
-- 保持客观，不做主观判断或建议
-- 每次工具使用后保持沉默
-- 信息收集完成时，仅回复"收集完成"
-- 工具使用次数不超过五次
-"""
             react_agent = create_react_agent(
-                research_model,
-                tools,
-                store=store,
-                state_modifier=STATE_MODIFIER,
+                research_model, tools, store=store, state_modifier=prompt
             )
             plan_response = await react_agent.ainvoke(state)
 
@@ -122,23 +128,13 @@ def create_planner_agent(
         """
         try:
 
-            # 生成计划
-            plan_prompt = f"""
-请根据任务复杂度和上面收集到的信息生成一份执行计划。
-计划的文章长度取决于用户提出的需求，而不是一味求长。
-对于简单任务，直接给出关键步骤，不需要细节内容；
-对于复杂任务，再展开子步骤和细节。
-你可以修复一些用户的执行要求缺陷，但是不必扩展用户的需求，揣测用户的意图。
-不用给出示例代码，简述流程即可。
-
-请确保：
-1. 步骤清晰可执行，简洁
-2. 复杂任务最多展开两层
-3. 关注实际执行效果
-"""
             messages = state["messages"].copy()
             plan_response = await planner_model.ainvoke(
-                messages + [HumanMessage(content=plan_prompt)]
+                [
+                    SystemMessage(content=plan_system_prompt),
+                ]
+                + messages
+                + [HumanMessage(content=plan_prompt)]
             )
 
             # Reset error count on success and set planned to True

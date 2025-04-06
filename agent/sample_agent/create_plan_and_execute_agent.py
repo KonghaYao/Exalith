@@ -20,7 +20,6 @@ import os
 from sample_agent.config import (
     store,
     initialize_tools,
-    STATE_MODIFIER,
 )
 from sample_agent.errors import handle_tool_error, ToolInitializationError
 from sample_agent.model_factory import create_planner_model, create_chat_model
@@ -71,15 +70,64 @@ async def plan_node(state: AgentState, config: RunnableConfig):
             tools = await initialize_tools(mcp_client, actions)
             if not tools:
                 return {}
-            planner_model = create_planner_model(
-                state.get("thinking_model_name") or state.get("model_name")
-            )
-            research_model = create_planner_model(state.get("model_name"))
             planner_agent = create_planner_agent(
-                planner_model=planner_model,
-                research_model=research_model,
+                research_model=create_chat_model("qwen-plus"),
+                planner_model=create_planner_model("qwen-plus"),
                 tools=tools,
                 store=store,
+                prompt="""你是一个专注于数据分析和信息收集的研究代理。你的职责是收集和任务相关信息，给出一份执行环境的报告。
+- 你并不需要完成用户提出的任务
+- 仅使用查看和分析类工具，严格禁止使用任何写入功能的工具
+- 你需要使用 get_random_sample 来初步观察数据的样子
+    - 根据样本中的数据样式，给出一些清洗建议
+    - 有些数据可能有些脏，可以从中发现一些可以清洗的点，这个你需要记录原始数据的列和值举例，记录在报告中
+    - 如果觉得数据不够，可以使用 get_random_sample 多次
+- 系统地收集和分析任务相关信息
+- 保持客观，不做主观判断或建议
+- 工具使用次数不超过十次
+- 你的报告需要简短，只包含特征最为显著的信息，不需要包含代码，不需要包含冗余的信息
+""",
+                plan_system_prompt=f"""
+# 角色与职责
+你是一位专业的数据清洗专家，专注于将原始数据转化为结构化、可分析的格式。
+
+## 核心能力
+1. 数据质量评估
+2. 清洗策略制定
+3. 数据转换设计
+4. 执行计划编写
+
+## 输出要求
+1. **计划结构：**
+   - **步骤**（必选）
+   - **细节说明**（关键点）
+
+## 注意事项
+- 使用原始列名（`原始列名`格式）
+- 避免代码示例
+- 明确数据来源
+- 说明处理逻辑
+- 简单任务：3-5个主步骤
+- 复杂任务：不超过2层嵌套
+
+### 清洗规则
+#### 缺失数据处理
+- 数值类型：明确缺失标记为0，否则保留空值。
+- 文本类型：使用"N/A"填充，否则保留空值。
+
+#### 文本数据处理
+- 单列多维度：识别并设计拆分方案，定义新列名。
+- 数值+文本混合：提取数值，按需保留文本。
+
+#### 地址数据处理
+- 默认：保留原始格式。
+- 需要时：使用cpca库解析。
+
+#### 数值数据处理
+- 统一保留2位小数。
+- 处理异常值。
+""",
+                plan_prompt="""请根据收集的信息撰写数据清洗计划：""",
             )
             plan_response = await planner_agent.ainvoke(state)
 
@@ -107,7 +155,7 @@ async def excel_helper(state: AgentState, config: RunnableConfig):
         actions = state.get("copilotkit", {}).get("actions", [])
 
         async with MultiServerMCPClient(
-            [{"url": "http://localhost:8000/sse", "transport": "sse"}]
+            {"excel": {"url": "http://localhost:8000/sse", "transport": "sse"}}
         ) as mcp_client:
             # Initialize tools with error handling
             tools = await initialize_tools(mcp_client, actions)
@@ -119,7 +167,24 @@ async def excel_helper(state: AgentState, config: RunnableConfig):
                 ),
                 tools,
                 store=store,
-                state_modifier=STATE_MODIFIER,
+                state_modifier="""
+你是一个数据清理大师，请严格按照用户需求或者计划完成任务并回复用户信息。
+你需要具体检查文件, 检查表的列的状态，确认用户的需求能够运行，然后调用工具完成任务。如果有结果文件，默认保留原始列。
+不用确认是否执行任务，可以直接开始执行。
+
+注意事项：
+1. 你无法回复链接和图片给用户
+2. 编写代码时，不用编写 if __name__ == '__main__'
+3. !!!所有的 import 都需要写在函数内，避免全局导入函数的性能损耗
+4. 两次错误后直接放弃执行，并向用户道歉
+5. 数据类型并不一定一致，请注意
+6. 地址类型的列一定要使用 cpca 库进行解析
+地址解析示例：
+def main():
+    import cpca
+    address_df = cpca.transform(single_df_col) # DataFrame, 没有其它入参 
+    address_df # 返回 DataFrame 包含 '省', '市', '区', '地址', 'adcode' 列
+""",
             )
 
             # Execute agent with error handling
@@ -188,7 +253,7 @@ async def all_helper(state: AgentState, config: RunnableConfig):
                 ),
                 tools,
                 store=store,
-                state_modifier=STATE_MODIFIER,
+                # state_modifier="",
             )
 
             # Execute agent with error handling

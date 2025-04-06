@@ -14,7 +14,6 @@ from sample_agent.errors import handle_tool_error, ToolInitializationError
 from sample_agent.config import (
     store,
     initialize_tools,
-    STATE_MODIFIER,
 )
 from langchain_core.messages import ToolMessage, AIMessage, HumanMessage
 from langchain_mcp_adapters.client import MultiServerMCPClient
@@ -57,7 +56,6 @@ async def execute_agent(state: AgentState):
                 ),
                 tools,
                 store=store,
-                state_modifier=STATE_MODIFIER,
             )
 
             # Execute agent with error handling
