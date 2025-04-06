@@ -147,7 +147,7 @@ export const CopilotPreview = (props: { enable?: boolean }) => {
 
 export const PreviewComponent = () => {
   const previewFile = useFilePreview();
-
+  const { setTab } = useTab();
   if (previewFile.previewState.loading) {
     return <div className="text-gray-500">Loading...</div>;
   }
@@ -177,6 +177,12 @@ export const PreviewComponent = () => {
           />
         </svg>
         <p>请选择要预览的文件</p>
+        <button
+          className="mt-4 px-4 py-2 bg-white border cursor-pointer rounded-md"
+          onClick={() => setTab("files")}
+        >
+          文件列表
+        </button>
       </div>
     );
   }
@@ -188,7 +194,7 @@ export const PreviewComponent = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       <div className="p-4 border-b border-gray-200 bg-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -206,7 +212,7 @@ export const PreviewComponent = () => {
           </div>
         </div>
       </div>
-      <div className="p-4 flex-1 max-w-xl">
+      <div className="flex-1 overflow-hidden">
         {(() => {
           const type =
             previewFile.previewState.previewType ||

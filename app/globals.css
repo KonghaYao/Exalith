@@ -213,3 +213,10 @@ file {
 .border-gradient-cool-shadow:hover {
   box-shadow: 0 0 15px #33d6d1;
 }
+.text-gradient-cool {
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(90deg, #40cf20, #33d6d1, #19bad2);
+  transition: box-shadow 0.3s ease; /* 如果需要，可以保留过渡效果 */
+}

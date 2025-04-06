@@ -5,7 +5,8 @@ import { Header } from "./ServerForm/Header";
 import { ServerStatistics } from "./ServerForm/ServerStatistics";
 import { AddServerForm } from "./ServerForm/AddServerForm";
 import { ServerList } from "./ServerForm/ServerList";
-import { ServerConfig, useMCPConfig } from "../contexts/MCPConfigContext";
+import { useMCPConfig } from "../contexts/MCPConfigContext";
+import { ServerConfig } from "../contexts/ServerConfig";
 import { ConfigManager } from "./ServerForm/ConfigManager";
 
 type ConnectionType = "stdio" | "sse";

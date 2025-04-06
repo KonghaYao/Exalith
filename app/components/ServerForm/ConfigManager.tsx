@@ -1,6 +1,6 @@
 "use client";
 
-import { ServerConfig } from "../../contexts/MCPConfigContext";
+import { ServerConfig } from "@/app/contexts/ServerConfig";
 
 type ConnectionType = "stdio" | "sse";
 

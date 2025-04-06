@@ -79,16 +79,24 @@ export const PromptPro = ({
 
   return (
     <Space
-      className={`absolute z-50 bottom-[10%] left-0 right-0 border border-gradient-cool rounded-4xl shadow-2xl p-4 bg-white transition-all duration-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}
+      className={`absolute z-50 bottom-0 left-0 right-0 border border-gradient-cool rounded-4xl shadow-2xl p-4 bg-white transition-all duration-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}
       direction="vertical"
       style={{
         width: "100%",
-        marginBottom: "1rem",
+        marginBottom: "2rem",
         zIndex: 50,
       }}
       size="middle"
     >
-      <div className="flex items-center gap-2">
+      <Input.TextArea
+        variant="borderless"
+        placeholder="点击优化按钮，可以生成优化后的提示词"
+        disabled={loading}
+        value={processedText}
+        onChange={(e) => setProcessedText(e.target.value)}
+        autoSize={{ minRows: 3, maxRows: 6 }}
+      />
+      <div className="flex items-center gap-2 border-t pt-4">
         {Object.entries(processTypeLabels).map(([type, label]) => (
           <CustomButton
             key={type}
@@ -121,13 +129,6 @@ export const PromptPro = ({
           关闭
         </CustomButton>
       </div>
-      <Input.TextArea
-        variant="borderless"
-        disabled={loading}
-        value={processedText}
-        onChange={(e) => setProcessedText(e.target.value)}
-        autoSize={{ minRows: 3, maxRows: 6 }}
-      />
     </Space>
   );
 };

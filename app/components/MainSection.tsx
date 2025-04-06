@@ -2,7 +2,14 @@
 
 import { MCPConfigForm } from "./MCPConfigForm";
 import { CopilotFEPlugin } from "./FETools";
-import { FileText, Settings, Folder } from "lucide-react";
+import {
+  FileText,
+  Settings,
+  Folder,
+  ArrowLeft,
+  MoveLeft,
+  ChevronLeft,
+} from "lucide-react";
 import FileList from "./FileManager/FileList";
 import { PreviewComponent } from "./FilePreview/CopilotPreview";
 import { useTab } from "./TabContext";
@@ -42,40 +49,56 @@ export function MainSection() {
   const { tab, setTab } = useTab();
 
   return (
-    <section className="flex-1 py-6 h-screen">
-      <div className="h-full overflow-y-auto  flex flex-col border-y border-l border-gray-300 rounded-l-4xl bg-white py-6">
-        <div className="flex border-b">
-          {tabConfig.map((item) => (
-            <button
-              key={item.key}
-              className={`cursor-pointer px-4 py-2 inline-flex items-center gap-2 ${tab === item.key ? "border-b-2 border-blue-500" : ""}`}
-              onClick={() => setTab(item.key)}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.text}
-            </button>
-          ))}
-        </div>
+    <section className="flex-none h-screen flex border-r shadow-2xl relative">
+      <nav className="w-12 flex-none border-r bg-gray-100 flex flex-col items-center py-4 gap-4">
+        {tabConfig.map((item) => (
+          <button
+            key={item.key}
+            className={`w-12 h-12 cursor-pointer flex items-center justify-center ${
+              tab === item.key ? "bg-emerald-500 text-white" : " text-gray-600"
+            }`}
+            onClick={() => setTab(item.key)}
+          >
+            <item.icon className="h-6 w-6" />
+          </button>
+        ))}
+      </nav>
 
-        <div
-          className={`${tab === "config" ? "flex-1 overflow-y-auto p-8" : "hidden"}`}
-        >
-          <MCPConfigForm />
-          <CopilotFEPlugin />
-        </div>
+      {tab && (
+        <div className="flex-1 w-128 h-full overflow-y-auto flex flex-col bg-white relative">
+          <div
+            className={`${
+              tab === "config" ? "flex-1 overflow-y-auto p-8" : "hidden"
+            }`}
+          >
+            <MCPConfigForm />
+            <CopilotFEPlugin />
+          </div>
 
-        <div
-          className={`${tab === "preview" ? "flex-1 overflow-y-auto" : "hidden"}`}
-        >
-          <PreviewComponent></PreviewComponent>
-        </div>
+          <div
+            className={`${
+              tab === "preview" ? "flex-1 overflow-y-auto" : "hidden"
+            }`}
+          >
+            <PreviewComponent></PreviewComponent>
+          </div>
 
-        <div
-          className={`${tab === "files" ? "flex-1 overflow-y-auto" : "hidden"}`}
-        >
-          <FileList />
+          <div
+            className={`${tab === "files" ? "flex-1 overflow-y-auto" : "hidden"}`}
+          >
+            <FileList />
+          </div>
         </div>
-      </div>
+      )}
+      <button
+        className="absolute top-[50%]  -right-4 w-8 h-8 bg-emerald-500 hover:bg-emerald-600 transition-all text-white rounded-full flex items-center justify-center duration-300 cursor-pointer shadow"
+        onClick={() => setTab(tab ? undefined : "files")}
+        style={{
+          transform: tab ? "rotate(0deg)" : "rotate(180deg)",
+        }}
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </button>
     </section>
   );
 }

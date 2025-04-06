@@ -14,17 +14,15 @@ export function ServerStatistics({
   sseServers,
 }: ServerStatisticsProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 text-center">
       {/* 服务器总数统计卡片 */}
       <div className="bg-white border rounded-md p-4">
         <div className="text-sm text-gray-500">Total Servers</div>
-        <div className="text-3xl font-bold">{totalServers}</div>
-      </div>
-
-      {/* 已启用服务器统计卡片 */}
-      <div className="bg-white border rounded-md p-4">
-        <div className="text-sm text-gray-500">Enabled Servers</div>
-        <div className="text-3xl font-bold">{enabledServers}</div>
+        <div className="flex  items-center justify-between mt-2">
+          <div className="text-3xl font-bold">{enabledServers}</div>
+          <div>/</div>
+          <div className="text-3xl font-bold">{totalServers}</div>
+        </div>
       </div>
 
       {/* 服务器类型统计卡片 */}
