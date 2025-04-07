@@ -88,7 +88,7 @@ def create_research_model(
         presence_penalty=0.5,  # 提高 presence_penalty 以鼓励探索新概念
         frequency_penalty=0.5,  # 提高 frequency_penalty 以减少常用词的使用
         top_p=0.95,
-        parallel_tool_calls=True,
+        parallel_tool_calls=False,
         extra_body={"enable_search": web_search_enabled},
     )
 
