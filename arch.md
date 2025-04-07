@@ -1,3 +1,6 @@
+工作空间是可以绕过大模型输出限制，通过MCP服务去输出数据，然后用户可以共享到此数据
+
+
 ```mermaid
 flowchart TB
     subgraph Frontend["前端应用层"]

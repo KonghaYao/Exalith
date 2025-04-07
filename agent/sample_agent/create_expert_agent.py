@@ -30,9 +30,7 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.graph import StateGraph, START
 from langgraph.prebuilt import create_react_agent
 from langgraph.prebuilt.chat_agent_executor import AgentState
-
 from sample_agent.errors import handle_tool_error
-
 
 class ExpertState(AgentState):
     plan_enabled: bool = False  # 控制是否启用计划节点
@@ -208,7 +206,6 @@ def create_expert_agent(
                     )
                 ],
             }
-
     # Define the workflow graph with planning and chat nodes
     workflow = StateGraph(state_schema or ExpertState)
     workflow.add_node("research_node", research_node)

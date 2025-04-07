@@ -19,29 +19,31 @@ store = InMemoryStore(
 )
 
 
+def action_to_tool(tool):
+    # Add structured tools with enhanced error handling
+    async def call_tool(
+        **arguments: dict[str, Any],
+    ) -> tuple[str | list[str], None]:
+        try:
+            return ["ok", None]
+        except Exception as e:
+            return [f"Error: {str(e)}", None]
+    return StructuredTool(
+        name=tool["name"],
+        description=tool["description"] or "",
+        args_schema=tool["parameters"],
+        coroutine=call_tool,
+        response_format="content",
+    )
 # Tool initialization with error handling
 async def initialize_tools(mcp_client: MultiServerMCPClient, actions: list) -> list:
     try:
         mcp_tools = mcp_client.get_tools()
 
-        # Add structured tools with enhanced error handling
-        async def call_tool(
-            **arguments: dict[str, Any],
-        ) -> tuple[str | list[str], None]:
-            try:
-                return ["ok", None]
-            except Exception as e:
-                return [f"Error: {str(e)}", None]
-
+        
         mcp_tools.extend(
             [
-                StructuredTool(
-                    name=tool["name"],
-                    description=tool["description"] or "",
-                    args_schema=tool["parameters"],
-                    coroutine=call_tool,
-                    response_format="content",
-                )
+                action_to_tool(tool) 
                 for tool in actions
             ]
         )
