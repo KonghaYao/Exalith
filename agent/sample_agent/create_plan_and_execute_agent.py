@@ -20,6 +20,7 @@ import os
 from sample_agent.config import (
     store,
     initialize_tools,
+    action_to_tool
 )
 from sample_agent.errors import handle_tool_error, ToolInitializationError
 from sample_agent.model_factory import (
@@ -28,7 +29,7 @@ from sample_agent.model_factory import (
     create_research_model,
 )
 from sample_agent.create_expert_agent import create_expert_agent, ExpertState
-
+from langgraph.types import interrupt 
 
 # Define the connection type structures
 class StdioConnection(TypedDict):

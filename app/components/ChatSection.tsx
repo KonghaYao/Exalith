@@ -8,8 +8,6 @@ import { DefaultInstructions } from "../DefaultInstructions";
 import { SelectedFileGroup } from "./FileManager/SelectedFileGroup";
 import UserMessage from "./UserMessage";
 import { Settings } from "lucide-react";
-import { useCoAgentStateRender } from "@copilotkit/react-core";
-import { Loader2 } from "lucide-react";
 export function ChatSection({
   chatKey,
   setChatKey,
