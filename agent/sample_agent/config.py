@@ -28,6 +28,7 @@ def action_to_tool(tool):
             return ["ok", None]
         except Exception as e:
             return [f"Error: {str(e)}", None]
+
     return StructuredTool(
         name=tool["name"],
         description=tool["description"] or "",
@@ -35,18 +36,14 @@ def action_to_tool(tool):
         coroutine=call_tool,
         response_format="content",
     )
+
+
 # Tool initialization with error handling
 async def initialize_tools(mcp_client: MultiServerMCPClient, actions: list) -> list:
     try:
         mcp_tools = mcp_client.get_tools()
 
-        
-        mcp_tools.extend(
-            [
-                action_to_tool(tool) 
-                for tool in actions
-            ]
-        )
+        mcp_tools.extend([action_to_tool(tool) for tool in actions])
 
         # Add memory management tools
         memory_tools = [

@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, END, START
-from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command
 from copilotkit import CopilotKitState
 from langgraph.prebuilt import create_react_agent
@@ -17,11 +17,7 @@ from langchain_core.messages import ToolMessage, AIMessage, HumanMessage
 from langgraph.prebuilt.chat_agent_executor import AgentState
 import pathlib
 import os
-from sample_agent.config import (
-    store,
-    initialize_tools,
-    action_to_tool
-)
+from sample_agent.config import store, initialize_tools, action_to_tool
 from sample_agent.errors import handle_tool_error, ToolInitializationError
 from sample_agent.model_factory import (
     create_planner_model,
@@ -29,7 +25,8 @@ from sample_agent.model_factory import (
     create_research_model,
 )
 from sample_agent.create_expert_agent import create_expert_agent, ExpertState
-from langgraph.types import interrupt 
+from langgraph.types import interrupt
+
 
 # Define the connection type structures
 class StdioConnection(TypedDict):
@@ -65,22 +62,22 @@ async def excel_helper(state: SuperAgentState, config: RunnableConfig):
     """
     信息搜索节点，搜索的信息交由计划节点
     """
-    try:
-        mcp_config = process_mcp_config_headers(state.get("mcp_config"))
-        actions = state.get("copilotkit", {}).get("actions", [])
-        async with MultiServerMCPClient(mcp_config) as mcp_client:
-            # 初始化工具
-            tools = await initialize_tools(mcp_client, actions)
-            planner_agent = create_expert_agent(
-                research_model=create_research_model(state.get("model_name")),
-                planner_model=create_planner_model(state.get("model_name")),
-                execute_model=create_chat_model(
-                    model_name=state.get("model_name"),
-                    web_search_enabled=state.get("web_search_enabled", False),
-                ),
-                tools=tools,
-                store=store,
-                research_system_prompt="""你是一个专注于数据分析和信息收集的研究代理。你的职责是基于提供的工具检查数据，并生成一份关于数据情况和潜在清洗点的报告，这份报告将交给后续的数据处理工程师。
+    mcp_config = process_mcp_config_headers(state.get("mcp_config"))
+    actions = state.get("copilotkit", {}).get("actions", [])
+    async with MultiServerMCPClient(mcp_config) as mcp_client:
+        # 初始化工具
+        tools = await initialize_tools(mcp_client, actions)
+        planner_agent = create_expert_agent(
+            research_model=create_research_model(state.get("model_name")),
+            planner_model=create_planner_model(state.get("model_name")),
+            execute_model=create_chat_model(
+                model_name=state.get("model_name"),
+                web_search_enabled=state.get("web_search_enabled", False),
+            ),
+            tools=tools,
+            checkpointer=checkpoint,
+            store=store,
+            research_system_prompt="""你是一个专注于数据分析和信息收集的研究代理。你的职责是基于提供的工具检查数据，并生成一份关于数据情况和潜在清洗点的报告，这份报告将交给后续的数据处理工程师。
 
 **核心要求：**
 
@@ -103,7 +100,7 @@ async def excel_helper(state: SuperAgentState, config: RunnableConfig):
 
 请严格按照以上要求生成报告。
 """,
-                plan_system_prompt=f"""
+            plan_system_prompt=f"""
 # 角色与职责
 你是一位专业的数据清洗专家，专注于将原始数据转化为结构化、可分析的格式。
 
@@ -145,8 +142,8 @@ async def excel_helper(state: SuperAgentState, config: RunnableConfig):
 - 统一保留原始小数位数。
 - 处理异常值。
 """,
-                plan_prompt="""请根据收集的信息和我的要求撰写计划：""",
-                execute_system_prompt="""
+            plan_prompt="""请根据收集的信息和我的要求撰写计划：""",
+            execute_system_prompt="""
 你是一个数据清理大师，请严格按照用户需求或者计划完成任务并回复用户信息。
 你需要具体检查文件, 检查表的列的状态，确认用户的需求能够运行，然后调用工具完成任务。如果有结果文件，默认保留原始列。
 不用确认是否执行任务，可以直接开始执行。
@@ -164,20 +161,13 @@ def main():
     address_df = cpca.transform(single_df_col) # DataFrame, 没有其它入参 
     address_df # 返回 DataFrame 包含 '省', '市', '区', '地址', 'adcode' 列
 """,
-                state_schema=SuperAgentState,
-            )
-            plan_response = await planner_agent.ainvoke(state)
+            state_schema=SuperAgentState,
+        )
+        plan_response = await planner_agent.ainvoke(state)
 
-            # Reset error count on success and set planned to True
-            return {
-                "messages": state["messages"] + plan_response.get("messages", []),
-            }
-
-    except Exception as e:
-        error_msg, details = handle_tool_error(e)
+        # Reset error count on success and set planned to True
         return {
-            "messages": state["messages"]
-            + [AIMessage(content=f"计划生成失败: {error_msg}")],
+            "messages": state["messages"] + plan_response.get("messages", []),
         }
 
 
@@ -200,6 +190,7 @@ async def all_helper(state: SuperAgentState, config: RunnableConfig):
                 ),
                 tools,
                 store=store,
+                checkpointer=checkpoint,
                 # state_modifier="",
             )
 
@@ -265,6 +256,9 @@ async def dispatch_node(state):
     return {"next_step": target}
 
 
+checkpoint = MemorySaver()
+
+
 def create_plan_and_execute_agent():
 
     workflow = StateGraph(SuperAgentState)
@@ -284,7 +278,6 @@ def create_plan_and_execute_agent():
         },
     )
 
-    db_path = pathlib.Path("./agent_data.db")
     # 使用 SQLiteSaver 替代 MemorySaver
-    graph = workflow.compile(SqliteSaver(db_path))
+    graph = workflow.compile(checkpointer=checkpoint)
     return graph

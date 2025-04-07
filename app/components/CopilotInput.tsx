@@ -19,7 +19,7 @@ import {
   useMCPConfig,
 } from "../contexts/MCPConfigContext";
 import { useMount } from "ahooks";
-import { useCopilotChat } from "@copilotkit/react-core";
+import { useCopilotChat, useLangGraphInterrupt } from "@copilotkit/react-core";
 import { PromptPro } from "./PromptPro";
 
 export default function CopilotInput({
@@ -34,7 +34,26 @@ export default function CopilotInput({
   const input = useRef<any>(null);
   const [isMac, setIsMac] = useState(false);
   const [showPromptPro, setShowPromptPro] = useState(false);
-
+  useLangGraphInterrupt({
+    render: ({ event, resolve }) => (
+      <div>
+        <p>{event.value}</p>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            resolve((e.target as HTMLFormElement).response.value);
+          }}
+        >
+          <input
+            type="text"
+            name="response"
+            placeholder="Enter your response"
+          />
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    ),
+  });
   const handleSubmit = (value: string) => {
     const trimmedValue = value?.trim();
     if (!trimmedValue) return;

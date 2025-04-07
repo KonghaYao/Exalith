@@ -1,6 +1,5 @@
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 import { CopilotImageGen } from "./ImageGen";
-import { CopilotInterrupt } from "./Interrupt";
 export const plugins = [
   // {
   //   name: "select_buttons",
@@ -19,12 +18,6 @@ export const plugins = [
     code: "generate_image",
     description: "文生图",
     component: CopilotImageGen,
-  },
-  {
-    name: "interrupt",
-    code: "interrupt",
-    description: "中断组件",
-    component: CopilotInterrupt,
   },
 ];
 export const CopilotFEPlugin = () => {

@@ -14,7 +14,8 @@ from typing import Any, Callable, Optional, Sequence, Type, Union
 from langchain_core.language_models import (
     LanguageModelLike,
 )
-
+from langgraph.types import interrupt
+from copilotkit.langgraph import copilotkit_interrupt
 from langchain_core.tools import BaseTool
 from langgraph.prebuilt.tool_node import ToolNode
 from langgraph.prebuilt.chat_agent_executor import (
@@ -31,6 +32,7 @@ from langgraph.graph import StateGraph, START
 from langgraph.prebuilt import create_react_agent
 from langgraph.prebuilt.chat_agent_executor import AgentState
 from sample_agent.errors import handle_tool_error
+
 
 class ExpertState(AgentState):
     plan_enabled: bool = False  # 控制是否启用计划节点
@@ -106,6 +108,7 @@ def create_expert_agent(
             react_agent = create_react_agent(
                 research_model,
                 tools,
+                checkpointer=checkpointer,
                 store=store,
                 state_modifier=research_system_prompt,
             )
@@ -146,6 +149,8 @@ def create_expert_agent(
             - 生成两层结构的任务分解
             - 预判可能的执行障碍
         """
+        answer = interrupt("Before we start, what would you like to call me?")
+        print(answer)
         try:
             if (
                 state.get("plan_enabled", False) == False
@@ -186,6 +191,7 @@ def create_expert_agent(
             react_agent = create_react_agent(
                 execute_model,
                 tools,
+                checkpointer=checkpointer,
                 store=store,
                 state_modifier=execute_system_prompt,
             )
@@ -206,6 +212,7 @@ def create_expert_agent(
                     )
                 ],
             }
+
     # Define the workflow graph with planning and chat nodes
     workflow = StateGraph(state_schema or ExpertState)
     workflow.add_node("research_node", research_node)
