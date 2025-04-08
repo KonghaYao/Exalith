@@ -37,6 +37,7 @@ export const ThinkingModelConfigs = [
   },
 ];
 export interface AgentState {
+  active_agent?: string;
   mcp_config: Record<string, ServerConfig>;
   plan_enabled: boolean;
   web_search_enabled: boolean;
@@ -95,6 +96,7 @@ export function MCPConfigProvider({ children }: { children: ReactNode }) {
     {
       name: "llm_agent",
       initialState: {
+        active_agent: "all_helper",
         mcp_config: clearAgentConfig(savedConfigs),
         plan_enabled: false,
         web_search_enabled: false,

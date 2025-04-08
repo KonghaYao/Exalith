@@ -24,7 +24,7 @@ class SwarmState(MessagesState, SuperAgentState):
     # NOTE: this state field is optional and is not expected to be provided by the user.
     # If a user does provide it, the graph will start from the specified active agent.
     # If active agent is typed as a `str`, we turn it into enum of all active agent names.
-    active_agent: Optional[str]
+    active_agent: str = "all_helper"
 
 
 StateSchema = TypeVar("StateSchema", bound=SwarmState)
@@ -158,14 +158,12 @@ async def all_helper_agent(state: SuperAgentState):
 
 all_helper_agent.name = "all_helper"
 
+
 def create_super_agent():
     workflow = create_swarm(
         [excel_helper_agent, all_helper_agent],
         default_active_agent="all_helper",
-        target={
-            "all_helper": ["excel_helper"],
-            "excel_helper": ["all_helper"]
-        },
+        target={"all_helper": ["excel_helper"], "excel_helper": ["all_helper"]},
         state_schema=SwarmState,
     )
     return workflow.compile(checkpointer=checkpoint)

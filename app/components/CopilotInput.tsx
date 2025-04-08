@@ -25,6 +25,7 @@ import {
   useCopilotMessagesContext,
 } from "@copilotkit/react-core";
 import { PromptPro } from "./PromptPro";
+import { AgentConfigs } from "../configs/agentConfigs";
 
 export default function CopilotInput({
   inProgress,
@@ -146,12 +147,7 @@ export default function CopilotInput({
               setValue("");
             }
           }}
-          options={[
-            {
-              value: "llm-agent",
-              label: "大模型助手",
-            },
-          ]}
+          options={[]}
         />
         <div className="w-full flex gap-4 border-t border-gray-200 pt-4">
           <button
@@ -203,25 +199,11 @@ export default function CopilotInput({
             disabled={inProgress}
             className="text-sm"
           />
-          {/* <Select
-            value={agent.agentState.thinking_model}
-            onChange={(value) => {
-              agent.setAgentState((i) => {
-                const newState = { ...i!, thinking_model: value };
-                saveAgentState(newState);
-                return newState;
-              });
-            }}
-            allowClear
-            style={{ width: 120 }}
-            options={ThinkingModelConfigs}
-            disabled={inProgress}
-            className="text-sm"
-          /> */}
+          <AgentSelect inProgress={inProgress}></AgentSelect>
           {inProgress ? (
             <button
               onClick={stopGeneration}
-              className={`${baseButtonStyle} w-8 bg-red-500 text-white hover:bg-red-600 cursor-pointer`}
+              className={`${baseButtonStyle} w-8 bg-red-500 text-white hover:bg-red-600 cursor-pointer opacity-100`}
               aria-label="Stop generation"
             >
               <Square size={16} />
@@ -241,5 +223,24 @@ export default function CopilotInput({
         </div>
       </div>
     </section>
+  );
+}
+
+function AgentSelect(props: { inProgress: boolean }) {
+  const agent = useMCPConfig();
+  return (
+    <Select
+      value={agent.agentState.active_agent || "all_agent"}
+      onChange={(value) => {
+        agent.setAgentState((i) => {
+          const newState = { ...i!, active_agent: value };
+          return newState;
+        });
+      }}
+      style={{ width: 120 }}
+      options={AgentConfigs}
+      disabled={props.inProgress}
+      className="text-sm"
+    />
   );
 }
