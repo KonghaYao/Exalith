@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Image } from "antd";
+import { MarkdownPreview } from "./Preview/Markdown";
 
 export interface PreviewProps {
   data: Blob;
@@ -50,6 +51,9 @@ export const TextPreview = ({ data, fileName }: PreviewProps) => {
         case "css":
           setLanguage("css");
           break;
+        case "md":
+          setLanguage("markdown")
+          break
         default:
           setLanguage("text");
       }

@@ -17,6 +17,7 @@ import {
   Loader2Icon,
 } from "lucide-react";
 import { useTab } from "../TabContext";
+import { MarkdownPreview } from "./Preview/Markdown";
 const getFileType = (filePath: string) => {
   const ext = filePath.split(".").pop()?.toLowerCase();
   if (!ext) return "unknown";
@@ -33,7 +34,6 @@ const getFileType = (filePath: string) => {
     "json",
     "html",
     "css",
-    "md",
   ];
   const excelExts = ["xlsx", "xls"];
 
@@ -41,6 +41,7 @@ const getFileType = (filePath: string) => {
   if (videoExts.includes(ext)) return "video";
   if (audioExts.includes(ext)) return "audio";
   if (ext === "pdf") return "pdf";
+  if (ext === "md") return "markdown";
   if (codeExts.includes(ext)) return "code";
   if (excelExts.includes(ext)) return "excel";
   return "text";
@@ -243,6 +244,8 @@ export const PreviewComponent = () => {
               return (
                 <ExcelPreview data={previewFile.previewState.previewData} />
               );
+            case "markdown":
+              return <MarkdownPreview data={previewFile.previewState.previewData} />;
             case "code":
             case "text":
             default:
