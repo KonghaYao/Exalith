@@ -1,5 +1,6 @@
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 import { CopilotImageGen } from "./ImageGen";
+import { CopilotPreview } from "../FilePreview/CopilotPreview";
 export const plugins = [
   // {
   //   name: "select_buttons",
@@ -8,9 +9,9 @@ export const plugins = [
   //   component: CopilotSelectButton,
   // },
   // {
-  //   name: "preview_file",
-  //   code: "preview_file",
-  //   description: "预览远程文件",
+  //   name: "send_file_to_user",
+  //   code: "send_file_to_user",
+  //   description: "文件预览",
   //   component: CopilotPreview,
   // },
   {

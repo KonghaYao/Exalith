@@ -1,6 +1,5 @@
 "use client";
 import { useCopilotAction } from "@copilotkit/react-core";
-import { useFileSystem } from "../FileManager/FileSystemContext";
 import { useFilePreview } from "./FilePreviewContext";
 import { useEffect, useState } from "react";
 import {
@@ -47,11 +46,11 @@ const getFileType = (filePath: string) => {
   return "text";
 };
 export const CopilotPreview = (props: { enable?: boolean }) => {
-  const tab = useTab();
+
   useCopilotAction({
-    name: "open_file_path_to_user",
+    name: "send_file_to_user",
     description:
-      "提供文件链接，比如图片、视频、音频、文本等。可以用于展示生成的链接，但是不能直接观察",
+      "发送电脑上的一个文件给用户，不需要返回在线链接",
     parameters: [
       {
         name: "filePath",
@@ -68,6 +67,7 @@ export const CopilotPreview = (props: { enable?: boolean }) => {
     ],
     available: props.enable ? "enabled" : "disabled",
     renderAndWaitForResponse: ({ status, args, respond }) => {
+      const tab = useTab();
       const { previewState, preview } = useFilePreview();
       const [lastPreviewPath, setLastPreviewPath] = useState<string | null>(
         null,

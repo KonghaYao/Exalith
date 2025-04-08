@@ -49,7 +49,7 @@ export function MainSection() {
   const { tab, setTab } = useTab();
 
   return (
-    <section className="flex-none h-screen flex border-r shadow-2xl relative">
+    <section className="flex-none h-screen flex border-r shadow-2xl relative z-50">
       <nav className="w-12 flex-none border-r bg-gray-100 flex flex-col items-center py-4 gap-4">
         {tabConfig.map((item) => (
           <button
