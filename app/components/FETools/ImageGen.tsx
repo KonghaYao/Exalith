@@ -18,6 +18,7 @@ export function generateImageUrl(
 
   // Build the query parameters
   const queryParams = new URLSearchParams();
+  queryParams.append("nologo", "true");
   if (model) queryParams.append("model", model);
   if (seed !== undefined) queryParams.append("seed", seed.toString());
   if (width) queryParams.append("width", width.toString());
@@ -50,7 +51,7 @@ export const CopilotImageGen = (props: { enable?: boolean }) => {
   useCopilotAction({
     name: "generate_image",
     description:
-      "请根据用户的需要，提供至少 50 字的图片描述。根据文本描述生成图片。你可以描述想要生成的图片内容，支持调整图片的宽度和高度。",
+      "请根据用户的需要，提供至少 50 字的图片描述。根据文本描述生成图片。你可以描述想要生成的图片内容，支持调整图片的宽度和高度。执行完成表示你已经生成图片并交给用户了，使用此工具后你不需要回复任何的信息。",
     parameters: [
       {
         name: "prompt",

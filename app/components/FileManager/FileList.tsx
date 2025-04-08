@@ -19,6 +19,7 @@ import { GridView } from "./FileViews/GridView";
 import { useFilePreview } from "../FilePreview/FilePreviewContext";
 import { useTab } from "../TabContext";
 import { useCopilotChat } from "@copilotkit/react-core";
+import { useDebounce, useDebounceEffect, useDebounceFn } from "ahooks";
 
 export interface FileInfo {
   name: string;
@@ -42,17 +43,8 @@ export default function FileList() {
   const [newFolderName, setNewFolderName] = useState("");
   const previewFile = useFilePreview();
   const chat = useCopilotChat();
-  // 当信息返回时，刷新文件列表
-  useEffect(() => {
-    if (!chat.isLoading) {
-      loadFiles();
-    }
-  }, [chat.isLoading]);
-  useEffect(() => {
-    loadFiles();
-  }, [currentPath]);
 
-  const loadFiles = async () => {
+  const loadFiles = useDebounceFn(async () => {
     try {
       setLoading(true);
       setError("");
@@ -75,7 +67,19 @@ export default function FileList() {
     } finally {
       setLoading(false);
     }
-  };
+  });
+  // 当信息返回时，刷新文件列表
+  useEffect(() => {
+    if (chat.visibleMessages.length > 0) {
+      const lastMessage = chat.visibleMessages[chat.visibleMessages.length - 1];
+      if (lastMessage.type === "ResultMessage") {
+        loadFiles.run();
+      }
+    }
+  }, [chat.isLoading, chat.visibleMessages.length]);
+  useEffect(() => {
+    loadFiles.run();
+  }, [currentPath]);
   const tab = useTab();
   const handleFileClick = async (file: FileInfo, preview = false) => {
     if (!file.isDirectory) {
@@ -112,7 +116,7 @@ export default function FileList() {
       );
 
       if (!response.ok) throw new Error("Delete failed");
-      loadFiles();
+      loadFiles.run();
     } catch (err) {
       console.error("Delete failed:", err);
       setError("Failed to delete file");
@@ -143,7 +147,7 @@ export default function FileList() {
       );
 
       if (!response.ok) throw new Error("创建文件夹失败");
-      loadFiles();
+      loadFiles.run();
       setShowNewFolderDialog(false);
       setNewFolderName("");
       setError("");
@@ -168,7 +172,7 @@ export default function FileList() {
       );
 
       if (!response.ok) throw new Error("Upload failed");
-      loadFiles();
+      loadFiles.run();
     } catch (err) {
       console.error("Upload failed:", err);
       setError("Failed to upload file");
@@ -218,7 +222,7 @@ export default function FileList() {
           <Button
             type="default"
             icon={<RotateCw className="w-4 h-4" />}
-            onClick={() => loadFiles()}
+            onClick={() => loadFiles.run()}
           ></Button>
           <Button
             type="default"
@@ -260,11 +264,7 @@ export default function FileList() {
         />
       </Modal>
 
-      {loading && files.length === 0 ? (
-        <div className="text-center py-12 flex-1 bg-white">
-          <Spin size="large" tip="加载中..." />
-        </div>
-      ) : files.length === 0 ? (
+      {loading || files.length === 0 ? (
         <div className="text-center py-12 text-gray-400 flex-1 bg-white">
           <div className="text-6xl mb-4">📁</div>
           <p>当前文件夹为空</p>

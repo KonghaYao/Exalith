@@ -25,7 +25,7 @@ def action_to_tool(tool):
         **arguments: dict[str, Any],
     ) -> tuple[str | list[str], None]:
         try:
-            return ["ok", None]
+            return ["执行完成", None]
         except Exception as e:
             return [f"Error: {str(e)}", None]
 
@@ -51,7 +51,7 @@ async def initialize_tools(mcp_client: MultiServerMCPClient, actions: list) -> l
         # create_search_memory_tool(namespace=("memories",)),
     ]
 
-    tools = memory_tools + mcp_tools 
+    tools = memory_tools + mcp_tools
     if not tools:
         return {}
     return tools
