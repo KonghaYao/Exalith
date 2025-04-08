@@ -3,6 +3,7 @@ import os
 from copilotkit import CopilotKitState
 from langgraph.prebuilt.chat_agent_executor import AgentState
 from sample_agent.create_expert_agent import ExpertState
+from sample_agent.swarm.create_swarm import SwarmState
 
 
 # Define the connection type structures
@@ -21,7 +22,7 @@ class SSEConnection(TypedDict):
 MCPConfig = Dict[str, Union[StdioConnection, SSEConnection]]
 
 
-class SuperAgentState(ExpertState, CopilotKitState, AgentState):
+class SuperAgentState(ExpertState, CopilotKitState, AgentState, SwarmState):
     """
     Enhanced agent state with improved state management and error handling.
     """
@@ -32,4 +33,4 @@ class SuperAgentState(ExpertState, CopilotKitState, AgentState):
     web_search_enabled: bool = False
     model_name: str = os.getenv("OPENAI_MODEL")
     thinking_model_name: str | None = None
-    next_step: str | None = None 
+    next_step: str | None = None

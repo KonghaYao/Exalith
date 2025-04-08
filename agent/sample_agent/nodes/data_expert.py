@@ -11,8 +11,11 @@ from sample_agent.model_factory import (
 from sample_agent.create_expert_agent import create_expert_agent
 from sample_agent.utils import process_mcp_config_headers
 from sample_agent.checkpointer import checkpoint
+from langgraph.func import entrypoint
 
-async def excel_helper(state: SuperAgentState, config: RunnableConfig):
+
+@entrypoint()
+async def data_expert(state: SuperAgentState, config: RunnableConfig):
     """
     信息搜索节点，搜索的信息交由计划节点
     """
@@ -105,4 +108,4 @@ async def excel_helper(state: SuperAgentState, config: RunnableConfig):
         # Reset error count on success and set planned to True
         return {
             "messages": state["messages"] + plan_response.get("messages", []),
-        } 
+        }

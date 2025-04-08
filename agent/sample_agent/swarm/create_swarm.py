@@ -1,9 +1,4 @@
-from sample_agent.state import SuperAgentState
 from langgraph.graph import StateGraph, START
-from langgraph.func import entrypoint
-from sample_agent.nodes import excel_helper, all_helper
-
-from sample_agent.checkpointer import checkpoint
 from langgraph.graph import START, MessagesState, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from typing_extensions import (
@@ -18,7 +13,7 @@ from typing_extensions import (
 )
 
 
-class SwarmState(MessagesState, SuperAgentState):
+class SwarmState(MessagesState):
     """State schema for the multi-agent swarm."""
 
     # NOTE: this state field is optional and is not expected to be provided by the user.
@@ -141,29 +136,3 @@ def create_swarm(
         )
 
     return builder
-
-
-@entrypoint()
-async def excel_helper_agent(state: SuperAgentState):
-    return await excel_helper(state, {})
-
-
-excel_helper_agent.name = "excel_helper"
-
-
-@entrypoint()
-async def all_helper_agent(state: SuperAgentState):
-    return await all_helper(state, {})
-
-
-all_helper_agent.name = "all_helper"
-
-
-def create_super_agent():
-    workflow = create_swarm(
-        [excel_helper_agent, all_helper_agent],
-        default_active_agent="all_helper",
-        target={"all_helper": ["excel_helper"], "excel_helper": ["all_helper"]},
-        state_schema=SwarmState,
-    )
-    return workflow.compile(checkpointer=checkpoint)

@@ -4,7 +4,7 @@ export const AgentConfigs = [
     label: "智能助手",
   },
   {
-    value: "excel_helper",
+    value: "data_expert",
     label: "数据专家",
   },
 ];
