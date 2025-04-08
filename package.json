@@ -33,7 +33,8 @@
     "react-markdown": "^10.1.0",
     "read-excel-file": "^5.8.7",
     "tailwind-merge": "^3.0.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vscode-icons-js": "^11.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",

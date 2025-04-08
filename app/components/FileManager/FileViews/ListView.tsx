@@ -4,7 +4,7 @@ import { FileInfo } from "../FileList";
 import { File, Folder, Download, Trash2 } from "lucide-react";
 import { Checkbox, Popconfirm } from "antd";
 import { join } from "path";
-
+import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
 interface ListViewProps {
   files: FileInfo[];
   currentPath: string;
@@ -67,7 +67,7 @@ export function ListView({
           {file.isDirectory ? (
             <Folder className="w-5 h-5 mx-3 text-blue-500 flex-shrink-0" />
           ) : (
-            <File className="w-5 h-5 mx-3 text-gray-400 flex-shrink-0" />
+            <img src={'https://cdn.jsdelivr.net/gh/vscode-icons/vscode-icons@master/icons/'+getIconForFile(file.name)} className="w-5 h-5 mx-3 text-gray-400 flex-shrink-0" />
           )}
           <span className="truncate text-md font-medium text-black">
             {file.name}
