@@ -1,27 +1,9 @@
-from langgraph_supervisor import create_supervisor
-from langgraph.prebuilt import create_react_agent
-from sample_agent.model_factory import (
-    create_chat_model,
-    create_planner_model,
-    create_dispatcher_model,
-)
-from sample_agent.prompts import planner_prompt
-import json
-from langgraph.graph import add_messages
-from langgraph.func import entrypoint, task
-from sample_agent.create_plan_and_execute_agent import SuperAgentState
-from sample_agent.errors import handle_tool_error, ToolInitializationError
-from sample_agent.config import (
-    store,
-    initialize_tools,
-)
-from langchain_core.messages import ToolMessage, AIMessage, HumanMessage
-from langchain_mcp_adapters.client import MultiServerMCPClient
-from langgraph_swarm import (
-    create_handoff_tool,
-)
-from langgraph.graph import StateGraph, END, START
+from sample_agent.state import SuperAgentState
+from langgraph.graph import StateGraph, START
+from langgraph.func import entrypoint
+from sample_agent.nodes import excel_helper, all_helper
 
+from sample_agent.checkpointer import checkpoint
 from langgraph.graph import START, MessagesState, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from typing_extensions import (
@@ -162,104 +144,28 @@ def create_swarm(
 
 
 @entrypoint()
-async def create_planner_agent(state: SuperAgentState):
-    system_message = """
-你是一个计划生成器，负责根据用户的需求生成执行计划。
-                      
-你可以要求下面的角色在你的计划中执行任务：
-execute_agent 任务执行者，可以执行任何任务，任务请交给他
-"""
-    model = create_planner_model()
-    agent = create_react_agent(
-        model,
-        [create_handoff_tool(agent_name="execute_agent")],
-        state_modifier=system_message,
-    )
-    msg = await agent.ainvoke(state)
-    messages = add_messages(state["messages"], msg.get("messages", []))
-    return {"messages": messages}
+async def excel_helper_agent(state: SuperAgentState):
+    return await excel_helper(state, {})
 
 
-create_planner_agent.name = "create_planner_agent"
+excel_helper_agent.name = "excel_helper"
 
 
 @entrypoint()
-async def execute_agent(state: SuperAgentState):
-    try:
-        mcp_config = state.get("mcp_config")
-        actions = state.get("copilotkit", {}).get("actions", [])
-
-        async with MultiServerMCPClient(mcp_config) as mcp_client:
-            # Initialize tools with error handling
-            tools = await initialize_tools(mcp_client, actions)
-            # Create the react agent with optimized configuration
-            react_agent = create_react_agent(
-                create_chat_model(
-                    model_name=state.get("model_name"),
-                    web_search_enabled=state.get("web_search_enabled", False),
-                ),
-                tools,
-                store=store,
-            )
-
-            # Execute agent with error handling
-            try:
-                agent_response = await react_agent.ainvoke(
-                    {"messages": state["messages"]}
-                )
-                # Update state with success response and reset error count
-                new_state = state.copy()
-                new_state["error_count"] = 0
-                return {
-                    "messages": state["messages"] + agent_response.get("messages", []),
-                    "error_count": 0,
-                }
-            except Exception as e:
-                error_count = state.get("error_count", 0) + 1
-                error_msg, details = handle_tool_error(e)
-                if error_count >= state.get("max_retries", 2):
-                    return Command(
-                        goto=END,
-                        update={
-                            "messages": state["messages"]
-                            + [AIMessage(content=f"达到最大重试次数: {error_msg}")],
-                            "error_count": error_count,
-                        },
-                    )
-                # Update error count and re-raise for retry
-                return Command(
-                    goto=END,
-                    update={
-                        "messages": state["messages"]
-                        + [
-                            AIMessage(
-                                content=f"执行出错 (尝试 {error_count}/{state.get('max_retries', 2)}): {error_msg}"
-                            )
-                        ],
-                        "error_count": error_count,
-                    },
-                )
-
-    except Exception as e:
-        error_msg, details = handle_tool_error(e)
-        return {"messages": state["messages"] + [AIMessage(content=error_msg)]}
+async def all_helper_agent(state: SuperAgentState):
+    return await all_helper(state, {})
 
 
-execute_agent.name = "execute_agent"
-
-import pathlib
-from langgraph.checkpoint.sqlite import SqliteSaver
-
+all_helper_agent.name = "all_helper"
 
 def create_super_agent():
     workflow = create_swarm(
-        [create_planner_agent, execute_agent],
-        default_active_agent="create_planner_agent",
+        [excel_helper_agent, all_helper_agent],
+        default_active_agent="all_helper",
         target={
-            "create_planner_agent": ("execute_agent",),
+            "all_helper": ["excel_helper"],
+            "excel_helper": ["all_helper"]
         },
         state_schema=SwarmState,
     )
-    db_path = pathlib.Path("./agent_data.db")
-    # 使用 SQLiteSaver 替代 MemorySaver
-    return workflow.compile(SqliteSaver(db_path))
+    return workflow.compile(checkpointer=checkpoint)

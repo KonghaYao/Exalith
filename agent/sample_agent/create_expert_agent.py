@@ -149,8 +149,6 @@ def create_expert_agent(
             - 生成两层结构的任务分解
             - 预判可能的执行障碍
         """
-        answer = interrupt("Before we start, what would you like to call me?")
-        print(answer)
         try:
             if (
                 state.get("plan_enabled", False) == False

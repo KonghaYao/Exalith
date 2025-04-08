@@ -40,25 +40,18 @@ def action_to_tool(tool):
 
 # Tool initialization with error handling
 async def initialize_tools(mcp_client: MultiServerMCPClient, actions: list) -> list:
-    try:
-        mcp_tools = mcp_client.get_tools()
 
-        mcp_tools.extend([action_to_tool(tool) for tool in actions])
+    mcp_tools = mcp_client.get_tools()
 
-        # Add memory management tools
-        memory_tools = [
-            # create_manage_memory_tool(namespace=("memories",)),
-            # create_search_memory_tool(namespace=("memories",)),
-        ]
+    mcp_tools.extend([action_to_tool(tool) for tool in actions])
 
-        tools = memory_tools + mcp_tools
-        if not tools:
-            return {}
-        return tools
-    except Exception as e:
-        # Log error and return basic tools
-        print(f"Error initializing tools: {str(e)}")
-        return [
-            # create_manage_memory_tool(namespace=("memories",)),
-            # create_search_memory_tool(namespace=("memories",)),
-        ]
+    # Add memory management tools
+    memory_tools = [
+        # create_manage_memory_tool(namespace=("memories",)),
+        # create_search_memory_tool(namespace=("memories",)),
+    ]
+
+    tools = memory_tools + mcp_tools 
+    if not tools:
+        return {}
+    return tools
