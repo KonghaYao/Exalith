@@ -111,6 +111,7 @@ def create_expert_agent(
                 checkpointer=checkpointer,
                 store=store,
                 state_modifier=research_system_prompt,
+                state_schema=state_schema,
             )
             plan_response = await react_agent.ainvoke(state)
 
@@ -192,6 +193,7 @@ def create_expert_agent(
                 checkpointer=checkpointer,
                 store=store,
                 state_modifier=execute_system_prompt,
+                state_schema=state_schema,
             )
             plan_response = await react_agent.ainvoke(state)
 

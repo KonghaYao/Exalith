@@ -1,4 +1,4 @@
-from typing import Dict, Any, Union
+from typing import Dict, Any
 
 
 def process_mcp_config_headers(mcp_config: Dict[str, Any]) -> Dict[str, Any]:

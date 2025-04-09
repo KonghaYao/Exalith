@@ -10,7 +10,6 @@ from sample_agent.model_factory import (
 )
 from sample_agent.create_expert_agent import create_expert_agent
 from sample_agent.utils import process_mcp_config_headers
-from sample_agent.checkpointer import checkpoint
 from langgraph.func import entrypoint
 
 
@@ -32,7 +31,6 @@ async def data_expert(state: SuperAgentState, config: RunnableConfig):
                 web_search_enabled=state.get("web_search_enabled", False),
             ),
             tools=tools,
-            checkpointer=checkpoint,
             store=store,
             research_system_prompt="""你是一个专注于数据分析和信息收集的研究代理。你的职责是基于提供的工具检查数据，并生成一份关于数据情况和潜在清洗点的报告，这份报告将交给后续的数据处理工程师。
 

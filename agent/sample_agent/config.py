@@ -2,13 +2,11 @@
 This module handles tool initialization and model settings.
 """
 
-from typing import Dict, Any, Optional
-from langchain_openai import ChatOpenAI
+from typing import Any
 from langchain_core.tools import StructuredTool
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langmem import create_manage_memory_tool, create_search_memory_tool
 from langgraph.store.memory import InMemoryStore
-import os
 
 # Initialize memory store with optimized settings
 store = InMemoryStore(

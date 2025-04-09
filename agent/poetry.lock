@@ -1443,19 +1443,19 @@ reference = "aliyun"
 
 [[package]]
 name = "langchain-mcp-adapters"
-version = "0.0.5"
+version = "0.0.7"
 description = "Make Anthropic Model Context Protocol (MCP) tools compatible with LangChain and LangGraph agents."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "langchain_mcp_adapters-0.0.5-py3-none-any.whl", hash = "sha256:8601beb4692c64a8ef8961468ec73c24558804ff09a7c54612bd2d5225ac4ff8"},
-    {file = "langchain_mcp_adapters-0.0.5.tar.gz", hash = "sha256:d05de412b2910ec652f8ef6008fb7f8ec80db9e4f06593db1d613ebafc15b83d"},
+    {file = "langchain_mcp_adapters-0.0.7-py3-none-any.whl", hash = "sha256:1e37ec79fc6afb58d1dea17733e08cc111ebc1992aed4b22c67de5e2bdcdb5c6"},
+    {file = "langchain_mcp_adapters-0.0.7.tar.gz", hash = "sha256:00cae7c832c1cf9e1faa8ed87973af2aa19d411aaf942860de680bec0f659fed"},
 ]
 
 [package.dependencies]
 langchain-core = ">=0.3.36,<0.4"
-mcp = ">=1.4.1,<1.5"
+mcp = ">=1.4.1,<1.7"
 
 [package.source]
 type = "legacy"
@@ -3826,4 +3826,4 @@ reference = "aliyun"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "72e382c1af17bb793058c5f459c34ad83d59af9c4c5c9b2414d6192434be0031"
+content-hash = "c9d0ada78af80712330b25dc44db49482c38004fdd1eaccb2dac44a16a3f280f"

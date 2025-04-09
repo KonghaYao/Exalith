@@ -35,10 +35,12 @@ async def all_helper(state: SuperAgentState, config: RunnableConfig):
             ),
             tools,
             store=store,
-            checkpointer=checkpoint,
+            state_schema=SuperAgentState,
         )
 
-        agent_response = await react_agent.ainvoke({"messages": state["messages"]})
+        agent_response = await react_agent.ainvoke(state)
+
+        print("Agent Response:", agent_response["messages"])
         # Update state with success response and reset error count
         return {
             "messages": state["messages"] + agent_response.get("messages", []),
