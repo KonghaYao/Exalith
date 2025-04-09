@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   ReactNode,
+  useEffect,
 } from "react";
 import { join } from "path";
 
@@ -29,6 +30,7 @@ interface FileSystemContextType {
   files: FileInfo[];
   loading: boolean;
   error: string;
+  setError: (str: string) => void
   setCurrentPath: (path: string) => void;
   selectFile: (filePath: string, isDirectory?: boolean) => void;
   unselectFile: (filePath: string) => void;
@@ -50,7 +52,7 @@ export function useFileSystem() {
 
 export function FileSystemProvider({ children }: { children: ReactNode }) {
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
-  const [currentPath, setCurrentPath] = useState("/");
+  const [currentPath, setCurrentPath] = useState("");
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -79,7 +81,9 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    loadFiles();
+  }, [currentPath]);
   const selectFile = useCallback((filePath: string, isDirectory = false) => {
     const fileName = filePath.split("/").pop() || "";
     setSelectedFiles((prev) => [
@@ -108,7 +112,7 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
       setError("");
       const response = await fetch(
         `/api/oss/${encodeURIComponent(filePath)}` +
-          (preview ? "?preview=true" : ""),
+        (preview ? "?preview=true" : ""),
       );
 
       if (!response.ok) {
@@ -138,6 +142,8 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
     loadFiles,
     navigateUp,
     getFile,
+    setLoading,
+    setError
   };
 
   return (

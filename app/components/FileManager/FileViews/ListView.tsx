@@ -35,19 +35,19 @@ export function ListView({
         key={file.name}
         className={`flex items-center justify-between p-3 hover:bg-gray-100 ${file.isDirectory ? "cursor-pointer" : ""}`}
         onClick={(e) => {
-          if (file.isDirectory) {
-            onDirectoryClick(join(currentPath, file.name));
+
+          if (isSelected) {
+            onUnselect(filePath);
           } else {
-            if (isSelected) {
-              onUnselect(filePath);
-            } else {
-              onSelect(filePath, file.isDirectory);
-            }
+            onSelect(filePath, file.isDirectory);
           }
+
         }}
         onDoubleClick={(e) => {
           if (!file.isDirectory) {
             onFileClick(file, true);
+          } else {
+            onDirectoryClick(join(currentPath, file.name));
           }
         }}
       >
@@ -67,7 +67,7 @@ export function ListView({
           {file.isDirectory ? (
             <Folder className="w-5 h-5 mx-3 text-blue-500 flex-shrink-0" />
           ) : (
-            <img src={'https://cdn.jsdelivr.net/gh/vscode-icons/vscode-icons@master/icons/'+getIconForFile(file.name)} className="w-5 h-5 mx-3 text-gray-400 flex-shrink-0" />
+            <img src={'https://cdn.jsdelivr.net/gh/vscode-icons/vscode-icons@master/icons/' + getIconForFile(file.name)} className="w-5 h-5 mx-3 text-gray-400 flex-shrink-0" />
           )}
           <span className="truncate text-md font-medium text-black">
             {file.name}

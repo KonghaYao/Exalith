@@ -19,7 +19,7 @@ import { GridView } from "./FileViews/GridView";
 import { useFilePreview } from "../FilePreview/FilePreviewContext";
 import { useTab } from "../TabContext";
 import { useCopilotChat } from "@copilotkit/react-core";
-import { useDebounce, useDebounceEffect, useDebounceFn } from "ahooks";
+import { useDebounceFn } from "ahooks";
 
 export interface FileInfo {
   name: string;
@@ -35,51 +35,30 @@ interface DirectoryInfo extends FileInfo {
 
 export default function FileList() {
   const filesystem = useFileSystem();
-  const [currentPath, setCurrentPath] = useState("");
-  const [files, setFiles] = useState<FileInfo[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {
+    currentPath,
+    setCurrentPath,
+    files,
+    loading,
+    error,
+    loadFiles,
+    setError
+  } = filesystem
   const [showNewFolderDialog, setShowNewFolderDialog] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const previewFile = useFilePreview();
   const chat = useCopilotChat();
 
-  const loadFiles = useDebounceFn(async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const response = await fetch(
-        `/api/oss/${encodeURIComponent(currentPath)}`,
-        {
-          method: "POST",
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to load files");
-      }
-
-      const data: DirectoryInfo = await response.json();
-      setFiles(data.contents || []);
-    } catch (err) {
-      setError("Failed to load files");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  });
   // 当信息返回时，刷新文件列表
   useEffect(() => {
     if (chat.visibleMessages.length > 0) {
       const lastMessage = chat.visibleMessages[chat.visibleMessages.length - 1];
       if (lastMessage.type === "ResultMessage") {
-        loadFiles.run();
+        loadFiles();
       }
     }
   }, [chat.isLoading, chat.visibleMessages.length]);
-  useEffect(() => {
-    loadFiles.run();
-  }, [currentPath]);
+
   const tab = useTab();
   const handleFileClick = async (file: FileInfo, preview = false) => {
     if (!file.isDirectory) {
@@ -116,7 +95,7 @@ export default function FileList() {
       );
 
       if (!response.ok) throw new Error("Delete failed");
-      loadFiles.run();
+      loadFiles();
     } catch (err) {
       console.error("Delete failed:", err);
       setError("Failed to delete file");
@@ -147,7 +126,7 @@ export default function FileList() {
       );
 
       if (!response.ok) throw new Error("创建文件夹失败");
-      loadFiles.run();
+      loadFiles();
       setShowNewFolderDialog(false);
       setNewFolderName("");
       setError("");
@@ -172,7 +151,7 @@ export default function FileList() {
       );
 
       if (!response.ok) throw new Error("Upload failed");
-      loadFiles.run();
+      loadFiles();
     } catch (err) {
       console.error("Upload failed:", err);
       setError("Failed to upload file");
@@ -222,7 +201,7 @@ export default function FileList() {
           <Button
             type="default"
             icon={<RotateCw className="w-4 h-4" />}
-            onClick={() => loadFiles.run()}
+            onClick={() => loadFiles()}
           ></Button>
           <Button
             type="default"
@@ -264,7 +243,7 @@ export default function FileList() {
         />
       </Modal>
 
-      {loading || files.length === 0 ? (
+      {files.length === 0 ? (
         <div className="text-center py-12 text-gray-400 flex-1 bg-white">
           <div className="text-6xl mb-4">📁</div>
           <p>当前文件夹为空</p>
@@ -275,7 +254,10 @@ export default function FileList() {
           currentPath={currentPath}
           selectedFiles={filesystem.selectedFiles}
           onFileClick={handleFileClick}
-          onDirectoryClick={(path) => setCurrentPath(path)}
+          onDirectoryClick={(path) => {
+
+            if (!loading) setCurrentPath(path)
+          }}
           onDelete={handleDelete}
           onSelect={(filePath, isDirectory) =>
             filesystem.selectFile(filePath, isDirectory)
@@ -288,7 +270,10 @@ export default function FileList() {
           currentPath={currentPath}
           selectedFiles={filesystem.selectedFiles}
           onFileClick={handleFileClick}
-          onDirectoryClick={(path) => setCurrentPath(path)}
+          onDirectoryClick={(path) => {
+
+            if (!loading) setCurrentPath(path)
+          }}
           onDelete={handleDelete}
           onSelect={(filePath, isDirectory) =>
             filesystem.selectFile(filePath, isDirectory)
