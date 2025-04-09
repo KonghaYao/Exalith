@@ -26,6 +26,7 @@ import {
 } from "@copilotkit/react-core";
 import { PromptPro } from "./PromptPro";
 import { AgentConfigs } from "../configs/agentConfigs";
+import { TimeTravel } from "./TimeTravel";
 
 export default function CopilotInput({
   inProgress,
@@ -40,7 +41,6 @@ export default function CopilotInput({
   const [isMac, setIsMac] = useState(false);
   const [showPromptPro, setShowPromptPro] = useState(false);
   const { messages } = useCopilotMessagesContext();
-  console.log(messages);
   useLangGraphInterrupt({
     render: ({ event, resolve }) => (
       <div>
@@ -129,6 +129,9 @@ export default function CopilotInput({
           visible={showPromptPro}
           onClose={() => setShowPromptPro(false)}
         ></PromptPro>
+      </nav>
+      <nav className="relative w-full">
+        <TimeTravel inProgress={inProgress}></TimeTravel>
       </nav>
       <div className={wrapperStyle}>
         {children}
