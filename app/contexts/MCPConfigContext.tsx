@@ -21,8 +21,12 @@ export const ModelConfigs = [
     value: "qwen-turbo",
   },
   {
-    label: "deepseek-chat",
+    label: "deepseek-v3",
     value: "deepseek-chat",
+  },
+  {
+    label: "quasar-alpha",
+    value: "openrouter/quasar-alpha",
   },
 ];
 
