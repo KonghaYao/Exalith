@@ -49,7 +49,7 @@ export default function CSVPreview({ data }: PreviewProps) {
                         }));
                         setCsvData(newData);
                     },
-                    error: (error: Papa.ParseError) => {
+                    error: (error) => {
                         setError("Failed to parse CSV file: " + error.message);
                     },
                 });
