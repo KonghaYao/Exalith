@@ -36,9 +36,15 @@ export const ThinkingModelConfigs = [
     value: "deepseek-reasoner",
   },
 ];
+
+export interface KnowledgeConfigs {
+  type: string,
+  dataset_ids: []
+}
 export interface AgentState {
   active_agent?: string;
   mcp_config: Record<string, ServerConfig>;
+  knowledge_config: KnowledgeConfigs[],
   plan_enabled: boolean;
   web_search_enabled: boolean;
   model_name: string;
@@ -98,6 +104,7 @@ export function MCPConfigProvider({ children }: { children: ReactNode }) {
       initialState: {
         active_agent: "all_helper",
         mcp_config: clearAgentConfig(savedConfigs),
+        knowledge_config: [],
         plan_enabled: false,
         web_search_enabled: false,
         model_name: process.env.OPENAI_MODEL || "qwen-plus",
