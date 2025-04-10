@@ -9,6 +9,7 @@ import {
   MediaPreview,
 } from "./PreviewComponents";
 import ExcelPreview from "./Preview/Excel";
+import CSVPreview from "./Preview/CSV";
 import {
   AlertCircleIcon,
   CheckCircleIcon,
@@ -35,6 +36,7 @@ const getFileType = (filePath: string) => {
     "css",
   ];
   const excelExts = ["xlsx", "xls"];
+  const csvExts = ["csv"];
 
   if (imageExts.includes(ext)) return "image";
   if (videoExts.includes(ext)) return "video";
@@ -43,6 +45,7 @@ const getFileType = (filePath: string) => {
   if (ext === "md") return "markdown";
   if (codeExts.includes(ext)) return "code";
   if (excelExts.includes(ext)) return "excel";
+  if (csvExts.includes(ext)) return "csv";
   return "text";
 };
 export const CopilotPreview = (props: { enable?: boolean }) => {
@@ -243,6 +246,10 @@ export const PreviewComponent = () => {
             case "excel":
               return (
                 <ExcelPreview data={previewFile.previewState.previewData} />
+              );
+            case "csv":
+              return (
+                <CSVPreview data={previewFile.previewState.previewData} />
               );
             case "markdown":
               return <MarkdownPreview data={previewFile.previewState.previewData} />;

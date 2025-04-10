@@ -16,6 +16,7 @@ interface FilePreviewContextType {
   clearPreview: () => void;
 }
 
+
 const FilePreviewContext = createContext<FilePreviewContextType | undefined>(
   undefined,
 );

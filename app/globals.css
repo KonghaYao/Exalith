@@ -49,9 +49,11 @@
 .copilotKitMarkdown {
   line-height: 1.4;
 }
+
 .copilotKitMarkdown ol {
   padding-inline-start: 40px;
 }
+
 .copilotKitMarkdown hr {
   margin-bottom: 1rem;
 }
@@ -146,33 +148,34 @@
   * {
     @apply border-border outline-ring/50;
   }
+}
 
-  table {
-    @apply w-full border-collapse bg-white mb-4;
-  }
+.copilotKitMarkdown table {
+  @apply w-full border-collapse bg-white mb-4;
+}
 
-  thead {
-    @apply bg-muted;
-  }
+.copilotKitMarkdown thead {
+  @apply bg-muted;
+}
 
-  th {
-    @apply border border-border px-4 py-2 text-left font-medium;
-  }
+.copilotKitMarkdown th {
+  @apply border border-border px-4 py-2 text-left font-medium;
+}
 
-  td {
-    @apply border border-border px-4 py-2;
-  }
+.copilotKitMarkdown td {
+  @apply border border-border px-4 py-2;
+}
 
-  tr:nth-child(even) {
-    @apply bg-muted/50;
-  }
+.copilotKitMarkdown tr:nth-child(even) {
+  @apply bg-muted/50;
+}
 
-  ul {
-    @apply list-disc list-inside;
-  }
-  ol {
-    @apply list-decimal list-inside;
-  }
+.copilotKitMarkdown ul {
+  @apply list-disc list-inside;
+}
+
+.copilotKitMarkdown ol {
+  @apply list-decimal list-inside;
 }
 
 .copilotKitMessage {
@@ -199,6 +202,7 @@ file {
     linear-gradient(90deg, #40cf20, #33d6d1, #19bad2);
   transition: box-shadow 0.3s ease;
 }
+
 .border-gradient-cool-b {
   border-bottom: 1px solid transparent;
   background-clip: padding-box, border-box;
@@ -213,10 +217,12 @@ file {
 .border-gradient-cool-shadow:hover {
   box-shadow: 0 0 15px #33d6d1;
 }
+
 .text-gradient-cool {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   background-image: linear-gradient(90deg, #40cf20, #33d6d1, #19bad2);
-  transition: box-shadow 0.3s ease; /* 如果需要，可以保留过渡效果 */
+  transition: box-shadow 0.3s ease;
+  /* 如果需要，可以保留过渡效果 */
 }
