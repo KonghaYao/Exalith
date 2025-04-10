@@ -107,6 +107,8 @@ export async function POST(
           };
         }),
       );
+      // Sort contents by modified time in descending order
+      contents.sort((a, b) => b.modified.getTime() - a.modified.getTime());
       return new Response(
         JSON.stringify({
           ...baseInfo,
@@ -133,6 +135,8 @@ export async function POST(
           };
         }),
       );
+      // Sort contents by modified time in descending order
+      contents.sort((a, b) => b.modified.getTime() - a.modified.getTime());
       return new Response(
         JSON.stringify({
           size: stats.size,
