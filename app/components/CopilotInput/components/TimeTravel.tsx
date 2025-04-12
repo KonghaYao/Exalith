@@ -1,5 +1,5 @@
 import { useCopilotMessagesContext } from "@copilotkit/react-core";
-import { useTimeTravel } from "../hooks/useTimeTravel";
+import { useTimeTravel } from "../../../hooks/useTimeTravel";
 import { useEffect } from "react";
 import { SkipBack, SkipForward } from "lucide-react";
 

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { CopyButton } from "../CopyButton";
 import { StatusBadge } from "./StatusBadge";
 import { useJSONFormatter } from "../../hooks/useJSONFormatter";
+import { ChevronDown } from "lucide-react";
 
 type ToolCallRendererProps = {
   name: string;
@@ -21,6 +22,13 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [displayMode, setDisplayMode] = useState<"json" | "text">("text");
 
+  const derivedStatus = useMemo(() => {
+    if (typeof result === 'string' && result.startsWith('Error')) {
+      return 'error';
+    }
+    return status;
+  }, [result, status]);
+
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -37,7 +45,7 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
       >
         <div className="flex items-center space-x-2 flex-1">
           <div className="flex items-center space-x-2">
-            <StatusBadge status={status} />
+            <StatusBadge status={derivedStatus} />
           </div>
           <div className="font-medium text-gray-700 flex-1">{name}</div>
           {/* <Timer status={result} /> */}
@@ -46,20 +54,11 @@ export const ToolCallRenderer: React.FC<ToolCallRendererProps> = ({
           className="text-gray-500 hover:text-gray-700 focus:outline-none transition-transform transform"
           aria-label={isExpanded ? "Collapse" : "Expand"}
         >
-          <svg
+          <ChevronDown
             className={`h-5 w-5 transition-transform ${
               isExpanded ? "rotate-180" : ""
             }`}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
+          />
         </button>
       </div>
 

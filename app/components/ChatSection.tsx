@@ -2,7 +2,7 @@
 
 import { CopilotChat } from "@copilotkit/react-ui";
 import { useState } from "react";
-import CopilotInput from "./CopilotInput";
+import { CopilotInput } from "./CopilotInput";
 import { InstructionsModal } from "./InstructionsModal";
 import { DefaultInstructions } from "../DefaultInstructions";
 import { SelectedFileGroup } from "./FileManager/SelectedFileGroup";

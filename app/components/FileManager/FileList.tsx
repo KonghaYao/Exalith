@@ -6,8 +6,6 @@ import {
   Upload,
   FolderPlus,
   RotateCw,
-  LayoutGrid,
-  List,
   MoveLeft,
   ChevronLeft,
 } from "lucide-react";
@@ -15,7 +13,6 @@ import { SelectedFileGroup } from "./SelectedFileGroup";
 import { Modal, message, Spin, Space, Button, Alert } from "antd";
 import { useFileSystem } from "./FileSystemContext";
 import { ListView } from "./FileViews/ListView";
-import { GridView } from "./FileViews/GridView";
 import { useFilePreview } from "../FilePreview/FilePreviewContext";
 import { useTab } from "../TabContext";
 import { useCopilotChat } from "@copilotkit/react-core";
@@ -164,8 +161,6 @@ export default function FileList() {
     setCurrentPath(parentPath);
   };
 
-  const [viewType, setViewType] = useState<"list" | "grid">("list");
-
   useEffect(() => {
     if (error) {
       message.error(error);
@@ -208,17 +203,6 @@ export default function FileList() {
             icon={<FolderPlus className="w-4 h-4" />}
             onClick={() => setShowNewFolderDialog(true)}
           ></Button>
-
-          <Button
-            type={viewType === "list" ? "primary" : "default"}
-            icon={<List className="w-4 h-4" />}
-            onClick={() => setViewType("list")}
-          />
-          <Button
-            type={viewType === "grid" ? "primary" : "default"}
-            icon={<LayoutGrid className="w-4 h-4" />}
-            onClick={() => setViewType("grid")}
-          />
         </Space>
       </header>
 
@@ -248,37 +232,20 @@ export default function FileList() {
           <div className="text-6xl mb-4">📁</div>
           <p>当前文件夹为空</p>
         </div>
-      ) : viewType === "list" ? (
+      ) : (
         <ListView
           files={files}
           currentPath={currentPath}
           selectedFiles={filesystem.selectedFiles}
           onFileClick={handleFileClick}
-          onDirectoryClick={(path) => {
-
+          onDirectoryClick={(path: string) => {
             if (!loading) setCurrentPath(path)
           }}
           onDelete={handleDelete}
-          onSelect={(filePath, isDirectory) =>
+          onSelect={(filePath: string, isDirectory: boolean) =>
             filesystem.selectFile(filePath, isDirectory)
           }
-          onUnselect={(filePath) => filesystem.unselectFile(filePath)}
-        />
-      ) : (
-        <GridView
-          files={files}
-          currentPath={currentPath}
-          selectedFiles={filesystem.selectedFiles}
-          onFileClick={handleFileClick}
-          onDirectoryClick={(path) => {
-
-            if (!loading) setCurrentPath(path)
-          }}
-          onDelete={handleDelete}
-          onSelect={(filePath, isDirectory) =>
-            filesystem.selectFile(filePath, isDirectory)
-          }
-          onUnselect={(filePath) => filesystem.unselectFile(filePath)}
+          onUnselect={(filePath: string) => filesystem.unselectFile(filePath)}
         />
       )}
 
