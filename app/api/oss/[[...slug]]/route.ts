@@ -15,9 +15,9 @@ const baseURL = process.env.OSS_BASE_PATH || "/tmp/oss-storage";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string[] } },
+  context: { params: Promise<Promise<{ slug: string[] }>> },
 ) {
-  params = await params;
+  const params = await context.params;
   try {
     const slugPath = params.slug ? params.slug.join("/") : "";
     const filePath = join(baseURL, slugPath);
@@ -76,9 +76,9 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { slug: string[] } },
+  context: { params: Promise<{ slug: string[] }> },
 ) {
-  params = await params;
+  const params = await context.params;
   try {
     const slugPath = params.slug ? params.slug.join("/") : "";
     const filePath = join(baseURL, slugPath);
@@ -156,9 +156,9 @@ export async function POST(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { slug: string[] } },
+  context: { params: Promise<{ slug: string[] }> },
 ) {
-  params = await params;
+  const params = await context.params;
   if (!params.slug || params.slug.length === 0) {
     return new Response("Cannot write to root directory", { status: 400 });
   }
@@ -190,9 +190,9 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { slug: string[] } },
+  context: { params: Promise<{ slug: string[] }> },
 ) {
-  params = await params;
+  const params = await context.params;
   if (!params.slug || params.slug.length === 0) {
     return new Response("Cannot delete root directory", { status: 400 });
   }
@@ -218,9 +218,9 @@ export async function DELETE(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { slug: string[] } },
+  context: { params: Promise<{ slug: string[] }> },
 ) {
-  params = await params;
+  const params = await context.params;
   if (!params.slug || params.slug.length === 0) {
     return new Response("Cannot modify root directory metadata", {
       status: 400,

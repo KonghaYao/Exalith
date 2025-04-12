@@ -1,35 +1,74 @@
-version: '3.8'
-
 services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
+      - "3333:3000"
+    env_file:
+      - .env
     volumes:
       - .:/app
       - /app/node_modules
       - /app/.next
     restart: unless-stopped
+    environment:
+      - AGENT_DEPLOYMENT_URL=http://langgraph-api:8000
     networks:
       - app-network
     depends_on:
-      - langgraph
+      - langgraph-api
 
-  langgraph:
+  langgraph-api:
     build:
       context: ./agent
-      dockerfile: Dockerfile
     ports:
-      - "8000:8000"
-    volumes:
-      - ./agent:/app
-    restart: unless-stopped
+      - "8123:8000"
+    depends_on:
+      langgraph-redis:
+        condition: service_healthy
+      langgraph-postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      REDIS_URI: redis://langgraph-redis:6379
+      LANGSMITH_API_KEY: ${LANGSMITH_API_KEY}
+      POSTGRES_URI: postgres://postgres:postgres@langgraph-postgres:5432/postgres?sslmode=disable
     networks:
       - app-network
+
+  langgraph-redis:
+    image: redis:6
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      timeout: 1s
+      retries: 5
+    networks:
+      - app-network
+
+  langgraph-postgres:
+    image: postgres:16
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - langgraph-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U postgres
+      start_period: 10s
+      timeout: 1s
+      retries: 5
+      interval: 5s
+    networks:
+      - app-network
+
+volumes:
+  langgraph-data:
+    driver: local
 
 networks:
   app-network:
