@@ -17,10 +17,6 @@ export const ModelConfigs = [
     value: "qwen-max",
   },
   {
-    label: "qwen-turbo",
-    value: "qwen-turbo",
-  },
-  {
     label: "deepseek-v3",
     value: "deepseek-chat",
   },
@@ -62,6 +58,7 @@ const clearAgentConfig = (config: Record<string, ServerConfig>) => {
   return filteredConfig;
 };
 
+export type ExtraConfig = Partial<Pick<AgentState, 'model_name' | "plan_enabled" | "web_search_enabled" | "active_agent">>
 interface MCPConfigContextType {
   configs: Record<string, ServerConfig>;
   setConfigs: (newConfigs: Record<string, ServerConfig>) => void;
@@ -70,6 +67,10 @@ interface MCPConfigContextType {
   agentState: AgentState;
   setAgentState: (
     state: AgentState | ((state?: AgentState) => AgentState),
+  ) => void;
+  extraConfig: ExtraConfig;
+  setExtraConfig: (
+    state: ExtraConfig | ((state?: ExtraConfig) => ExtraConfig),
   ) => void;
 }
 
@@ -81,21 +82,8 @@ export function MCPConfigProvider({ children }: { children: ReactNode }) {
   const [savedConfigs, setSavedConfigs] = useLocalStorage<
     Record<string, ServerConfig>
   >(STORAGE_KEY, example as any);
-  const savedState = globalThis.localStorage?.getItem("mcp_input_state") || "";
-  let extraConfig = {};
-  if (savedState) {
-    try {
-      const state = JSON.parse(savedState);
-      const { plan_enabled, web_search_enabled, model_name } = state;
-      extraConfig = {
-        plan_enabled,
-        web_search_enabled,
-        model_name,
-      };
-    } catch (e) {
-      console.error("Failed to parse saved agent state:", e);
-    }
-  }
+  const [extraConfig, setExtraConfig] = useLocalStorage('mcp-extraConfig', {})
+
   const { state: agentState, setState: setAgentState } = useCoAgent<AgentState>(
     {
       name: "llm_agent",
@@ -105,7 +93,7 @@ export function MCPConfigProvider({ children }: { children: ReactNode }) {
         plan_enabled: false,
         web_search_enabled: false,
         model_name: process.env.OPENAI_MODEL || "qwen-plus",
-        ...extraConfig,
+        ...(extraConfig),
       },
     },
   );
@@ -132,6 +120,8 @@ export function MCPConfigProvider({ children }: { children: ReactNode }) {
         isLoading,
         agentState,
         setAgentState,
+        extraConfig,
+        setExtraConfig
       }}
     >
       {children}

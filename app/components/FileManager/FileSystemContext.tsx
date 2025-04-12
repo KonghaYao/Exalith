@@ -9,6 +9,7 @@ import {
   useEffect,
 } from "react";
 import { join } from "path";
+import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 
 interface FileInfo {
   name: string;
@@ -52,7 +53,7 @@ export function useFileSystem() {
 
 export function FileSystemProvider({ children }: { children: ReactNode }) {
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
-  const [currentPath, setCurrentPath] = useState("");
+  const [currentPath, setCurrentPath] = useLocalStorage('filesystem-currentPath',"");
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

@@ -14,6 +14,7 @@ import { JSX, useRef, useState, useEffect } from "react";
 import "./CopilotInput.css";
 import { useFileSystem } from "./FileManager/FileSystemContext";
 import {
+  ExtraConfig,
   ModelConfigs,
   ThinkingModelConfigs,
   useMCPConfig,
@@ -68,8 +69,8 @@ export default function CopilotInput({
     const filePrefix =
       system.selectedFiles.length > 0
         ? system.selectedFiles
-            .map((i) => `<file path="${i.path}">${i.name}</file>`)
-            .join("\n") + "\n"
+          .map((i) => `<file path="${i.path}">${i.name}</file>`)
+          .join("\n") + "\n"
         : "";
 
     system.clearSelection();
@@ -88,31 +89,29 @@ export default function CopilotInput({
     );
   });
 
-  const saveAgentState = (newState: any) => {
-    localStorage.setItem(
-      "mcp_input_state",
-      JSON.stringify({
+  const saveAgentState = (newState: ExtraConfig) => {
+    agent.setExtraConfig(
+      {
         plan_enabled: newState.plan_enabled,
         web_search_enabled: newState.web_search_enabled,
         model_name: newState.model_name,
-      }),
-    );
+        active_agent: newState.active_agent
+      })
   };
-
-  const togglePlan = () => {
+  const createSaveExtraState = <T extends keyof ExtraConfig>(key: T) => (value: ExtraConfig[T]) => {
     agent.setAgentState((i) => {
-      const newState = { ...i!, plan_enabled: !i!.plan_enabled };
+      const newState = { ...i!, [key]: value };
       saveAgentState(newState);
       return newState;
     });
+  }
+
+  const togglePlan = () => {
+    createSaveExtraState('plan_enabled')(!agent.extraConfig.plan_enabled)
   };
 
   const toggleWebSearch = () => {
-    agent.setAgentState((i) => {
-      const newState = { ...i!, web_search_enabled: !i!.web_search_enabled };
-      saveAgentState(newState);
-      return newState;
-    });
+    createSaveExtraState('web_search_enabled')(!agent.extraConfig.web_search_enabled)
   };
   const { stopGeneration } = useCopilotChat();
   return (
@@ -190,19 +189,13 @@ export default function CopilotInput({
           </button>
           <Select
             value={agent.agentState.model_name || "qwen-plus"}
-            onChange={(value) => {
-              agent.setAgentState((i) => {
-                const newState = { ...i!, model_name: value };
-                saveAgentState(newState);
-                return newState;
-              });
-            }}
+            onChange={createSaveExtraState('model_name')}
             style={{ width: 120 }}
             options={ModelConfigs}
             disabled={inProgress}
             className="text-sm"
           />
-          <AgentSelect inProgress={inProgress}></AgentSelect>
+          <AgentSelect inProgress={inProgress} onChange={createSaveExtraState('active_agent')}></AgentSelect>
           {inProgress ? (
             <button
               onClick={stopGeneration}
@@ -229,17 +222,14 @@ export default function CopilotInput({
   );
 }
 
-function AgentSelect(props: { inProgress: boolean }) {
+function AgentSelect(props: {
+  inProgress: boolean, onChange: ((value: string) => void)
+}) {
   const agent = useMCPConfig();
   return (
     <Select
       value={agent.agentState.active_agent || "all_agent"}
-      onChange={(value) => {
-        agent.setAgentState((i) => {
-          const newState = { ...i!, active_agent: value };
-          return newState;
-        });
-      }}
+      onChange={(value) => props.onChange(value)}
       style={{ width: 120 }}
       options={AgentConfigs}
       disabled={props.inProgress}
