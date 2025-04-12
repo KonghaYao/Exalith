@@ -22,12 +22,18 @@ class SSEConnection(TypedDict):
 MCPConfig = Dict[str, Union[StdioConnection, SSEConnection]]
 
 
+class KnowledgeConfig(TypedDict):
+    type: str
+    dataset_ids: List[str]
+
+
 class SuperAgentState(ExpertState, CopilotKitState, AgentState, SwarmState):
     """
     Enhanced agent state with improved state management and error handling.
     """
 
     mcp_config: Optional[MCPConfig]
+    knowledge_config: Optional[KnowledgeConfig] = []
     error_count: int = 0
     max_retries: int = 2
     web_search_enabled: bool = False
