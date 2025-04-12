@@ -8,8 +8,7 @@ services:
       - .env
     volumes:
       - .:/app
-      - /app/node_modules
-      - /app/.next
+      - ./filesystem:/app/filesystem
     restart: unless-stopped
     environment:
       - AGENT_DEPLOYMENT_URL=http://langgraph-api:8000
@@ -17,6 +16,17 @@ services:
       - app-network
     depends_on:
       - langgraph-api
+      - mcp-excel
+
+  mcp-excel:
+    build:
+      context: ./packages/mcp-excel
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./filesystem:/app/filesystem
+    networks:
+      - app-network
 
   langgraph-api:
     build:

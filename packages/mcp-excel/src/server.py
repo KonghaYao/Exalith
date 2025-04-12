@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger("mcp-excel")
 
 # Get Excel files path from environment or use default
-EXCEL_FILES_PATH = os.environ.get("EXCEL_FILES_PATH", "./excel_files")
+EXCEL_FILES_PATH = os.environ.get("EXCEL_FILES_PATH", "./filesystem")
 
 # Create the directory if it doesn't exist
 os.makedirs(EXCEL_FILES_PATH, exist_ok=True)

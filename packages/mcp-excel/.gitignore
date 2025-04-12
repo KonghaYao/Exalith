@@ -33,5 +33,5 @@ logs/
 output/
 *.xlsx
 *.xls
-*.log 
-excel_files/
+*.log
+filesystem/

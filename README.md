@@ -1,39 +1,72 @@
-# Getting Started
+# Exalith
 
-## Set Up Environment Variables
+一个基于 LangGraph 和 CopilotKit 的智能代理客户端，用于连接和管理 MCP 服务器。
 
-```sh
-touch .env
-```
+## 环境要求
 
-Add the following inside `.env` at the root:
+- Node.js 20+
+- pnpm 8+
+- Python 3.12+ (用于 Agent 开发)
 
-```sh
-LANGSMITH_API_KEY=
-OPENAI_MODEL=
-OPENAI_API_KEY=
-OPENAI_BASE_URL=
-OSS_BASE_PATH=./packages/powerExcelMCP/excel_files
-```
+## 快速开始
 
-## Development
+### 1. 安装依赖
 
 ```bash
-git submodule update --init --recursive
+mkdir filesystem
+pnpm install
+cd agent
+poetry install
+```
+
+### 2. 设置环境变量
+
+```bash
+touch .env
+touch ./packages/mcp-server/.env
+```
+
+在 `.env` 文件中配置以下环境变量：
+
+```sh
+LANGSMITH_API_KEY=your_langsmith_api_key
+OPENAI_MODEL=deepseek-chat
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_BASE_URL=your_openai_api_base_url
+OSS_BASE_PATH=./filesystem
+```
+
+### 3. 启动开发服务器
+
+```bash
 pnpm run dev
 ```
 
-Then, open [http://localhost:3000](http://localhost:3000) in your browser.
+这将同时启动：
 
-## Architecture
+- 前端开发服务器 (<http://localhost:3000>)
+- Agent 开发服务器 (<http://localhost:8123>)
 
-The codebase is split into two main parts:
+## 项目结构
 
-1. `/agent` **folder** – A LangGraph agent that connects to MCP servers and calls their tools.
-2. `/app` **folder** – A frontend application using CopilotKit for UI and state synchronization.
-3. `/packages/server` **folder** – A MCP server that can be used to run the agent.
-   1. `pnpm dev` – Starts the server.
-   2. `/mcp-config.example.json` - An example MCP config file can import from frontend.
+项目采用 monorepo 结构，主要包含以下部分：
+
+1. `/agent` - LangGraph 智能代理
+   - 负责与 MCP 服务器通信
+   - 管理工具调用和状态同步
+   - 使用 Python 开发
+
+2. `/app` - 前端应用
+   - 基于 Next.js 15
+   - 使用 CopilotKit 构建 UI
+   - 支持实时状态同步
+
+3. `/packages/server` - MCP 服务器
+   - 提供 SSE 接口
+   - 管理工具执行
+   - 支持配置文件导入
+
+## 架构图
 
 ```mermaid
 flowchart TB
@@ -81,5 +114,35 @@ flowchart TB
     UI --> SDK
     Toolkit --> Engine
     SDK --> Toolkit
-
 ```
+
+## 开发指南
+
+### 前端开发
+
+```bash
+pnpm run dev-frontend
+```
+
+### Agent 开发
+
+```bash
+pnpm run dev-agent
+```
+
+### 构建生产版本
+
+```bash
+pnpm run build
+```
+
+## 技术栈
+
+- 前端：Next.js 15, React 19, CopilotKit
+- Agent：LangGraph, Python
+- UI：Ant Design, Tailwind CSS
+- 工具：pnpm, TypeScript
+
+## 许可证
+
+MIT License

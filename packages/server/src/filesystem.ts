@@ -30,7 +30,7 @@ function expandHome(filepath: string): string {
   return filepath;
 }
 
-const allowedDirectory = path.resolve("../powerExcelMCP/excel_files");
+const allowedDirectory = process.env.OSS_BASE_PATH!;
 const getUserAllowedDirectory = (session_id: string) => {
   if (!session_id) throw new Error("session_id is required");
   session_id = "";
