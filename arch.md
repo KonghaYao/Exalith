@@ -9,9 +9,16 @@ flowchart TB
         Tools[资源浏览器]
     end
     subgraph Agent["Agent 层"]
-        Engine[LangGraph 引擎]
+        Engine[LangGraph 专家组]
+        Experts[专家组派发]
+        Engine --> Experts
+        Experts--> Expert
         Toolkit[工具集]
+        subgraph Expert
+             观察 --> 计划 --> 执行
+        end
     end
+    
     subgraph KnowledgeBase["知识库"]
         Memory[记忆体]
         ExtKnowledge[知识库扩展]
@@ -34,7 +41,7 @@ flowchart TB
 
     Humnan["用户"] --> UI & Tools
     Tools --> Workspace
-    Engine --> Memory & ExtKnowledge & LLM & Server
+    Expert --> Memory & ExtKnowledge & LLM & Server
     Endpoint --> ToolMgr
     ToolMgr --> External & Workspace
     UI --> SDK
