@@ -9,7 +9,9 @@ import { TabProvider } from "./components/TabContext";
 import { ChatSection } from "./components/ChatSection";
 import { MainSection } from "./components/MainSection";
 import { MCPConfigProvider } from "./contexts/MCPConfigContext";
+import { GlobalDropZone } from "./components/GlobalDropZone";
 import "@ant-design/v5-patch-for-react-19";
+
 function Home() {
   const [chatKey, setChatKey] = useState(0);
 
@@ -23,11 +25,13 @@ function Home() {
           agent="llm_agent"
         >
           <MCPConfigProvider>
-            <div className="min-h-screen flex relative">
-              <MainSection />
-              <ChatSection chatKey={chatKey} setChatKey={setChatKey} />
-              <CopilotActionHandler />
-            </div>
+            <GlobalDropZone>
+              <div className="min-h-screen flex relative">
+                <MainSection />
+                <ChatSection chatKey={chatKey} setChatKey={setChatKey} />
+                <CopilotActionHandler />
+              </div>
+            </GlobalDropZone>
           </MCPConfigProvider>
         </CopilotKit>
       </FilePreviewProvider>
