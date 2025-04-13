@@ -1,6 +1,4 @@
 from sample_agent.nodes import data_expert, all_helper, knowledge_helper
-
-from sample_agent.checkpointer import checkpoint
 from sample_agent.config import AgentRouteConfig
 from sample_agent.swarm.create_swarm import create_swarm
 from sample_agent.state import SuperAgentState
@@ -22,7 +20,7 @@ def create_super_agent():
         target=route_config.routes,
         state_schema=SuperAgentState,
     )
-    return workflow.compile(checkpointer=checkpoint)
+    return workflow.compile()
 
 
 graph = create_super_agent()

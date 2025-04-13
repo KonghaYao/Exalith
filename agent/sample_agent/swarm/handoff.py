@@ -64,7 +64,7 @@ def create_handoff_tool(
     if description is None:
         description = f"Ask agent '{agent_name}' for help"
 
-    @tool(name, description=description)
+    @tool(name, description=description, return_direct=True)
     def handoff_to_agent(
         state: Annotated[dict, InjectedState],
         tool_call_id: Annotated[str, InjectedToolCallId],
@@ -74,6 +74,7 @@ def create_handoff_tool(
             name=name,
             tool_call_id=tool_call_id,
         )
+        print(f"handoff_to_agent {agent_name} {tool_message}")
         return Command(
             goto=agent_name,
             graph=graph,
@@ -82,6 +83,51 @@ def create_handoff_tool(
                 "active_agent": agent_name,
             },
         )
+
+    handoff_to_agent.metadata = {METADATA_KEY_HANDOFF_DESTINATION: agent_name}
+    return handoff_to_agent
+
+
+def create_handoff_tool_defer(
+    *,
+    agent_name: str,
+    callback,
+    name: str | None = None,
+    description: str | None = None,
+    graph: str = Command.PARENT,
+) -> BaseTool:
+    """Create a tool that can handoff control to the requested agent.
+
+    Args:
+        agent_name: The name of the agent to handoff control to, i.e.
+            the name of the agent node in the multi-agent graph.
+            Agent names should be simple, clear and unique, preferably in snake_case,
+            although you are only limited to the names accepted by LangGraph
+            nodes as well as the tool names accepted by LLM providers
+            (the tool name will look like this: `transfer_to_<agent_name>`).
+        name: Optional name of the tool to use for the handoff.
+            If not provided, the tool name will be `transfer_to_<agent_name>`.
+        description: Optional description for the handoff tool.
+            If not provided, the tool description will be `Ask agent <agent_name> for help`.
+    """
+    if name is None:
+        name = f"transfer_to_{_normalize_agent_name(agent_name)}"
+
+    if description is None:
+        description = f"Ask agent '{agent_name}' for help"
+
+    @tool(name, description=description)
+    def handoff_to_agent(
+        tool_call_id: Annotated[str, InjectedToolCallId],
+    ) -> str:
+        tool_message = ToolMessage(
+            content=f"Successfully transferred to {agent_name}",
+            name=name,
+            tool_call_id=tool_call_id,
+        )
+        print(f"handoff_to_agent {agent_name} {tool_message}")
+        callback(agent_name, tool_message)
+        return f"Successfully transferred to {agent_name}"
 
     handoff_to_agent.metadata = {METADATA_KEY_HANDOFF_DESTINATION: agent_name}
     return handoff_to_agent

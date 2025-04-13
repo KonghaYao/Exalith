@@ -17,6 +17,7 @@ from langchain_core.language_models import (
 from sample_agent.swarm.handoff import (
     create_handoff_tool_for_react,
     create_handoff_tool,
+    create_handoff_tool_defer,
     HandoffError,
 )
 from sample_agent.config import AgentRouteConfig
@@ -89,10 +90,10 @@ def create_expert_agent(
     @entrypoint()
     async def research_agent(state: ExpertState):
         try:
-            research_tools = tools.copy() + [
+            research_tools = [
                 create_handoff_tool_for_react(agent_name="plan_agent"),
                 create_handoff_tool_for_react(agent_name="execute_agent"),
-            ]
+            ] + tools.copy()
             react_agent = create_react_agent(
                 research_model,
                 research_tools,
@@ -124,26 +125,46 @@ def create_expert_agent(
     @entrypoint()
     async def plan_agent(state: ExpertState):
         try:
+
+            def callback(agent_name, tool_message):
+                print(f"\n\ncallback {agent_name} {tool_message}")
+                state["active_agent"] = agent_name
+
             plan_tools = [
-                create_handoff_tool_for_react(agent_name="execute_agent"),
-                create_handoff_tool_for_react(agent_name="research_agent"),
+                create_handoff_tool_defer(
+                    agent_name="execute_agent", callback=callback
+                ),
+                create_handoff_tool_defer(
+                    agent_name="research_agent", callback=callback
+                ),
             ]
             messages = state["messages"].copy()
             filtered_messages = [
                 msg for msg in messages if not isinstance(msg, SystemMessage)
             ]
-            planner_model.bind_tools(plan_tools)
-            plan_response = await planner_model.ainvoke(
-                [
-                    SystemMessage(content=(plan_system_prompt)),
-                ]
-                + filtered_messages
-                + [HumanMessage(content=plan_prompt)]
+            planner_model_with_tools = planner_model.bind_tools(plan_tools)
+            system_prompt = SystemMessage(content=(plan_system_prompt))
+            require_prompt = HumanMessage(content=plan_prompt)
+            plan_response = await planner_model_with_tools.ainvoke(
+                [system_prompt] + filtered_messages + [require_prompt]
             )
+            response_message = AIMessage(content=plan_response.content)
+            # 检查 plan_response 是否包含 tool_calls
+            if hasattr(plan_response, "tool_calls") and plan_response.tool_calls:
+                for tool_call in plan_response.tool_calls:
+                    if tool_call["name"].startswith("transfer_to"):
 
-            # Reset error count on success and set planned to True
+                        return Command(
+                            goto=tool_call["name"].replace("transfer_to_", ""),
+                            update={
+                                "messages": state["messages"] + [response_message],
+                                "planned": True,
+                            },
+                        )
+
+            # 如果没有工具调用，则正常返回
             return {
-                "messages": state["messages"] + [plan_response],
+                "messages": state["messages"] + [response_message],
                 "planned": True,
             }
 
@@ -161,14 +182,13 @@ def create_expert_agent(
     async def execute_agent(state: ExpertState):
         try:
             execute_tools = (
-                tools.copy()
-                + [
+                [
                     create_handoff_tool_for_react(agent_name="research_agent"),
                     create_handoff_tool_for_react(agent_name="plan_agent"),
                 ]
                 if state.get("plan_enabled", False)
                 else []
-            )
+            ) + tools.copy()
             react_agent = create_react_agent(
                 execute_model,
                 execute_tools,
