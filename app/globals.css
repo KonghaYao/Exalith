@@ -189,7 +189,7 @@ file {
 }
 
 /* 隐藏滚动条 */
-::-webkit-scrollbar {
+.copilotKitMessages::-webkit-scrollbar {
   display: none;
 }
 
