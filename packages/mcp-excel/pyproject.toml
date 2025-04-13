@@ -7,6 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
     "cpca>=0.5.5",
     "dask[complete]>=2025.3.0",
+    "fastmcp>=2.0.0",
     "matplotlib>=3.10.1",
     "mcp[cli]>=1.6.0",
     "modin>=0.32.0",
@@ -14,6 +15,7 @@ dependencies = [
     "pandas>=2.2.3",
     "pyecharts>=2.0.8",
     "python-calamine>=0.3.2",
+    "python-dotenv>=1.1.0",
     "setuptools>=78.1.0",
     "statsmodels>=0.14.4",
 ]

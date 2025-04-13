@@ -3,9 +3,13 @@ import sys
 import os
 from os import path
 from typing import Any, List, Dict, Optional
-from mcp.server.fastmcp import FastMCP, Context
+from fastmcp import FastMCP, Context
 import pandas as pd
+from dotenv import load_dotenv
 from .data_handlers import ExcelDataHandler as ExcelHandler
+
+# 加载 .env 文件
+load_dotenv()
 
 os.environ["MODIN_ENGINE"] = "dask"
 # Configure logging
@@ -18,10 +22,8 @@ logging.basicConfig(
 
 logger = logging.getLogger("mcp-excel")
 
-# Get Excel files path from environment or use default
 EXCEL_FILES_PATH = os.environ.get("EXCEL_FILES_PATH", "./filesystem")
 
-# Create the directory if it doesn't exist
 os.makedirs(EXCEL_FILES_PATH, exist_ok=True)
 
 
