@@ -14,7 +14,7 @@ export const ModelConfigs = [
   },
   {
     label: "qwen-max",
-    value: "qwen-max",
+    value: "qwen-max-latest",
   },
   {
     label: "deepseek-v3",

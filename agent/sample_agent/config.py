@@ -18,10 +18,16 @@ store = InMemoryStore(
 
 
 class AgentRouteConfig:
-    def __init__(self):
-        self._agents = ["all_helper", "data_expert"]
+    def __init__(
+        self,
+        input_agents: list[str] = None,
+        default_agent: str = None,
+    ):
+        self._agents = input_agents or []
         self._routes = self._generate_routes()
-        self._default_agent = "all_helper"
+        self._default_agent = default_agent or (
+            self._agents[0] if self._agents else None
+        )
 
     def _generate_routes(self) -> dict:
         """为每个代理生成到其他所有代理的路由"""
@@ -43,23 +49,26 @@ class AgentRouteConfig:
         if agent_name not in self._agents:
             self._agents.append(agent_name)
             self._routes = self._generate_routes()
+            if not self._default_agent:
+                self._default_agent = agent_name
 
     def remove_agent(self, agent_name: str):
         """移除代理并更新路由"""
         if agent_name in self._agents:
             self._agents.remove(agent_name)
             self._routes = self._generate_routes()
+            if self._default_agent == agent_name:
+                self._default_agent = self._agents[0] if self._agents else None
 
     def update_route(self, source: str, targets: list[str]):
+        if source not in self._routes:
+            raise ValueError(f"Agent {source} not found in routes")
         self._routes[source] = targets
 
     def set_default_agent(self, agent: str):
         if agent not in self._routes:
             raise ValueError(f"Agent {agent} not found in routes")
         self._default_agent = agent
-
-
-route_config = AgentRouteConfig()
 
 
 def action_to_tool(tool):

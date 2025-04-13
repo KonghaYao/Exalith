@@ -8,7 +8,7 @@ from sample_agent.model_factory import (
     create_chat_model,
     create_research_model,
 )
-from sample_agent.create_expert_agent import create_expert_agent
+from sample_agent.expert.create_expert_agent_v2 import create_expert_agent
 from sample_agent.utils import process_mcp_config_headers
 from langgraph.func import entrypoint
 
@@ -23,7 +23,8 @@ async def data_expert(state: SuperAgentState, config: RunnableConfig):
     async with MultiServerMCPClient(mcp_config) as mcp_client:
         # 初始化工具
         tools = await initialize_tools(mcp_client, actions)
-        planner_agent = create_expert_agent(
+        expert = create_expert_agent(
+            name="data_expert_agent",
             research_model=create_research_model(state.get("model_name")),
             planner_model=create_planner_model(state.get("model_name")),
             execute_model=create_chat_model(
@@ -33,14 +34,14 @@ async def data_expert(state: SuperAgentState, config: RunnableConfig):
             tools=tools,
             store=store,
             research_system_prompt="""你是一个专注于数据分析和信息收集的研究代理。你的职责是基于提供的工具检查数据，并生成一份关于数据情况、潜在问题和分析机会的全面报告。
-
-**核心要求：**
+## 核心要求：
 
 1.  **任务范围：** 你的目标是**探索数据**并**生成洞察**，包括但不限于：
     * 数据质量评估和清洗建议
     * 数据特征和模式发现
     * 潜在的分析机会
     * 数据限制和注意事项
+    * 你不需要完成用户的任务，只需要生成一份报告
 
 2.  **工具限制：** **仅能**使用查看和分析类工具。**严禁**使用任何具有写入、修改或删除数据功能的工具。
     * 你使用工具后无需回复内容
@@ -63,14 +64,16 @@ async def data_expert(state: SuperAgentState, config: RunnableConfig):
     * **清晰地列出通过样本观察发现的所有重要信息，并附带上述要求的具体原始值示例。**
     * 保持客观，仅报告观察到的事实和必要的建议点（附带示例）。
     * **不需要**包含任何代码片段或过于冗余的描述。
-
+    * 报告编写结果后，进一步编写执行计划，请使用工具 transfer_to_plan_agent
+    * 报告编写结果后，直接执行数据清洗任务，请使用工具 transfer_to_execute_agent
 5.  **工具使用次数：** 总工具使用次数限制在 10 次以内。
+
+
 
 请严格按照以上要求生成报告。
 """,
             plan_system_prompt=f"""
-# 角色与职责
-你是一位专业的数据分析专家，专注于数据探索、清洗和转换，以支持深入的数据分析。
+你是一位专业的数据分析专家，专注于数据探索、清洗和转换，以支持深入的数据分析。你的任务是根据用户要求编写执行计划，计划书会交给 Python工程师进行执行，编写的风格要简洁明了，不要包含任何代码片段或过于冗余的描述。
 
 ## 核心能力
 1. 数据质量评估与清洗
@@ -78,6 +81,7 @@ async def data_expert(state: SuperAgentState, config: RunnableConfig):
 3. 数据转换与标准化
 4. 分析策略制定
 5. 执行计划编写
+6. **编写完成计划之后，请使用工具 transfer_to_execute_agent**
 
 ## 输出要求
 1. **计划结构：**
@@ -121,13 +125,19 @@ async def data_expert(state: SuperAgentState, config: RunnableConfig):
 """,
             plan_prompt="""请根据收集的信息和我的要求撰写计划：""",
             execute_system_prompt="""
-你是一个专业的数据分析专家，精通数据处理工具和Python编程。请按照以下工作流程执行用户任务：
+你是一个专业的数据分析专家，精通数据处理工具和Python编程。你的任务是根据用户要求，执行Python代码，完成任务。
+
+**工具失败两次，直接结束，并向用户道歉**
+
 
 ## 工作流程
-1. 收到用户需求后，立即开始执行而无需确认
-2. 根据需要调用Python工具和库进行数据分析
-3. 清晰展示分析结果，默认保留所有原始数据列
-4. 如遇到错误，提供详细的错误原因和解决方案
+1. 收到用户需求后，判断是否需要观察数据或者编写计划
+    - **如果需要观察数据，请使用工具 transfer_to_research_agent**
+    - **如果需要编写计划，请使用工具 transfer_to_plan_agent**
+2. 立即开始执行而无需确认
+3. 根据需要调用Python工具和库进行数据分析
+4. 清晰展示分析结果，默认保留所有原始数据列
+5. 如遇到错误，提供详细的错误原因和解决方案
 
 ## 技术能力
 - 熟练使用pandas、numpy、matplotlib等数据分析库
@@ -150,9 +160,16 @@ async def data_expert(state: SuperAgentState, config: RunnableConfig):
 """,
             state_schema=SuperAgentState,
         )
-        plan_response = await planner_agent.ainvoke(state)
+        response = await expert.ainvoke(
+            {
+                "messages": state["messages"],
+                "plan_enabled": state.get("plan_enabled", False),
+                "searched": state.get("searched", False),
+                "planned": state.get("planned", False),
+            }
+        )
 
         # Reset error count on success and set planned to True
         return {
-            "messages": state["messages"] + plan_response.get("messages", []),
+            "messages": state["messages"] + response.get("messages", []),
         }

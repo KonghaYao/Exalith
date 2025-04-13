@@ -2,7 +2,7 @@ from typing_extensions import Literal, TypedDict, Dict, List, Any, Union, Option
 import os
 from copilotkit import CopilotKitState
 from langgraph.prebuilt.chat_agent_executor import AgentState
-from sample_agent.create_expert_agent import ExpertState
+from sample_agent.expert.create_expert_agent import ExpertState
 from sample_agent.swarm.create_swarm import SwarmState
 
 
