@@ -147,11 +147,11 @@ class ExcelDataHandler:
             full_path = self.get_file_path(filepath)
             df = self.read_data(full_path, sheet_name=sheet_name)
             # 准备执行环境
-
-            exec_locals = {"df": df, "pd": pd}
+            exec_globals = {"pd": pd}
+            exec_locals = {"df": df}
 
             # 执行Python代码
-            run_python_code(python_code, exec_locals)
+            run_python_code(python_code, exec_globals, exec_locals)
             if "main" not in exec_locals:
                 raise ValueError("代码中必须定义main函数")
             # 执行main函数并获取结果
@@ -204,11 +204,12 @@ class ExcelDataHandler:
             # 创建字符串IO对象来捕获标准输出
             output_buffer = io.StringIO()
 
-            exec_locals = {"df": df, "pd": pd}
+            exec_globals = {"pd": pd}
+            exec_locals = {"df": df}
 
             # 重定向标准输出并执行Python代码
             with redirect_stdout(output_buffer):
-                run_python_code(python_code, exec_locals)
+                run_python_code(python_code, exec_globals, exec_locals)
 
                 if "main" not in exec_locals:
                     raise ValueError("代码中必须定义main函数")
@@ -256,12 +257,12 @@ class ExcelDataHandler:
 
             # 创建字符串IO对象来捕获标准输出
             output_buffer = io.StringIO()
-
-            exec_locals = {"df": df, "pd": pd, "plt": plt}
+            exec_globals = {"pd": pd, "plt": plt}
+            exec_locals = {"df": df}
 
             # 重定向标准输出并执行Python代码
             with redirect_stdout(output_buffer):
-                run_python_code(python_code, exec_locals)
+                run_python_code(python_code, exec_globals, exec_locals)
 
                 if "main" not in exec_locals:
                     raise ValueError("代码中必须定义main函数")
@@ -309,11 +310,12 @@ class ExcelDataHandler:
             # 创建字符串IO对象来捕获标准输出
             output_buffer = io.StringIO()
 
-            exec_locals = {"df": df, "pd": pd}
+            exec_globals = {"pd": pd}
+            exec_locals = {"df": df}
 
             # 重定向标准输出并执行Python代码
             with redirect_stdout(output_buffer):
-                run_python_code(python_code, exec_locals)
+                run_python_code(python_code, exec_globals, exec_locals)
 
                 if "main" not in exec_locals:
                     raise ValueError("代码中必须定义main函数")
