@@ -91,7 +91,6 @@ def create_handoff_tool(
 def create_handoff_tool_defer(
     *,
     agent_name: str,
-    callback,
     name: str | None = None,
     description: str | None = None,
     graph: str = Command.PARENT,
@@ -117,16 +116,7 @@ def create_handoff_tool_defer(
         description = f"Ask agent '{agent_name}' for help"
 
     @tool(name, description=description)
-    def handoff_to_agent(
-        tool_call_id: Annotated[str, InjectedToolCallId],
-    ) -> str:
-        tool_message = ToolMessage(
-            content=f"Successfully transferred to {agent_name}",
-            name=name,
-            tool_call_id=tool_call_id,
-        )
-        print(f"handoff_to_agent {agent_name} {tool_message}")
-        callback(agent_name, tool_message)
+    def handoff_to_agent() -> str:
         return f"Successfully transferred to {agent_name}"
 
     handoff_to_agent.metadata = {METADATA_KEY_HANDOFF_DESTINATION: agent_name}

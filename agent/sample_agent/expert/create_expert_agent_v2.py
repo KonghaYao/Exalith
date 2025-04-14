@@ -36,7 +36,7 @@ from langgraph.store.base import BaseStore
 
 # Third-party imports
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-from langgraph.graph import StateGraph, START
+
 from langgraph.prebuilt import create_react_agent
 from langgraph.prebuilt.chat_agent_executor import AgentState
 from sample_agent.errors import handle_tool_error
@@ -55,27 +55,11 @@ def create_expert_agent(
     research_model: Union[str, LanguageModelLike],
     planner_model: Union[str, LanguageModelLike],
     execute_model: Union[str, LanguageModelLike],
+    plan_prompt: Optional[Prompt],
+    plan_system_prompt: Optional[Prompt],
     tools: Union[Sequence[Union[BaseTool, Callable]], ToolNode],
     research_system_prompt: Optional[Prompt] = None,
     execute_system_prompt: Optional[Prompt] = None,
-    plan_prompt: Optional[Prompt] = "请根据上面的信息，开始你的任务",
-    plan_system_prompt: Optional[
-        Prompt
-    ] = f"""
-请根据任务复杂度和收集到的信息生成一份具有针对性的执行计划。
-计划的文章长度取决于用户提出的需求，而不是一味求长。
-对于简单任务，直接给出关键步骤，不需要细节内容；
-对于复杂任务，再展开子步骤和细节。
-你可以修复一些用户的执行要求缺陷，但是不必扩展用户的需求，揣测用户的意图。
-不用给出示例代码，简述流程即可。
-
-请确保：
-1. 步骤清晰可执行，简洁
-2. 复杂任务最多展开两层
-3. 关注实际执行效果
-4. 需要针对具体的细节制定步骤，在说明时，写清除具体是哪个部分通过什么方式实现什么效果
-5. 不要给出示例代码
-""",
     response_format: Optional[
         Union[StructuredResponseSchema, tuple[str, StructuredResponseSchema]]
     ] = None,
@@ -125,46 +109,21 @@ def create_expert_agent(
     @entrypoint()
     async def plan_agent(state: ExpertState):
         try:
-
-            def callback(agent_name, tool_message):
-                print(f"\n\ncallback {agent_name} {tool_message}")
-                state["active_agent"] = agent_name
-
             plan_tools = [
-                create_handoff_tool_defer(
-                    agent_name="execute_agent", callback=callback
-                ),
-                create_handoff_tool_defer(
-                    agent_name="research_agent", callback=callback
-                ),
+                create_handoff_tool_for_react(agent_name="execute_agent"),
+                create_handoff_tool_for_react(agent_name="research_agent"),
             ]
-            messages = state["messages"].copy()
-            filtered_messages = [
-                msg for msg in messages if not isinstance(msg, SystemMessage)
-            ]
-            planner_model_with_tools = planner_model.bind_tools(plan_tools)
-            system_prompt = SystemMessage(content=(plan_system_prompt))
-            require_prompt = HumanMessage(content=plan_prompt)
-            plan_response = await planner_model_with_tools.ainvoke(
-                [system_prompt] + filtered_messages + [require_prompt]
+            react_agent = create_react_agent(
+                planner_model,
+                plan_tools,
+                checkpointer=checkpointer,
+                store=store,
+                state_modifier=plan_system_prompt,
+                state_schema=state_schema,
             )
-            response_message = AIMessage(content=plan_response.content)
-            # 检查 plan_response 是否包含 tool_calls
-            if hasattr(plan_response, "tool_calls") and plan_response.tool_calls:
-                for tool_call in plan_response.tool_calls:
-                    if tool_call["name"].startswith("transfer_to"):
-
-                        return Command(
-                            goto=tool_call["name"].replace("transfer_to_", ""),
-                            update={
-                                "messages": state["messages"] + [response_message],
-                                "planned": True,
-                            },
-                        )
-
-            # 如果没有工具调用，则正常返回
+            plan_response = await react_agent.ainvoke(state)
             return {
-                "messages": state["messages"] + [response_message],
+                "messages": state["messages"] + plan_response.get("messages", []),
                 "planned": True,
             }
 
