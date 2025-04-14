@@ -1,19 +1,20 @@
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 import { CopilotImageGen } from "./ImageGen";
 import { CopilotPreview } from "../FilePreview/CopilotPreview";
+import { CopilotArtifactsAction } from "./CopilotArtifactsAction";
 export const plugins = [
-  // {
-  //   name: "select_buttons",
-  //   code: "select_buttons",
-  //   description: "选择列表",
-  //   component: CopilotSelectButton,
-  // },
   // {
   //   name: "send_file_to_user",
   //   code: "send_file_to_user",
   //   description: "文件预览",
   //   component: CopilotPreview,
   // },
+  {
+    name: "write_artifacts",
+    code: "write_artifacts",
+    description: "写入资源",
+    component: CopilotArtifactsAction,
+  },
   {
     name: "generate_image",
     code: "generate_image",
