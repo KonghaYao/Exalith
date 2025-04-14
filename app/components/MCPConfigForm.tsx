@@ -9,13 +9,14 @@ import { useMCPConfig } from "../contexts/MCPConfigContext";
 import { ServerConfig } from "../contexts/ServerConfig";
 import { ConfigManager } from "./ServerForm/ConfigManager";
 
-type ConnectionType = "stdio" | "sse";
+type ConnectionType = "stdio" | "sse" | "mcp";
 
 export function MCPConfigForm() {
   const { configs, setConfigs, resetConfig, isLoading } = useMCPConfig();
 
   const [serverName, setServerName] = useState("");
   const [connectionType, setConnectionType] = useState<ConnectionType>("stdio");
+  const [mcpName, setMcpName] = useState("");
   const [command, setCommand] = useState("");
   const [args, setArgs] = useState("");
   const [url, setUrl] = useState("");
@@ -54,6 +55,7 @@ export function MCPConfigForm() {
     setConfigs,
     editingServer: null,
     resetForm,
+    mcpName,
   });
 
   const removeConfig = (name: string) => {
@@ -104,9 +106,11 @@ export function MCPConfigForm() {
     if (config.transport === "stdio") {
       setCommand(config.command);
       setArgs(config.args.join(" "));
-    } else {
+    } else if (config.transport === "sse") {
       setUrl(config.url);
       setHeaders(config.headers || {});
+    } else if (config.transport === "mcp") {
+      setMcpName(config.name);
     }
   };
 
@@ -167,6 +171,8 @@ export function MCPConfigForm() {
           args={args}
           url={url}
           headers={headers}
+          mcpName={mcpName}
+          onMcpNameChange={setMcpName}
           onServerNameChange={setServerName}
           onConnectionTypeChange={setConnectionType}
           onCommandChange={setCommand}
@@ -186,6 +192,7 @@ export function MCPConfigForm() {
               setConfigs,
               editingServer,
               resetForm,
+              mcpName,
             });
             handleSubmit();
           }}

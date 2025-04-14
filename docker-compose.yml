@@ -12,6 +12,7 @@ services:
     restart: unless-stopped
     environment:
       - AGENT_DEPLOYMENT_URL=http://langgraph-api:8000
+      - MCP_EXCEL_URL=http://mcp-excel:8000/sse
     networks:
       - app-network
     depends_on:

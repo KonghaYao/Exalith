@@ -2,7 +2,7 @@
 
 import { ServerConfig } from "@/app/contexts/ServerConfig";
 
-type ConnectionType = "stdio" | "sse";
+type ConnectionType = "stdio" | "sse" | "mcp";
 
 interface ConfigManagerProps {
   serverName: string;
@@ -11,6 +11,7 @@ interface ConfigManagerProps {
   args: string;
   url: string;
   headers: Record<string, string>;
+  mcpName: string;
   configs: Record<string, ServerConfig>;
   setConfigs: (newConfigs: Record<string, ServerConfig>) => void;
   editingServer: string | null;
@@ -24,6 +25,7 @@ export function ConfigManager({
   args,
   url,
   headers,
+  mcpName,
   configs,
   setConfigs,
   editingServer,
@@ -75,13 +77,37 @@ export function ConfigManager({
     }
   };
 
+  const handleMCPConfig = () => {
+    const mcpConfig = {
+      name: mcpName,
+      transport: "mcp" as const,
+      enable: true,
+    };
+
+    if (editingServer && editingServer !== serverName) {
+      const newConfigs = { ...configs };
+      delete newConfigs[editingServer];
+      setConfigs({
+        ...newConfigs,
+        [serverName]: mcpConfig,
+      });
+    } else {
+      setConfigs({
+        ...configs,
+        [serverName]: mcpConfig,
+      });
+    }
+  };
+
   const handleSubmit = () => {
     if (!serverName) return;
 
     if (connectionType === "stdio") {
       handleStdioConfig();
-    } else {
+    } else if (connectionType === "sse") {
       handleSSEConfig();
+    } else {
+      handleMCPConfig();
     }
 
     resetForm();

@@ -10,6 +10,7 @@ import {
   Monitor,
   Globe,
   ExternalLink,
+  Server,
 } from "lucide-react";
 
 export interface ServerListProps {
@@ -68,8 +69,10 @@ export function ServerList({
                     <div className="inline-flex items-center px-2 py-0.5 bg-gray-100 text-xs rounded mt-1">
                       {config.transport === "stdio" ? (
                         <Monitor className="w-3 h-3 mr-1" />
-                      ) : (
+                      ) : config.transport === "sse" ? (
                         <Globe className="w-3 h-3 mr-1" />
+                      ) : (
+                        <Server className="w-3 h-3 mr-1" />
                       )}
                       {config.transport}
                     </div>
@@ -109,8 +112,10 @@ export function ServerList({
                       <p>Command: {config.command}</p>
                       <p className="truncate">Args: {config.args.join(" ")}</p>
                     </>
-                  ) : (
+                  ) : config.transport === "sse" ? (
                     <p className="truncate">URL: {config.url}</p>
+                  ) : (
+                    <p className="truncate">MCP Name: {config.name}</p>
                   )}
                 </div>
               </div>

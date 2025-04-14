@@ -90,13 +90,14 @@ def action_to_tool(tool):
     )
 
 
+from sample_agent.mcp.config import mcp_mapping_config
+
+
 # Tool initialization with error handling
 async def initialize_tools(mcp_client: MultiServerMCPClient, actions: list) -> list:
 
     mcp_tools = mcp_client.get_tools()
-
     mcp_tools.extend([action_to_tool(tool) for tool in actions])
-
     # Add memory management tools
     memory_tools = [
         # create_manage_memory_tool(namespace=("memories",)),
@@ -104,6 +105,7 @@ async def initialize_tools(mcp_client: MultiServerMCPClient, actions: list) -> l
     ]
 
     tools = memory_tools + mcp_tools
+
     if not tools:
-        return {}
+        return []
     return tools

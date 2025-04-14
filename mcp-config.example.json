@@ -1,12 +1,7 @@
 {
   "excel助手": {
-    "url": "http://localhost:8000/sse",
-    "transport": "sse",
+    "name": "mcp-excel",
+    "transport": "mcp",
     "enable": true
-  },
-  "文件浏览器": {
-    "url": "http://localhost:6798/admin/filesystem_bot/sse",
-    "transport": "sse",
-    "enable": false
   }
 }
