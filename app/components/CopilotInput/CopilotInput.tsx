@@ -1,4 +1,4 @@
-import { InputProps } from "@copilotkit/react-ui";
+import { CopilotDevConsole, InputProps } from "@copilotkit/react-ui";
 import {
   Send,
   Eraser,

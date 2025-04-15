@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "node fix-deps.mjs",
     "dev-frontend": "next dev --turbopack",
     "dev-agent": "cd agent && poetry run langgraph dev --host localhost --port 8123 --no-browser",
-    "dev": "pnpx concurrently \"pnpm dev-frontend\" \"pnpm dev-agent\" --names ui,agent --prefix-colors blue,green",
+    "dev-excel": "cd packages/mcp-excel && uv run mcp-excel",
+    "dev": "pnpx concurrently \"pnpm dev-frontend\" \"pnpm dev-excel\" \"pnpm dev-agent\" --names ui,excel,agent --prefix-colors blue,yellow,green",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

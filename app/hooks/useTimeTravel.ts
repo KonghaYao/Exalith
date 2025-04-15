@@ -36,7 +36,7 @@ export function useTimeTravel<T>(
           // 如果存在相同 key，则覆盖该位置的状态
           const newHistory = [...currentHistory];
           newHistory[existingIndex] = newState;
-          console.log("覆盖", newHistory);
+          // console.log("覆盖", newHistory);
           return newHistory;
         } else {
           // 如果是新状态，则添加并更新 current
@@ -44,7 +44,7 @@ export function useTimeTravel<T>(
             setCurrent((prev) => nextHistory.length - 1);
           });
           const nextHistory = [...currentHistory, newState];
-          console.log("新增", nextHistory);
+          // console.log("新增", nextHistory);
           return nextHistory;
         }
       });

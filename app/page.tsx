@@ -1,5 +1,5 @@
 "use client";
-
+import "./fix/copilot";
 import { useState } from "react";
 import { CopilotKit } from "@copilotkit/react-core";
 import { CopilotActionHandler } from "./components/CopilotActionHandler";
