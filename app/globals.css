@@ -177,6 +177,9 @@
 .copilotKitMarkdown ol {
   @apply list-decimal list-inside;
 }
+.copilotKitMarkdown img {
+  max-height: 40vh;
+}
 
 .copilotKitMessage {
   max-width: 100% !important;
