@@ -1,5 +1,5 @@
 from typing import Dict, Any
-
+from sample_agent.config import mcp_mapping_config
 
 def process_mcp_config_headers(mcp_config: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -23,5 +23,6 @@ def process_mcp_config_headers(mcp_config: Dict[str, Any]) -> Dict[str, Any]:
                     f"x-{k}" if not k.startswith("x-") else k: v
                     for k, v in headers.items()
                 }
-
-    return processed_config
+    new_mcp_config = mcp_mapping_config.toConfigs(processed_config)
+    print(new_mcp_config)
+    return new_mcp_config

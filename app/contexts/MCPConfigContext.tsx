@@ -14,15 +14,19 @@ export const ModelConfigs = [
   },
   {
     label: "qwen-max",
-    value: "qwen-max",
+    value: "qwen-max-latest",
   },
   {
     label: "deepseek-v3",
     value: "deepseek-chat",
   },
   {
-    label: "quasar-alpha",
-    value: "openrouter/quasar-alpha",
+    label: "gpt-4o-mini",
+    value: "openrouter/openai/gpt-4o-mini",
+  },
+  {
+    label: "claude-3.7",
+    value: "openrouter/anthropic/claude-3.7-sonnet",
   },
 ];
 

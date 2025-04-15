@@ -1,21 +1,23 @@
 "use client";
 
-import { PenSquare, Plus, X, Terminal, Globe, Check } from "lucide-react";
+import { PenSquare, Plus, X, Terminal, Globe, Check, Server } from "lucide-react";
 
 interface AddServerFormProps {
   isEditing: boolean;
   serverName: string;
-  connectionType: "stdio" | "sse";
+  connectionType: "stdio" | "sse" | "mcp";
   command: string;
   args: string;
   url: string;
   headers: Record<string, string>;
+  mcpName: string;
   onServerNameChange: (value: string) => void;
-  onConnectionTypeChange: (type: "stdio" | "sse") => void;
+  onConnectionTypeChange: (type: "stdio" | "sse" | "mcp") => void;
   onCommandChange: (value: string) => void;
   onArgsChange: (value: string) => void;
   onUrlChange: (value: string) => void;
   onHeadersChange: (headers: Record<string, string>) => void;
+  onMcpNameChange: (value: string) => void;
   onClose: () => void;
   onSubmit: () => void;
 }
@@ -28,12 +30,14 @@ export function AddServerForm({
   args,
   url,
   headers,
+  mcpName,
   onServerNameChange,
   onConnectionTypeChange,
   onCommandChange,
   onArgsChange,
   onUrlChange,
   onHeadersChange,
+  onMcpNameChange,
   onClose,
   onSubmit,
 }: AddServerFormProps) {
@@ -75,7 +79,7 @@ export function AddServerForm({
             <label className="block text-sm font-medium mb-1">
               Connection Type
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => onConnectionTypeChange("stdio")}
@@ -99,6 +103,18 @@ export function AddServerForm({
               >
                 <Globe className="w-4 h-4 mr-1" />
                 SSE
+              </button>
+              <button
+                type="button"
+                onClick={() => onConnectionTypeChange("mcp")}
+                className={`px-3 py-2 border rounded-md text-center flex items-center justify-center ${
+                  connectionType === "mcp"
+                    ? "bg-gray-200 border-gray-400 text-gray-800"
+                    : "bg-white text-gray-700"
+                }`}
+              >
+                <Server className="w-4 h-4 mr-1" />
+                MCP
               </button>
             </div>
           </div>
@@ -130,7 +146,7 @@ export function AddServerForm({
                 />
               </div>
             </>
-          ) : (
+          ) : connectionType === "sse" ? (
             <>
               <div>
                 <label className="block text-sm font-medium mb-1">URL</label>
@@ -199,6 +215,19 @@ export function AddServerForm({
                 </div>
               </div>
             </>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                MCP Name
+              </label>
+              <input
+                type="text"
+                value={mcpName}
+                onChange={(e) => onMcpNameChange?.(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md text-sm"
+                placeholder="e.g., mcp-excel"
+              />
+            </div>
           )}
 
           <div className="flex justify-end space-x-2 pt-2">

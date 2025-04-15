@@ -9,12 +9,12 @@ export function ArtifactsWrapper() {
   return (
     <div className="flex h-full  border relative overflow-auto">
       {/* Display Area */}
-      <div className="flex-1 p-6 overflow-y-auto bg-neutral-100">
+      <div className="flex-1 p-6 overflow-y-auto bg-white">
         {selectedResource ? (
           <ArtifactDisplay resourceName={selectedResource} key={selectedResource} />
         ) : (
           <div className="h-full flex items-center justify-center text-gray-500 ">
-            选择资源进行展示
+            暂无资源展示
           </div>
         )}
       </div>
@@ -27,11 +27,10 @@ export function ArtifactsWrapper() {
               <button
                 key={resource.id}
                 onClick={() => setSelectedResource(resource.id)}
-                className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
-                  selectedResource === resource.id
+                className={`w-full text-left px-3 py-2 rounded-md transition-colors ${selectedResource === resource.id
                     ? "bg-blue-100 text-blue-700"
                     : "hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 {resource.name}
               </button>

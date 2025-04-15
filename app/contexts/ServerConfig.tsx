@@ -12,4 +12,10 @@ interface SSEConfig {
   headers: Record<string, string>;
 }
 
-export type ServerConfig = StdioConfig | SSEConfig;
+interface MCPConfig {
+  name: string;
+  transport: "mcp";
+  enable?: boolean;
+}
+
+export type ServerConfig = StdioConfig | SSEConfig | MCPConfig;

@@ -36,7 +36,7 @@ export function ChatSection({
           <Settings></Settings>
         </button>
         <CopilotChat
-          className="h-screen flex flex-col "
+          className="h-screen flex flex-col overflow-hidden"
           key={chatKey}
           UserMessage={UserMessage}
           AssistantMessage={AssistantMessage}

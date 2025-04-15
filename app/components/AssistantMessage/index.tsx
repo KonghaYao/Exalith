@@ -1,10 +1,9 @@
 import { useState } from "react";
 import {
-  Markdown,
   useChatContext,
   AssistantMessageProps,
 } from "@copilotkit/react-ui";
-
+import { Markdown } from "./Markdown";
 export const AssistantMessage = (props: AssistantMessageProps) => {
   const { icons, labels } = useChatContext();
   const {

@@ -1,5 +1,5 @@
 "use client";
-
+import "./fix/copilot";
 import { useState } from "react";
 import { CopilotKit } from "@copilotkit/react-core";
 import { CopilotActionHandler } from "./components/CopilotActionHandler";
@@ -11,6 +11,7 @@ import { MainSection } from "./components/MainSection";
 import { MCPConfigProvider } from "./contexts/MCPConfigContext";
 import { GlobalDropZone } from "./components/GlobalDropZone";
 import "@ant-design/v5-patch-for-react-19";
+import { UnionContext } from "./components/Artifacts/UnionContext";
 
 function Home() {
   const [chatKey, setChatKey] = useState(0);
@@ -18,22 +19,24 @@ function Home() {
   return (
     <FileSystemProvider key={chatKey}>
       <FilePreviewProvider key={chatKey}>
-        <CopilotKit
-          runtimeUrl="/api/copilotkit"
-          showDevConsole={false}
-          key={chatKey}
-          agent="llm_agent"
-        >
-          <MCPConfigProvider>
-            <GlobalDropZone>
-              <div className="min-h-screen flex relative">
-                <MainSection />
-                <ChatSection chatKey={chatKey} setChatKey={setChatKey} />
-                <CopilotActionHandler />
-              </div>
-            </GlobalDropZone>
-          </MCPConfigProvider>
-        </CopilotKit>
+        <UnionContext>
+          <CopilotKit
+            runtimeUrl="/api/copilotkit"
+            showDevConsole={false}
+            key={chatKey}
+            agent="llm_agent"
+          >
+            <MCPConfigProvider>
+              <GlobalDropZone>
+                <div className="min-h-screen flex relative">
+                  <MainSection />
+                  <ChatSection chatKey={chatKey} setChatKey={setChatKey} />
+                  <CopilotActionHandler />
+                </div>
+              </GlobalDropZone>
+            </MCPConfigProvider>
+          </CopilotKit>
+        </UnionContext>
       </FilePreviewProvider>
     </FileSystemProvider>
   );

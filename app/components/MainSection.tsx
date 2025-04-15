@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   MoveLeft,
   ChevronLeft,
+  File
 } from "lucide-react";
 import FileList from "./FileManager/FileList";
 import { PreviewComponent } from "./FilePreview/CopilotPreview";
@@ -16,6 +17,7 @@ import { useTab } from "./TabContext";
 import { useCoAgent, useCopilotChat } from "@copilotkit/react-core";
 import { useFileSystem } from "./FileManager/FileSystemContext";
 import { useEffect } from "react";
+import { ArtifactsWrapper } from "./Artifacts/Wrapper";
 
 const tabConfig = [
   {
@@ -32,6 +34,11 @@ const tabConfig = [
     key: "config",
     icon: Settings,
     text: "配置",
+  },
+  {
+    key: "artifacts",
+    icon: File,
+    text: "资源",
   },
 ] as const;
 
@@ -54,9 +61,8 @@ export function MainSection() {
         {tabConfig.map((item) => (
           <button
             key={item.key}
-            className={`w-12 h-12 cursor-pointer flex items-center justify-center ${
-              tab === item.key ? "bg-emerald-500 text-white" : " text-gray-600"
-            }`}
+            className={`w-12 h-12 cursor-pointer flex items-center justify-center ${tab === item.key ? "bg-emerald-500 text-white" : " text-gray-600"
+              }`}
             onClick={() => setTab(item.key)}
           >
             <item.icon className="h-6 w-6" />
@@ -67,18 +73,16 @@ export function MainSection() {
       {tab && (
         <div className="flex-1 w-128 h-full overflow-y-auto flex flex-col bg-white relative">
           <div
-            className={`${
-              tab === "config" ? "flex-1 overflow-y-auto p-8" : "hidden"
-            }`}
+            className={`${tab === "config" ? "flex-1 overflow-y-auto p-8" : "hidden"
+              }`}
           >
             <MCPConfigForm />
             <CopilotFEPlugin />
           </div>
 
           <div
-            className={`${
-              tab === "preview" ? "flex-1 overflow-y-auto" : "hidden"
-            }`}
+            className={`${tab === "preview" ? "flex-1 overflow-y-auto" : "hidden"
+              }`}
           >
             <PreviewComponent></PreviewComponent>
           </div>
@@ -87,6 +91,11 @@ export function MainSection() {
             className={`${tab === "files" ? "flex-1 overflow-y-auto" : "hidden"}`}
           >
             <FileList />
+          </div>
+          <div
+            className={`${tab === "artifacts" ? "flex-1 overflow-y-auto" : "hidden"}`}
+          >
+            <ArtifactsWrapper />
           </div>
         </div>
       )}
