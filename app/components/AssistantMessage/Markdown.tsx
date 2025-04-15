@@ -2,7 +2,7 @@ import { FC, memo } from "react";
 import ReactMarkdown, { Options, Components } from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
 import { Image } from "antd";
-
+import remarkGfm from "remark-gfm";
 const MemoizedReactMarkdown: FC<Options> = memo(
     ReactMarkdown,
     (prevProps, nextProps) =>
@@ -16,7 +16,7 @@ type MarkdownProps = {
 export const Markdown = ({ content }: MarkdownProps) => {
     return (
         <div className="copilotKitMarkdown">
-            <MemoizedReactMarkdown components={components} remarkPlugins={[]}>
+            <MemoizedReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
                 {content}
             </MemoizedReactMarkdown>
         </div>
@@ -70,7 +70,7 @@ const components: Components = {
         );
     },
     code({ children, className, inline, ...props }) {
-        if (children.length) {
+        if (children.length && typeof childeren !== 'string') {
             if (children[0] == "▍") {
                 return (
                     <span
