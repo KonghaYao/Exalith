@@ -1,3 +1,4 @@
+"use client"
 import { FC, memo } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { Check, Copy, Download } from "lucide-react";

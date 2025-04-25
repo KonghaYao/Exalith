@@ -1,3 +1,4 @@
+"use client"
 import { FC, memo } from "react";
 import ReactMarkdown, { Options, Components } from "react-markdown";
 import { CodeBlock } from "./CodeBlock";

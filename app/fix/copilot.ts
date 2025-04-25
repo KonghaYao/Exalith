@@ -1,3 +1,4 @@
+"use client"
 // 修复 copilot 的 constructFinalMessages 函数官方的操作删除了没有父级 id 的message
 function constructFinalMessages(
   syncedMessages: any[],
@@ -30,4 +31,4 @@ function constructFinalMessages(
   //   }
   //   return finalMessages;
 }
-window && (window.constructFinalMessages = constructFinalMessages);
+globalThis.window && (globalThis.window.constructFinalMessages = constructFinalMessages);

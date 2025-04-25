@@ -10,7 +10,7 @@ RUN npm config set registry https://registry.npmmirror.com
 RUN npm install -g pnpm
 
 # 复制 package.json 和 pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./fix-deps.mjs ./
 
 # 安装依赖
 RUN pnpm install --frozen-lockfile
